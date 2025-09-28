@@ -1,0 +1,81 @@
+Social Media Content Optimizer (Chrome Extension)
+Uses Rewriter API + Writer API + Prompt API. Helps users optimize their social media posts for different platforms by adjusting tone, length, and hashtags while maintaining authenticity. Addresses social media engagement challenges.
+
+
+Accessibility Text Simplifier (Web Application)
+Uses Rewriter API + Summarizer API. Converts complex web content into plain language for users with cognitive disabilities, non-native speakers, or children. Promotes web accessibility and inclusion.
+
+Scenario: An autistic user on a social media site struggles with slang and flashing ads.
+Solution: The extension simplifies posts (e.g., “LOL, great pic!” becomes “I like your photo”), disables animations, and reads comments aloud with clear navigation (“next post”).
+
+Real-Time Emotional Tone Guidance:
+
+Challenge: Difficulty interpreting emotional tones in posts or comments (e.g., sarcasm in “Wow, nice job”).
+Solution: Prompt API labels posts with emotional context (e.g., “This comment is sarcastic”) and suggests appropriate reactions (e.g., “Avoid responding to negative tones”).
+
+Implementation: Prompt API processes text for sentiment; Proofreader API ensures clear labels.
+
+Benefit: Helps users navigate social nuances, reducing miscommunication.
+
+Screen 1 (Config Page)
+
+Configure your health Condition (or a very nice title)
+
+Option 1) Partial or Full Blindness (text + image)
+Option 2) Partial or Full Deafness (text + image)
+Option 3)  Autistic  (text + image)
+
+General Setting* 
+Choose Language: Display all languages
+
+The footer will have Accessibility option to Read the page aloud in accessibility mode.
+
+
+Well have settings Page/configuration for each of these Options.
+
+For Blindness config:
+
+Features can include:
+
+Read Out Site Texts on Webite (TTP)+ Play Audio on site (via prompt)
+
+Summarize Very long Texts:  (On/Off/Always Ask via voice)
+Summarize Terms & Condition or Privacy Policies (On/Off/Always Ask via voice)
+
+Voice Mode: Male,Female
+Voice Speed: Slow, Fast
+Voice Tone:  African, etc
+
+
+For Deafness Config:
+
+Features can include:
+
+Transcribe Media Files: (On (default) /Off/ OnDemand)
+Filter out Adult/pofane words:  (On (default) /Off/ OnDemand)
+Live Audio Transcribe:  (On (default) /Off/ OnDemand)
+
+
+Well have home Page for each of the  Options.
+
+General ideas: 
+
+Saved Contents/Bookmarked
+Upload Audio Files to Transcribe
+Writer for Blind
+Reading Gmail
+
+
+
+
+
+
+## **The Universal Web Access Pitch**
+
+Right now, $1$ billion people worldwide struggle to fully access the internet—from a dyslexic student battling academic jargon to a blind user encountering images without descriptions.
+
+Our **Chrome extension** instantly transforms any webpage into accessible content. Using on-device AI like **Gemini Nano**, a single click simplifies complex medical articles, adds audio descriptions and narration, provides visual formatting for deaf users, and translates content for non-native speakers.
+
+We're not just making websites prettier; we're **making the entire internet inclusive**. Unlike others who build for the majority, we are unlocking digital access for everyone who’s been left behind, all while ensuring **complete privacy** by processing everything locally on your device.
+
+This is **universal design**, not just assistive technology. We are transforming how $1$ billion people experience the web. One extension, any website, total accessibility.

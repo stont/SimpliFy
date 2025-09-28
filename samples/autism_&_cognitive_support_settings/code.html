@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Autism &amp; Cognitive Support</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13a4ec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101c22",
+          },
+          fontFamily: {
+            "display": ["Public Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="relative flex flex-col h-screen">
+<header class="sticky top-0 z-10 flex items-center justify-between px-4 py-3 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<button class="p-2 -ml-2">
+<span class="material-symbols-outlined text-slate-800 dark:text-slate-200">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-bold text-center text-slate-900 dark:text-slate-50">Autism &amp; Cognitive Support</h1>
+<div class="w-8"></div>
+</header>
+<main class="flex-1 overflow-y-auto">
+<div class="p-4 space-y-8">
+<div>
+<h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Text Simplification</h2>
+<div class="p-4 space-y-4 rounded-lg bg-white dark:bg-slate-800/50">
+<div class="flex items-center justify-between">
+<label class="font-medium text-slate-800 dark:text-slate-200" for="simplification-level">Simplification Level</label>
+<span class="font-medium text-primary">Medium</span>
+</div>
+<div class="relative w-full">
+<input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-primary/20 accent-primary" id="simplification-level" max="5" min="1" type="range" value="3"/>
+</div>
+</div>
+</div>
+<div>
+<h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Visual Adjustments</h2>
+<div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">Toggle Animations</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Reduce motion and animations</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+<div>
+<h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Audio Adjustments</h2>
+<div class="p-4 space-y-6 rounded-lg bg-white dark:bg-slate-800/50">
+<div>
+<div class="flex items-center justify-between">
+<label class="font-medium text-slate-800 dark:text-slate-200" for="read-aloud-speed">Read-Aloud Speed</label>
+<span class="font-medium text-primary">1.0x</span>
+</div>
+<div class="relative w-full mt-4">
+<input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-primary/20 accent-primary" id="read-aloud-speed" max="2" min="0.5" step="0.1" type="range" value="1"/>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between">
+<label class="font-medium text-slate-800 dark:text-slate-200" for="volume">Volume</label>
+<span class="font-medium text-primary">100%</span>
+</div>
+<div class="relative w-full mt-4">
+<input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-primary/20 accent-primary" id="volume" max="100" min="0" type="range" value="100"/>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Content Filtering</h2>
+<div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
+<button class="flex items-center justify-between w-full text-left">
+<div>
+<p class="font-medium text-slate-800 dark:text-slate-200">Filter Adult/Profane Words</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Filter out adult or profane words</p>
+</div>
+<div class="flex items-center">
+<span class="mr-2 font-medium text-primary">On (default)</span>
+<span class="material-symbols-outlined text-slate-500 dark:text-slate-400">arrow_forward_ios</span>
+</div>
+</button>
+</div>
+</div>
+</div>
+</main>
+<footer class="sticky bottom-0 z-10 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800">
+<nav class="flex justify-around px-4 pt-2 pb-4">
+<a class="flex flex-col items-center justify-center w-full gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="text-xs font-medium">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

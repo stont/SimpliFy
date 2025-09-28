@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Visual Accessibility Settings</title>
+  <link href="../tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <div class="max-w-lg mx-auto p-6">
+    <h1 class="text-xl font-bold mb-4">Visual Accessibility Settings</h1>
+    <form id="visualSettingsForm" class="space-y-4">
+      <div>
+        <label class="block font-semibold mb-1">Summarize Long Texts:</label>
+        <select name="summarizeLongTexts" class="w-full p-2 border rounded">
+          <option value="off">Off</option>
+          <option value="on">On</option>
+          <option value="ask">Always Ask via Voice</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Summarize Terms & Conditions:</label>
+        <select name="summarizeTerms" class="w-full p-2 border rounded">
+          <option value="off">Off</option>
+          <option value="on">On</option>
+          <option value="ask">Always Ask via Voice</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Voice Mode:</label>
+        <select name="voiceMode" class="w-full p-2 border rounded">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Voice Speed:</label>
+        <select name="voiceSpeed" class="w-full p-2 border rounded">
+          <option value="slow">Slow</option>
+          <option value="fast">Fast</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Voice Tone:</label>
+        <select name="voiceTone" class="w-full p-2 border rounded">
+          <option value="african">African</option>
+          <option value="default">Default</option>
+        </select>
+      </div>
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Save Settings</button>
+    </form>
+  </div>
+  <script src="settings.js"></script>
+</body>
+</html>

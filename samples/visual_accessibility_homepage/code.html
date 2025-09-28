@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Public+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13a4ec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101c22",
+            "surface-light": "#ffffff",
+          },
+          fontFamily: {
+            "display": ["Public Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    details > summary {
+      list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light font-display">
+<div class="relative flex min-h-screen w-full flex-col justify-between overflow-x-hidden">
+<div class="flex-grow">
+<header class="sticky top-0 z-10 bg-background-light/80 backdrop-blur-sm">
+<div class="flex items-center p-4">
+<div class="w-12"></div>
+<h1 class="flex-1 text-center text-xl font-bold text-black">Visual Accessibility</h1>
+<div class="flex w-12 items-center justify-end">
+<button class="relative flex h-12 w-12 items-center justify-center rounded-full text-black hover:bg-primary/10">
+<span class="material-symbols-outlined text-3xl">notifications</span>
+<span class="absolute top-2.5 right-2.5 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+<span class="h-2 w-2 rounded-full bg-red-500"></span>
+</span>
+</button>
+</div>
+</div>
+</header>
+<main class="p-4">
+<section class="mb-8">
+<h2 class="text-2xl font-bold text-black mb-4">Quick Actions</h2>
+<div class="grid grid-cols-1 gap-4">
+<button class="flex w-full items-center justify-center rounded-xl bg-primary px-5 py-6 text-xl font-bold text-white shadow-lg transition-transform active:scale-95">
+<span class="material-symbols-outlined mr-3 text-3xl">mic</span>
+<span>Upload Audio</span>
+</button>
+</div>
+</section>
+<section>
+<h2 class="text-2xl font-bold text-black mb-4">Accessibility Statistics</h2>
+<div class="space-y-4">
+<details class="group rounded-lg bg-surface-light shadow-sm overflow-hidden border border-gray-200">
+<summary aria-label="Toggle Usage Patterns statistics" class="flex cursor-pointer items-center justify-between p-4">
+<h3 class="text-lg font-bold text-black">Usage Patterns</h3>
+<span class="material-symbols-outlined text-black transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="p-4 pt-0">
+<div class="space-y-2">
+<p class="text-black/80">Weekly screen reader usage: <strong>12 hours</strong></p>
+<p class="text-black/80">Most used feature: <strong>Text-to-Speech</strong></p>
+<p class="text-black/80">Average session duration: <strong>25 minutes</strong></p>
+</div>
+</div>
+</details>
+<details class="group rounded-lg bg-surface-light shadow-sm overflow-hidden border border-gray-200">
+<summary aria-label="Toggle Content Consumption statistics" class="flex cursor-pointer items-center justify-between p-4">
+<h3 class="text-lg font-bold text-black">Content Consumption</h3>
+<span class="material-symbols-outlined text-black transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="p-4 pt-0">
+<div class="space-y-2">
+<p class="text-black/80">Articles read this month: <strong>45</strong></p>
+<p class="text-black/80">Preferred content type: <strong>News &amp; Current Events</strong></p>
+<p class="text-black/80">Audio summaries created: <strong>15</strong></p>
+</div>
+</div>
+</details>
+<details class="group rounded-lg bg-surface-light shadow-sm overflow-hidden border border-gray-200">
+<summary aria-label="Toggle Navigation Efficiency statistics" class="flex cursor-pointer items-center justify-between p-4">
+<h3 class="text-lg font-bold text-black">Navigation Efficiency</h3>
+<span class="material-symbols-outlined text-black transition-transform group-open:rotate-180">expand_more</span>
+</summary>
+<div class="p-4 pt-0">
+<div class="space-y-2">
+<p class="text-black/80">Time to find information: <strong>-20% improvement</strong></p>
+<p class="text-black/80">Voice command usage: <strong>Frequent</strong></p>
+<p class="text-black/80">Most frequent command: <strong>"Read main content"</strong></p>
+</div>
+</div>
+</details>
+</div>
+</section>
+</main>
+</div>
+<footer class="sticky bottom-0 border-t border-primary/20 bg-background-light/80 backdrop-blur-sm pb-safe">
+<nav class="flex justify-around p-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 rounded-lg py-2 text-primary" href="#">
+<span class="material-symbols-outlined text-3xl">home</span>
+<span class="text-xs font-medium">Home</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 rounded-lg py-2 text-black/60" href="#">
+<span class="material-symbols-outlined text-3xl">settings</span>
+<span class="text-xs font-medium">Settings</span>
+</a>
+</nav>
+</footer>
+</div>
+
+</body></html>

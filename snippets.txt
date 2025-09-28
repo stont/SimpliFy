@@ -1,0 +1,112 @@
+# SimpliFy Chrome Extension: Detailed Configuration & API Documentation
+
+## Manifest Configuration (manifest.json)
+- "manifest_version": 3
+- "name": "SimpliFy"
+- "description": "Your accessibility companion. Supercharging everyday accessibility."
+- "version": "1.0.0"
+- "permissions":
+  - "storage": Save user settings, bookmarks, and extension state
+  - "sidePanel": Enable side panel UI
+  - "tabs": Interact with browser tabs (e.g., extract content, update UI)
+  - "scripting": Inject scripts for accessibility features (e.g., simplify text, disable animations)
+- "host_permissions":
+  - "<all_urls>": Allow extension to run on any website
+- "background":
+  - "service_worker": "background.js" (handles extension events, tab changes, side panel behavior)
+- "side_panel":
+  - "default_path": "sidepanel.html" (main UI for accessibility features)
+- "action":
+  - "default_title": "SimpliFy"
+  - "default_icon": { "16": "icons/icon16.png", ... }
+- "icons":
+  - Icon files for branding (16, 32, 48, 128 px)
+
+## Folder Structure
+- /extension
+  - /onboard: Onboarding UI (index.html, onboard.js)
+  - /visual: Visual accessibility home/settings (index.html, settings.html, settings.js)
+  - /auditory: Auditory accessibility home/settings (index.html, settings.html, settings.js)
+  - /autism: Autism/cognitive support home/settings (index.html, settings.html, settings.js)
+  - /icons: Icon files
+  - sidepanel.html: Main side panel UI
+  - sidepanel.js: Main side panel logic
+  - background.js: Background event handler
+  - manifest.json: Extension manifest
+  - tailwind.css: Compiled Tailwind CSS
+
+## Build & Distribution
+- Use Rollup (rollup.config.mjs) to bundle JS and copy assets to /dist
+- Run `npm install` then `npm run build` to generate /dist
+- Load /dist as an unpacked extension in Chrome
+
+## Key Chrome Extension APIs & Usage
+
+### Side Panel
+- `chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })`
+  - Auto-opens side panel when extension icon is clicked
+- Manifest property `side_panel.default_path` defines the HTML file for the side panel
+
+### Storage
+- `chrome.storage.local.set/get/remove`: Store persistent user settings, bookmarks
+- `chrome.storage.session.set/get/remove`: Store temporary data (e.g., extracted page content)
+
+### Scripting
+- `chrome.scripting.executeScript({ target: {tabId}, files: [...] })`: Inject JS into web pages for accessibility features
+- Example: Extract readable content, disable animations, filter words
+
+### Tabs
+- `chrome.tabs.onActivated.addListener`: Detect when user switches tabs
+- `chrome.tabs.onUpdated.addListener`: Detect when tab content changes
+- Use these to update accessibility features in real time
+
+### Messaging
+- `chrome.runtime.sendMessage` / `chrome.runtime.onMessage.addListener`: Communicate between background, side panel, and content scripts
+- Example: Send extracted content from content script to side panel
+
+### Content Scripts
+- Used for modifying web page content directly
+- Example: Simplify text, highlight emotional tone, disable flashing ads
+- Define in manifest under `content_scripts` if needed
+
+### Accessibility APIs
+- `window.speechSynthesis`: Read text aloud for blind/autistic users
+- Use libraries like Mozilla Readability for extracting readable content
+- Use DOMPurify for safe HTML rendering
+
+## Example Features & Implementation
+
+### Visual Accessibility
+- Read out site text (TTS)
+- Summarize long texts and terms
+- Voice mode, speed, tone settings
+- Settings saved in localStorage
+
+### Auditory Accessibility
+- Transcribe media files (offline)
+- Filter adult/profane words
+- Live audio transcribe
+- Settings saved in localStorage
+
+### Autism & Cognitive Support
+- Simplify posts/comments (plain language)
+- Disable animations
+- Read comments aloud
+- Emotional tone guidance (label sarcasm, suggest reactions)
+- Settings saved in localStorage
+
+### General Features
+- Onboarding page for condition/language selection
+- Saved/bookmarked content
+- Upload audio files to transcribe
+- Writer for blind users
+- Gmail reading page
+
+## Best Practices
+- All processing is local/offline (no backend)
+- Use browser storage for all user data
+- Use Tailwind CSS for accessible, modern UI
+- Use modular folder structure for maintainability
+
+---
+This documentation covers all configuration, APIs, and implementation details needed for SimpliFy, based on Chrome extension samples. Add more details or code snippets as needed for each feature.

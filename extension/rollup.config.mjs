@@ -1,0 +1,35 @@
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import copy from 'rollup-plugin-copy';
+
+export default [
+  {
+    input: 'background.js',
+    output: {
+      dir: 'dist',
+      format: 'iife',
+    },
+    plugins: [
+      commonjs(),
+      nodeResolve(),
+      copy({
+        targets: [
+          {
+            src: [
+              'manifest.json',
+              'background.js',
+              'onboard',
+              'shared',
+              'tailwind.css',
+              'icons',
+              'visual',
+              'auditory',
+              'autism'
+            ],
+            dest: 'dist'
+          }
+        ]
+      })
+    ]
+  }
+];
