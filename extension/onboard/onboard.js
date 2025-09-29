@@ -9,4 +9,28 @@ document.querySelectorAll('.access-btn').forEach(btn => {
   });
 });
 
-// Language selection is handled by shared.js
+// Language selection logic
+function detectBrowserLanguage() {
+  const browserLang = navigator.language || navigator.userLanguage || 'en';
+  // Map browserLang to supported language code
+  const langCode = browserLang.split('-')[0];
+  const select = document.getElementById('language');
+  if (select && select.querySelector(`option[value='${langCode}']`)) {
+    select.value = langCode;
+  } else {
+    select.value = 'en'; // fallback
+  }
+  // Save detected language
+  localStorage.setItem('accessibilityLanguage', select.value);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait for shared.js to populate options
+  setTimeout(detectBrowserLanguage, 100);
+  const select = document.getElementById('language');
+  if (select) {
+    select.addEventListener('change', function() {
+      localStorage.setItem('accessibilityLanguage', this.value);
+    });
+  }
+});
