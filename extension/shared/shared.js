@@ -38,6 +38,16 @@ function populateLanguageSelect(selectId = 'language') {
   });
 }
 
+function setupBackButton(btnId = 'backBtn') {
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    btn.addEventListener('click', () => {
+      window.location.href = '../onboard/index.html';
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   populateLanguageSelect();
+  setupBackButton();
 });
