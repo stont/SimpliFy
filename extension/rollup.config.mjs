@@ -20,11 +20,13 @@ export default [
               'background.js',
               'onboard',
               'shared',
-              'tailwind.css',
               'icons',
               'visual',
               'auditory',
-              'autism'
+              'autism',
+              'node_modules/@material/web/all.js',
+              'node_modules/@material/web/all.css',
+              'node_modules/@material/web/*',
             ],
             dest: 'dist'
           }

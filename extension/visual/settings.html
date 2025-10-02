@@ -3,51 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title>Visual Accessibility Settings</title>
-  <link href="../tailwind.css" rel="stylesheet">
+  <script type="module" src="/node_modules/@material/web/all.js"></script>
+  <link rel="stylesheet" href="/node_modules/@material/web/all.css">
+  <style>
+    body { background: #f6f7f8; color: #101c22; margin: 0; font-family: system-ui, Arial, sans-serif; }
+    .main { max-width: 480px; margin: 0 auto; padding: 24px; }
+    .material-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 8px 0 rgba(16,28,34,0.08); padding: 24px; margin-bottom: 24px; }
+    form > * { margin-bottom: 20px; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <div class="max-w-lg mx-auto p-6">
-    <h1 class="text-xl font-bold mb-4">Visual Accessibility Settings</h1>
-    <form id="visualSettingsForm" class="space-y-4">
-      <div>
-        <label class="block font-semibold mb-1">Summarize Long Texts:</label>
-        <select name="summarizeLongTexts" class="w-full p-2 border rounded">
-          <option value="off">Off</option>
-          <option value="on">On</option>
-          <option value="ask">Always Ask via Voice</option>
-        </select>
-      </div>
-      <div>
-        <label class="block font-semibold mb-1">Summarize Terms & Conditions:</label>
-        <select name="summarizeTerms" class="w-full p-2 border rounded">
-          <option value="off">Off</option>
-          <option value="on">On</option>
-          <option value="ask">Always Ask via Voice</option>
-        </select>
-      </div>
-      <div>
-        <label class="block font-semibold mb-1">Voice Mode:</label>
-        <select name="voiceMode" class="w-full p-2 border rounded">
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </div>
-      <div>
-        <label class="block font-semibold mb-1">Voice Speed:</label>
-        <select name="voiceSpeed" class="w-full p-2 border rounded">
-          <option value="slow">Slow</option>
-          <option value="fast">Fast</option>
-        </select>
-      </div>
-      <div>
-        <label class="block font-semibold mb-1">Voice Tone:</label>
-        <select name="voiceTone" class="w-full p-2 border rounded">
-          <option value="african">African</option>
-          <option value="default">Default</option>
-        </select>
-      </div>
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Save Settings</button>
-    </form>
+<body>
+  <div class="main">
+    <div class="material-card">
+      <h1 style="font-size:1.25rem;font-weight:bold;margin-bottom:16px;">Visual Accessibility Settings</h1>
+      <form id="visualSettingsForm">
+        <md-outlined-select label="Summarize Long Texts" name="summarizeLongTexts">
+          <md-select-option value="off">Off</md-select-option>
+          <md-select-option value="on">On</md-select-option>
+          <md-select-option value="ask">Always Ask via Voice</md-select-option>
+        </md-outlined-select>
+        <md-outlined-select label="Summarize Terms & Conditions" name="summarizeTerms">
+          <md-select-option value="off">Off</md-select-option>
+          <md-select-option value="on">On</md-select-option>
+          <md-select-option value="ask">Always Ask via Voice</md-select-option>
+        </md-outlined-select>
+        <md-outlined-select label="Voice Mode" name="voiceMode">
+          <md-select-option value="male">Male</md-select-option>
+          <md-select-option value="female">Female</md-select-option>
+        </md-outlined-select>
+        <md-outlined-select label="Voice Speed" name="voiceSpeed">
+          <md-select-option value="slow">Slow</md-select-option>
+          <md-select-option value="fast">Fast</md-select-option>
+        </md-outlined-select>
+        <md-outlined-select label="Voice Tone" name="voiceTone">
+          <md-select-option value="african">African</md-select-option>
+          <md-select-option value="default">Default</md-select-option>
+        </md-outlined-select>
+        <md-filled-button type="submit">Save Settings</md-filled-button>
+      </form>
+    </div>
   </div>
   <script src="settings.js"></script>
 </body>

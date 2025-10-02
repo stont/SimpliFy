@@ -4,55 +4,47 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SimpliFy | Onboarding</title>
-  <link href="../tailwind.css" rel="stylesheet" />
-  <link href="onboard.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script type="module" src="/node_modules/@material/web/all.js"></script>
+  <link rel="stylesheet" href="/node_modules/@material/web/all.css">
+  <link rel="stylesheet" href="onboard.css">
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display">
-  <div class="flex flex-col min-h-screen max-w-xs mx-auto shadow-lg rounded-xl overflow-hidden">
-    <header class="flex items-center justify-center p-4 bg-background-light dark:bg-background-dark border-b border-border-light dark:border-border-dark">
-      <h1 class="text-lg font-bold text-center text-content-light dark:text-content-dark">Personalize Your Accessibility Settings</h1>
+<body>
+  <div class="main">
+    <header>
+      <h1 style="font-size:1.1rem;font-weight:bold;text-align:center;">Personalize Your Accessibility Settings</h1>
     </header>
-    <main class="flex-grow px-4 py-6 space-y-6">
-      <div class="grid gap-4">
-        <button class="access-btn flex flex-row items-center" data-type="visual">
-          <img alt="Visual Accessibility" class="access-img" src="../icons/oju.png" />
-          <div class="ml-4 flex-1 text-left">
-            <h3 class="font-bold text-content-light dark:text-content-dark">Visual Accessibility</h3>
-            <p class="text-xs text-content-secondary-light dark:text-content-secondary-dark">Screen readers & high contrast</p>
-          </div>
-        </button>
-        <button class="access-btn flex flex-row items-center" data-type="auditory">
-          <img alt="Auditory Accessibility" class="access-img" src="../icons/eti.png" />
-          <div class="ml-4 flex-1 text-left">
-            <h3 class="font-bold text-content-light dark:text-content-dark">Auditory Accessibility</h3>
-            <p class="text-xs text-content-secondary-light dark:text-content-secondary-dark">Captions & sound notifications</p>
-          </div>
-        </button>
-        <button class="access-btn flex flex-row items-center" data-type="autism">
-          <img alt="Autism & Cognitive Support" class="access-img" src="../icons/opolo.png" />
-          <div class="ml-4 flex-1 text-left">
-            <h3 class="font-bold text-content-light dark:text-content-dark">Autism & Cognitive Support</h3>
-            <p class="text-xs text-content-secondary-light dark:text-content-secondary-dark">Simplified layouts & predictable interactions</p>
-          </div>
-        </button>
-      </div>
-      <div class="mt-6">
-        <h3 class="text-base font-bold text-content-light dark:text-content-dark">General Setting</h3>
-        <div class="mt-2">
-          <label class="block text-xs font-medium text-content-secondary-light dark:text-content-secondary-dark" for="language">Choose Language</label>
-          <select class="block w-full px-2 py-2 mt-1 bg-white border rounded-md shadow-sm border-border-light dark:border-border-dark dark:bg-background-dark dark:text-content-dark focus:outline-none focus:ring-primary focus:border-primary text-xs" id="language" name="language">
-            <!-- Languages will be populated by shared.js -->
-          </select>
+    <main>
+      <button class="access-btn" data-type="visual">
+        <img alt="Visual Accessibility" class="access-img" src="../icons/oju.png" />
+        <div style="flex:1;text-align:left;">
+          <h3 style="font-weight:bold;">Visual Accessibility</h3>
+          <p style="font-size:0.9rem;">Screen readers & high contrast</p>
         </div>
+      </button>
+      <button class="access-btn" data-type="auditory">
+        <img alt="Auditory Accessibility" class="access-img" src="../icons/eti.png" />
+        <div style="flex:1;text-align:left;">
+          <h3 style="font-weight:bold;">Auditory Accessibility</h3>
+          <p style="font-size:0.9rem;">Captions & sound notifications</p>
+        </div>
+      </button>
+      <button class="access-btn" data-type="autism">
+        <img alt="Autism & Cognitive Support" class="access-img" src="../icons/opolo.png" />
+        <div style="flex:1;text-align:left;">
+          <h3 style="font-weight:bold;">Autism & Cognitive Support</h3>
+          <p style="font-size:0.9rem;">Simplified layouts & predictable interactions</p>
+        </div>
+      </button>
+      <div style="margin-top:24px;">
+        <h3 style="font-weight:bold;">General Setting</h3>
+        <md-outlined-select label="Choose Language" id="language" name="language"></md-outlined-select>
       </div>
     </main>
-    <footer class="p-3 bg-background-light dark:bg-background-dark border-t border-border-light dark:border-border-dark">
-      <button class="w-full flex items-center justify-center gap-2 px-4 py-2 text-base font-bold text-white rounded-lg bg-primary hover:bg-primary/90 transition-colors">
-        <span class="material-symbols-outlined">volume_up</span>
+    <footer>
+      <md-filled-button style="width:100%;display:flex;align-items:center;gap:8px;">
+        <md-icon>volume_up</md-icon>
         Accessibility
-      </button>
+      </md-filled-button>
     </footer>
   </div>
   <script src="../shared/shared.js"></script>
