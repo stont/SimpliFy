@@ -1,0 +1,12 @@
+{
+  "name": "gemini-nanohack-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd extension && npm run build",
+    "watch": "cd extension && npm run dev"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
+  }
+}

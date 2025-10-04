@@ -23,10 +23,7 @@ export default [
               'icons',
               'visual',
               'auditory',
-              'autism',
-              'node_modules/@material/web/all.js',
-              'node_modules/@material/web/all.css',
-              'node_modules/@material/web/*',
+              'autism'
             ],
             dest: 'dist'
           }

@@ -1,4 +1,11 @@
-// onboard.js - onboarding logic for SimpliFy
+// onboard.js - onboarding logic for SimpliFy -
+
+import '../shared/material.js';
+import { styles as typescaleStyles } from '../shared/material-type.js';
+
+if (window.document && window.document.adoptedStyleSheets) {
+  window.document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+}
 
 document.querySelectorAll('.access-btn').forEach(btn => {
   btn.addEventListener('click', function() {

@@ -1,3 +1,9 @@
+import '../shared/material.js';
+import { styles as typescaleStyles } from '../shared/material-type.js';
+if (window.document && window.document.adoptedStyleSheets) {
+  window.document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+}
+
 // tab.js - Material Web tab and toggle logic for auditory/index.html
 
 document.addEventListener('DOMContentLoaded', () => {

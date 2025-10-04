@@ -49,6 +49,6 @@ function setupBackButton(btnId = 'backBtn') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  populateLanguageSelect();
+  //populateLanguageSelect();
   setupBackButton();
 });
