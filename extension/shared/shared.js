@@ -43,6 +43,8 @@ function setupBackButton(btnId = 'backBtn') {
   const btn = document.getElementById(btnId);
   if (btn) {
     btn.addEventListener('click', () => {
+      // Clear navigation storage before navigating back
+      localStorage.removeItem('accessibilityCondition');
       window.location.href = '../onboard/index.html';
     });
   }
