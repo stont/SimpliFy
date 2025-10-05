@@ -1,169 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Auditory Accessibility Home</title>
-  <!-- Material Web Components -->
-  <!-- <script type="module" src="/node_modules/@material/web/all.js"></script>
-  <link rel="stylesheet" href="/node_modules/@material/web/all.css"> -->
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, Arial, sans-serif;
-      background: var(--md-sys-color-background, #f6f7f8);
-      color: var(--md-sys-color-on-background, #101c22);
-    }
-    .main-content {
-      padding: 16px;
-      padding-bottom: 96px; /* for tab bar */
-      min-height: 100vh;
-      box-sizing: border-box;
-    }
-    .material-card {
-      margin-bottom: 24px;
-      border-radius: 16px;
-      box-shadow: var(--md-elevation-level2, 0 2px 8px 0 rgba(16,28,34,0.08));
-      background: #fff;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .material-card img {
-      width: 100%;
-      max-height: 128px;
-      object-fit: contain;
-      margin-bottom: 16px;
-    }
-    .material-tabs-bar {
-      position: fixed;
-      left: 0; right: 0; bottom: 0;
-      z-index: 100;
-      background: #fff;
-      box-shadow: 0 -2px 8px 0 rgba(16,28,34,0.08);
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .material-tabs-bar md-tabs {
-      width: 100%;
-    }
-    .material-card .row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .material-card .row-between {
-      justify-content: space-between;
-    }
-    .material-card .col {
-      display: flex;
-      flex-direction: column;
-    }
-    .hidden { display: none; }
-  </style>
+  <link rel="stylesheet" href="auditory.css">
 </head>
+
 <body>
-<div class="main-content">
-  <div id="tab-home">
-    <h1 style="text-align:center;font-size:1.5rem;font-weight:bold;margin-bottom:8px;">Home</h1>
-    <h2 style="font-size:2rem;font-weight:bold;margin-bottom:16px;">Auditory Accessibility</h2>
-    <div class="material-card" style="align-items:center;">
-      <img src="../icons/mic.png" alt="Microphone" />
-      <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:4px;">Live Audio Transcribe</h3>
-      <p style="margin-bottom:16px;text-align:center;">Real-time transcription of spoken content into text.</p>
-      <md-filled-button id="startTranscribeBtn">Start Transcribing</md-filled-button>
+  <div class="main-content">
+    <button id="backBtn" class="main-btn"
+      style="position:absolute;left:16px;top:16px;z-index:2;min-width:40px;padding:8px 12px;font-size:1.1rem;display:flex;align-items:center;gap:6px;">
+      <span aria-hidden="true">←</span> Back
+    </button>
+    <div style="height:40px;"></div>
+    <div id="tab-home" class="tab-content active">
+      <h3 style="font-size:2rem;font-weight:bold;margin-bottom:16px;">Auditory Accessibility</h3>
+
+      <div class="material-card" style="align-items:center;">
+        <img src="../icons/mic.png" alt="Microphone" />
+        <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:4px;">Live Audio Transcribe</h3>
+        <p style="margin-bottom:16px;text-align:center;">Real-time transcription of spoken content into text.</p>
+        <button class="main-btn" id="startTranscribeBtn" style="margin-bottom:16px;">Start Transcribing</button>
+      </div>
+      <div class="material-card">
+        <div class="row">
+          <span style="font-size:2rem;">🎬</span>
+          <div class="col">
+            <h3 style="font-size:1.25rem;font-weight:bold;">Transcribe Media Files</h3>
+            <p>Get text transcriptions for your video and audio files.</p>
+          </div>
+        </div>
+        <button class="main-btn" id="selectFileBtn" style="margin-top:16px;align-self:center;margin-bottom:16px;">Select File</button>
+      </div>
     </div>
-    <div class="material-card">
-      <div class="row">
-        <span style="font-size:2rem;">🎬</span>
-        <div class="col">
-          <h3 style="font-size:1.25rem;font-weight:bold;">Transcribe Media Files</h3>
-          <p>Get text transcriptions for your video and audio files.</p>
+    <div id="tab-scribe" class="tab-content">
+      <h3 style="font-size:2rem;font-weight:bold;margin-bottom:16px;">Scribe</h3>
+      <div class="scribe-container"
+        style="height:320px;max-height:40vh;overflow-y:auto;padding:16px;background:#f9fafb;border-radius:12px;box-shadow:0 1px 4px rgba(16,28,34,0.06);font-size:1.1rem;line-height:1.6;">
+        <div id="scribeText">This is where your transcribed text will appear. The area is scrollable and styled for
+          readability.</div>
+      </div>
+    </div>
+    <div id="tab-settings" class="tab-content">
+      <div class="row row-between" style="margin-bottom:16px;">
+        <h2 style="font-size:2rem;font-weight:bold;">Auditory Settings</h2>
+        <span class="icon settings-icon">⚙️</span>
+      </div>
+      <div class="material-card">
+        <h2 style="font-size:1rem;font-weight:bold;margin-bottom:16px;">Transcription & Filtering</h2>
+        <div class="row row-between" style="margin-bottom:8px;">
+          <div class="col">
+            <span style="font-weight:600;">Transcribe Media Files</span>
+            <span style="font-size:0.9rem;color:#64748b;">On-demand</span>
+          </div>
+          <div class="segmented-btn-group" data-setting="transcribeMedia">
+            <button class="segmented-btn" data-value="off">Off</button>
+            <button class="segmented-btn" data-value="ondemand">On-demand</button>
+            <button class="segmented-btn" data-value="on">On</button>
+          </div>
+        </div>
+        <div class="row row-between" style="margin-bottom:8px;">
+          <div class="col">
+            <span style="font-weight:600;">Filter out Adult/profane words</span>
+            <span style="font-size:0.9rem;color:#64748b;">On</span>
+          </div>
+          <div class="segmented-btn-group" data-setting="filterWords">
+            <button class="segmented-btn" data-value="off">Off</button>
+            <button class="segmented-btn" data-value="ondemand">On-demand</button>
+            <button class="segmented-btn" data-value="on">On</button>
+          </div>
+        </div>
+        <div class="row row-between">
+          <div class="col">
+            <span style="font-weight:600;">Live Audio Transcribe</span>
+            <span style="font-size:0.9rem;color:#64748b;">On</span>
+          </div>
+          <div class="segmented-btn-group" data-setting="liveTranscribe">
+            <button class="segmented-btn" data-value="off">Off</button>
+            <button class="segmented-btn" data-value="ondemand">On-demand</button>
+            <button class="segmented-btn" data-value="on">On</button>
+          </div>
         </div>
       </div>
-      <md-filled-button style="margin-top:16px;align-self:center;">Select File</md-filled-button>
+      <div class="material-card row row-between" style="align-items:center;">
+        <div class="col" style="flex:1;">
+          <span style="font-weight:600;">Audio Alerts</span>
+          <span style="font-size:0.9rem;color:#64748b;">Enable or disable audio alerts for notifications.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="audioSwitch" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="material-card row" style="background:#e3f2fd;align-items:flex-start;">
+        <span class="icon info-icon" style="color:#1976d2;margin-right:12px;">ℹ️</span>
+        <div>
+          <h4 style="font-weight:bold;color:#1976d2;">Important Information</h4>
+          <p style="color:#1976d2;">For the best experience, please ensure your device's microphone is enabled and has
+            the necessary permissions.</p>
+        </div>
+      </div>
+      <div class="material-card row" style="background:#e3f2fd;align-items:flex-start;">
+        <span class="icon info-icon" style="color:#1976d2;margin-right:12px;">ℹ️</span>
+        <div>
+          <h4 style="font-weight:bold;color:#1976d2;">How it works</h4>
+          <p style="color:#1976d2;">When "On-demand" is selected, a transcription button will appear on media players.
+            Tap it to start transcribing. "On" will automatically transcribe all content.</p>
+        </div>
+      </div>
     </div>
   </div>
-  <div id="tab-settings" class="hidden">
-    <div class="row row-between" style="margin-bottom:16px;">
-      <h2 style="font-size:2rem;font-weight:bold;">Auditory Settings</h2>
-      <md-icon>settings</md-icon>
-    </div>
-    <div class="material-card">
-      <h2 style="font-size:1rem;font-weight:bold;margin-bottom:16px;">Transcription & Filtering</h2>
-      <div class="row row-between" style="margin-bottom:8px;">
-        <div class="col">
-          <span style="font-weight:600;">Transcribe Media Files</span>
-          <span style="font-size:0.9rem;color:#64748b;">On-demand</span>
-        </div>
-        <md-segmented-button-set>
-          <md-outlined-segmented-button data-setting="transcribeMedia" data-value="off">Off</md-outlined-segmented-button>
-          <md-outlined-segmented-button data-setting="transcribeMedia" data-value="ondemand">On-demand</md-outlined-segmented-button>
-          <md-outlined-segmented-button data-setting="transcribeMedia" data-value="on">On</md-outlined-segmented-button>
-        </md-segmented-button-set>
-      </div>
-      <div class="row row-between" style="margin-bottom:8px;">
-        <div class="col">
-          <span style="font-weight:600;">Filter out Adult/profane words</span>
-          <span style="font-size:0.9rem;color:#64748b;">On</span>
-        </div>
-        <md-segmented-button-set>
-          <md-outlined-segmented-button data-setting="filterWords" data-value="off">Off</md-outlined-segmented-button>
-          <md-outlined-segmented-button data-setting="filterWords" data-value="ondemand">On-demand</md-outlined-segmented-button>
-          <md-outlined-segmented-button data-setting="filterWords" data-value="on">On</md-outlined-segmented-button>
-        </md-segmented-button-set>
-      </div>
-      <div class="row row-between">
-        <div class="col">
-          <span style="font-weight:600;">Live Audio Transcribe</span>
-          <span style="font-size:0.9rem;color:#64748b;">On</span>
-        </div>
-        <md-segmented-button-set>
-          <md-outlined-segmented-button data-setting="liveTranscribe" data-value="off">Off</md-outlined-segmented-button>
-          <md-outlined-segmented-button data-setting="liveTranscribe" data-value="ondemand">On-demand</md-outlined-segmented-button>
-          <md-outlined-segmented-button data-setting="liveTranscribe" data-value="on">On</md-outlined-segmented-button>
-        </md-segmented-button-set>
-      </div>
-    </div>
-    <div class="material-card row row-between" style="align-items:center;">
-      <md-icon>volume_up</md-icon>
-      <div class="col" style="flex:1;">
-        <span style="font-weight:600;">Volume Control</span>
-        <span style="font-size:0.9rem;color:#64748b;">Adjust the volume of transcribed audio.</span>
-      </div>
-      <md-slider min="0" max="100" value="75" style="width:120px;"></md-slider>
-    </div>
-    <div class="material-card row row-between" style="align-items:center;">
-      <div class="col" style="flex:1;">
-        <span style="font-weight:600;">Audio Alerts</span>
-        <span style="font-size:0.9rem;color:#64748b;">Enable or disable audio alerts for notifications.</span>
-      </div>
-      <md-switch selected></md-switch>
-    </div>
-    <div class="material-card row" style="background:#e3f2fd;align-items:flex-start;">
-      <md-icon style="color:#1976d2;margin-right:12px;">info</md-icon>
-      <div>
-        <h4 style="font-weight:bold;color:#1976d2;">Important Information</h4>
-        <p style="color:#1976d2;">For the best experience, please ensure your device's microphone is enabled and has the necessary permissions.</p>
-      </div>
-    </div>
-    <div class="material-card row" style="background:#e3f2fd;align-items:flex-start;">
-      <md-icon style="color:#1976d2;margin-right:12px;">info</md-icon>
-      <div>
-        <h4 style="font-weight:bold;color:#1976d2;">How it works</h4>
-        <p style="color:#1976d2;">When "On-demand" is selected, a transcription button will appear on media players. Tap it to start transcribing. "On" will automatically transcribe all content.</p>
-      </div>
+  <div class="material-tabs-bar">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-home"><span class="icon">🏠</span>Home</button>
+      <button class="tab-btn" data-tab="tab-scribe"><span class="icon">📝</span>Scribe</button>
+      <button class="tab-btn" data-tab="tab-settings"><span class="icon">⚙️</span>Settings</button>
     </div>
   </div>
-</div>
-<div class="material-tabs-bar">
-  <md-tabs id="auditory-tabs" activeTab="0">
-    <md-primary-tab id="tab-btn-home"><md-icon>home</md-icon>Home</md-primary-tab>
-    <md-primary-tab id="tab-btn-settings"><md-icon>settings</md-icon>Settings</md-primary-tab>
-  </md-tabs>
-</div>
-<script type="module" src="tab.js"></script>
+  <script src="auditory.js"></script>
+  <script src="scribe.js"></script>
+  <script src="../shared/shared.js"></script>
 </body>
+
 </html>
