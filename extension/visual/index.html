@@ -1,32 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Visual Accessibility Home</title>
-  <script type="module" src="../material-bundle.dist.js"></script>
-  <link rel="stylesheet" href="../shared/roboto.css">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Stitch Design</title>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+  <link as="style"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Public+Sans%3Awght%40400%3B500%3B700%3B900"
+    onload="this.rel='stylesheet'" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13a4ec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101c22",
+            "surface-light": "#ffffff",
+          },
+          fontFamily: {
+            "display": ["Public Sans"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+  <script src="../tailwind_v405.js"></script>
+  <script src="../visual/visual.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <style>
-    body { background: #f6f7f8; color: #101c22; margin: 0; font-family: system-ui, Arial, sans-serif; }
-    .main { max-width: 480px; margin: 0 auto; padding: 24px; min-height: 100vh; display: flex; flex-direction: column; }
-    .material-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 8px 0 rgba(16,28,34,0.08); padding: 24px; margin-bottom: 24px; }
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
   </style>
 </head>
-<body>
-  <div class="main">
-    <div class="material-card" style="flex:1;">
-      <h1 style="font-size:1.5rem;font-weight:bold;margin-bottom:16px;">Visual Accessibility</h1>
-      <ul style="margin-bottom:16px;">
-        <li>Read Out Site Texts</li>
-        <li>Summarize Long Texts</li>
-        <li>Summarize Terms & Conditions</li>
-        <li>Voice Mode: Male/Female</li>
-        <li>Voice Speed: Slow/Fast</li>
-        <li>Voice Tone: African, etc.</li>
-      </ul>
-      <md-filled-button onclick="window.location.href='settings.html'">Settings</md-filled-button>
+
+<body class="bg-[#f6f7f8] font-display">
+  <div class="relative flex min-h-screen w-full flex-col justify-between overflow-x-hidden">
+    <div class="flex-grow">
+      <header class="sticky top-0 z-10 bg-[#f6f7f8]/80 backdrop-blur-sm">
+        <div class="flex items-center p-4">
+          <div class="w-12"></div>
+          <h1 class="flex-1 text-center text-xl font-bold text-black">Visual Accessibility</h1>
+          <div class="flex w-12 items-center justify-end">
+            <button
+              class="relative flex h-10 w-10 items-center justify-center rounded-full text-black hover:bg-[#13a4ec]/10">
+              <span class="material-symbols-outlined text-3xl">notifications</span>
+              <span
+                class="absolute top-1.5 right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                <span class="h-2 w-2 rounded-full bg-red-500"></span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- <header class="flex items-center p-4">
+        <button class="text-slate-800 dark:text-white">
+          <span class="material-symbols-outlined">arrow_back_ios_new</span>
+        </button>
+        <h1 class="text-lg font-bold text-slate-900 dark:text-white flex-1 text-center">Visual Accessibility</h1>
+        <div class="w-8"></div>
+      </header> -->
+      <!-- Home page content-->
+      <main class="p-4" id="homePageContent">
+        <section class="mb-6">
+          <h2 class="text-lg font-bold text-black mb-3">Quick Actions</h2>
+          <div class="grid grid-cols-1 gap-4">
+            <button
+              class="flex w-full items-center justify-center rounded-lg bg-[#13a4ec] px-5 py-4 text-lg font-bold text-white shadow-lg transition-transform active:scale-95">
+              <span class="material-symbols-outlined mr-3 text-2xl">mic</span>
+              <span>Upload Audio</span>
+            </button>
+          </div>
+        </section>
+        <section>
+          <h2 class="text-lg font-bold text-black mb-3">Accessibility Statistics</h2>
+          <div class="space-y-4">
+            <div class="rounded-xl bg-[#ffffff] shadow-md overflow-hidden border border-gray-200">
+              <div class="flex items-center justify-between p-4">
+                <h3 class="text-base font-bold text-black">Usage Patterns</h3>
+              </div>
+              <div class="p-4 pt-0">
+                <div class="border-t border-gray-200 pt-4">
+                  <div class="flex items-center justify-between mb-4">
+                    <div class="text-sm text-black/80">Weekly screen reader usage</div>
+                    <div class="text-sm font-bold text-black">12 hours</div>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                    <div class="bg-[#13a4ec] h-2.5 rounded-full" style="width: 60%"></div>
+                  </div>
+                  <div class="flex items-center justify-between text-sm text-black/80 mb-2">
+                    <span>Most used feature:</span>
+                    <span class="font-bold text-black">Text-to-Speech</span>
+                  </div>
+                  <div class="flex items-center justify-between text-sm text-black/80">
+                    <span>Average session duration:</span>
+                    <span class="font-bold text-black">25 minutes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-xl bg-[#ffffff] shadow-md overflow-hidden border border-gray-200">
+              <div class="flex items-center justify-between p-4">
+                <h3 class="text-base font-bold text-black">Content Consumption</h3>
+              </div>
+              <div class="p-4 pt-0">
+                <div class="border-t border-gray-200 pt-4">
+                  <div class="flex items-end justify-between text-center">
+                    <div class="flex flex-col items-center">
+                      <div class="text-2xl font-bold text-primary">45</div>
+                      <div class="text-xs text-black/60">Articles Read</div>
+                      <div class="w-8 h-16 bg-[#13a4ec] rounded-t-md mt-2"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                      <div class="text-2xl font-bold text-black">15</div>
+                      <div class="text-xs text-black/60">Summaries</div>
+                      <div class="w-8 h-8 bg-gray-300 rounded-t-md mt-2"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                      <div class="text-2xl font-bold text-black">8</div>
+                      <div class="text-xs text-black/60">Documents</div>
+                      <div class="w-8 h-12 bg-gray-300 rounded-t-md mt-2"></div>
+                    </div>
+                  </div>
+                  <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex items-center justify-between text-sm text-black/80">
+                      <span>Preferred content type:</span>
+                      <span class="font-bold text-black">News &amp; Current Events</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-xl bg-[#ffffff] shadow-md overflow-hidden border border-gray-200">
+              <div class="flex items-center justify-between p-4">
+                <h3 class="text-base font-bold text-black">Navigation Efficiency</h3>
+              </div>
+              <div class="p-4 pt-0">
+                <div class="border-t border-gray-200 pt-4 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div class="text-sm text-black/80">Time to find information</div>
+                    <div class="text-sm font-bold text-green-600">-20%</div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="text-sm text-black/80">Voice command usage</div>
+                    <div class="flex items-center">
+                      <span class="material-symbols-outlined text-primary text-xl">star</span>
+                      <span class="material-symbols-outlined text-primary text-xl">star</span>
+                      <span class="material-symbols-outlined text-primary text-xl">star</span>
+                      <span class="material-symbols-outlined text-primary text-xl">star</span>
+                      <span class="material-symbols-outlined text-gray-300 text-xl">star</span>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between text-sm text-black/80">
+                    <span>Most frequent command:</span>
+                    <span class="font-bold text-black">"Read main content"</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+
+      <!-- Setting page content -->
+      <main class="flex-grow px-4 space-y-6 pb-8" id="settingsPageContent" style="display: none;">
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-3">Text-to-Speech</h2>
+          <div class="bg-white rounded-lg shadow-sm">
+            <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700/50">
+              <div>
+                <p class="text-base font-medium text-slate-800 dark:text-white">Read Out Site Texts (TTS)</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Reads out site texts aloud</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input checked="" class="sr-only peer" type="checkbox" value="" />
+                <div
+                  class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 dark:after:border-slate-500 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary">
+                </div>
+              </label>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div>
+                <p class="text-base font-medium text-slate-800 dark:text-white">Play Audio on Site</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Plays audio on site via prompt</p>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input class="sr-only peer" type="checkbox" value="" />
+                <div
+                  class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 dark:after:border-slate-500 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary">
+                </div>
+              </label>
+            </div>
+          </div>
+        </section>
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-3">Summarization</h2>
+          <div class="bg-white dark:bg-slate-800/50 rounded-lg shadow-sm">
+            <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700/50">
+              <div>
+                <p class="text-base font-medium text-slate-800 dark:text-white">Summarize Very Long Texts</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">On, Off, or Always Ask</p>
+              </div>
+              <button class="flex items-center gap-2 text-primary font-medium">
+                On
+                <span class="material-symbols-outlined text-base">expand_more</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div>
+                <p class="text-base font-medium text-slate-800 dark:text-white">Summarize T&amp;Cs/Privacy Policies
+                </p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">On, Off, or Always Ask</p>
+              </div>
+              <button class="flex items-center gap-2 text-primary font-medium">
+                Off
+                <span class="material-symbols-outlined text-base">expand_more</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <section>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white mb-3">Voice Settings</h2>
+          <div class="bg-white dark:bg-slate-800/50 rounded-lg shadow-sm">
+            <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700/50">
+              <div>
+                <p class="text-base font-medium text-slate-800 dark:text-white">Voice Mode</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Select voice gender</p>
+              </div>
+              <button class="flex items-center gap-2 text-primary font-medium">
+                Female
+                <span class="material-symbols-outlined text-base">expand_more</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700/50">
+              <div>
+                <p class="text-base font-medium text-slate-800 dark:text-white">Voice Speed</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Adjust voice speed</p>
+              </div>
+              <button class="flex items-center gap-2 text-primary font-medium">
+                Normal
+                <span class="material-symbols-outlined text-base">expand_more</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between p-4">
+              <div>
+                <p class="text-base font-medium text-slate-800 dark:text-white">Voice Tone</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Choose voice tone</p>
+              </div>
+              <button class="flex items-center gap-2 text-primary font-medium">
+                Neutral
+                <span class="material-symbols-outlined text-base">expand_more</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
     </div>
-    <md-filled-button id="backBtn" style="margin-top:auto;">&larr; Back</md-filled-button>
+    <footer class="sticky bottom-0 border-t border-primary/20 bg-[#f6f7f8]/80 backdrop-blur-sm pb-safe">
+      <div class="flex justify-around p-1">
+        <button id="homeBtn"
+          class="flex flex-1 flex-col items-center justify-center gap-0.5 rounded-lg py-2 text-primary">
+          <span class="material-symbols-outlined text-3xl">home</span>
+          <span class="text-xs font-bold">Home</span>
+        </button>
+        <button id="settingsButton"
+          class="flex flex-1 flex-col items-center border-l justify-center gap-0.5 rounded-lg py-2 text-black/60">
+          <span class="material-symbols-outlined text-3xl">settings</span>
+          <span class="text-xs font-bold">Settings</span>
+        </button>
+      </div>
+    </footer>
   </div>
-  <script src="../shared/shared.js"></script>
+
 </body>
+
 </html>
