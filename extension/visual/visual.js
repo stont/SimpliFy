@@ -41,6 +41,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const usageExpandBtn = document.getElementById('usageExpandBtn');
     const consumptionExpandBtn = document.getElementById('consumptionExpandBtn');
     const navigationExpandBtn = document.getElementById('navigationExpandBtn');
+    const backButton = document.getElementById('backButton');
+
+    if (backButton) {
+        backButton.onclick = function () {
+            // Clear navigation storage before navigating back
+            localStorage.removeItem('accessibilityCondition');
+            window.location.href = '../onboard/index.html';
+        };
+    }
     if (homebtn) {
         homebtn.onclick = function () {
             handleSwitchView(0);
