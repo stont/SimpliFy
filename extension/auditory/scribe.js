@@ -1,17 +1,16 @@
-import { geminiTranscribeFile } from '../shared/gemini.js';
-
 // scribe.js - Handles Scribe tab logic and file transcription
 
 // Utility: transcribe audio file using Gemini only
-async function transcribeAudioFile(file, onChunk, onError) {
-  try {
-    onChunk('Transcribing with Gemini...\n');
-    const transcript = await geminiTranscribeFile(file);
-    onChunk(transcript);
-  } catch (err) {
-    console.error('Transcription error:', err);
-    onError(err);
-  }
+function transcribeAudioFile(file, onChunk, onError) {
+  onChunk('Transcribing with Gemini...\n');
+  window.geminiTranscribeFile(file)
+    .then(function(transcript) {
+      onChunk(transcript);
+    })
+    .catch(function(err) {
+      console.error('Transcription error:', err);
+      onError(err);
+    });
 }
 
 // --- MediaRecorder/Audio Prompt Demo Logic (from chrome.dev) ---
