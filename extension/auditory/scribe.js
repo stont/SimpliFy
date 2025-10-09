@@ -1,56 +1,13 @@
+import { geminiTranscribeFile } from '../shared/gemini.js';
+
 // scribe.js - Handles Scribe tab logic and file transcription
 
-// Utility: check if LanguageModel is available
-async function isLanguageModelAvailable() {
-  if (typeof LanguageModel === 'undefined') {
-    console.error('LanguageModel is not defined.');
-    return { available: false, reason: 'LanguageModel is not defined in this context.' };
-  }
-  let availability;
-  try {
-    availability = await LanguageModel.availability();
-    console.log('LanguageModel.availability() returned:', availability);
-  } catch (e) {
-    console.error('Error checking LanguageModel availability:', e);
-    return { available: false, reason: 'Error checking LanguageModel availability: ' + e.message };
-  }
-  if (availability !== 'available') {
-    return { available: false, reason: `Model capability is not available (status: ${availability})` };
-  }
-  return { available: true };
-}
-
-// Utility: transcribe audio file using LanguageModel
+// Utility: transcribe audio file using Gemini only
 async function transcribeAudioFile(file, onChunk, onError) {
   try {
-    if (!file.type.startsWith('audio/')) {
-      throw new Error('Selected file is not an audio file.');
-    }
-    const modelStatus = await isLanguageModelAvailable();
-    if (!modelStatus.available) {
-      throw new Error('Transcription model is not available. ' + (modelStatus.reason || ''));
-    }
-    // Specify expectedInputs and expectedOutputs with language
-    const session = await LanguageModel.create({
-      expectedInputs: [
-        { type: 'audio', languages: ['en'] }
-      ],
-      expectedOutputs: [
-        { type: 'text', languages: ['en'] }
-      ]
-    });
-    const stream = session.promptStreaming([
-      {
-        role: 'user',
-        content: [
-          { type: 'text', value: 'transcribe this audio' },
-          { type: 'audio', value: file }
-        ]
-      }
-    ]);
-    for await (const chunk of stream) {
-      onChunk(chunk);
-    }
+    onChunk('Transcribing with Gemini...\n');
+    const transcript = await geminiTranscribeFile(file);
+    onChunk(transcript);
   } catch (err) {
     console.error('Transcription error:', err);
     onError(err);

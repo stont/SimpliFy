@@ -1,4 +1,5 @@
 // auditory.js - shared logic for auditory home and settings pages
+import { geminiTranscribeFile } from '../shared/gemini.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Settings button navigation

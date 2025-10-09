@@ -3,15 +3,17 @@ import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy';
 
 export default [
+  // Bundle for background.js (if needed)
   {
     input: 'background.js',
     output: {
       dir: 'dist',
       format: 'iife',
+      entryFileNames: '[name].js',
     },
     plugins: [
       commonjs(),
-      nodeResolve(),
+      nodeResolve({ browser: true, preferBuiltins: false }),
       copy({
         targets: [
           {
@@ -29,6 +31,20 @@ export default [
           }
         ]
       })
+    ]
+  },
+  // Bundle for auditory UI
+  {
+    input: 'auditory/main.js',
+    output: {
+      dir: 'dist',
+      format: 'esm',
+      sourcemap: true,
+      entryFileNames: 'auditory.bundle.js'
+    },
+    plugins: [
+      commonjs(),
+      nodeResolve({ browser: true, preferBuiltins: false })
     ]
   }
 ];
