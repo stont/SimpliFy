@@ -7,7 +7,11 @@ function geminiTranscribeFile(file, prompt) {
   var displayName = file.name || 'AUDIO';
   var mimeType = file.type || 'audio/mpeg';
   var numBytes = file.size;
-
+  console.log('[Gemini] File info before upload:', {name: displayName, type: mimeType, size: numBytes, file});
+  if (!numBytes || !mimeType.startsWith('audio/')) {
+    console.error('[Gemini] File is empty or not audio.');
+    throw new Error('File is empty or not a supported audio type.');
+  }
   // 1. Start resumable upload
   return fetch('https://generativelanguage.googleapis.com/upload/v1beta/files', {
     method: 'POST',
@@ -43,9 +47,18 @@ function geminiTranscribeFile(file, prompt) {
     return uploadRes.json();
   })
   .then(function(fileInfo) {
-    console.log('[Gemini] File info:', fileInfo);
+    console.log('[Gemini] File info from upload:', fileInfo);
     var fileUri = fileInfo.file && fileInfo.file.uri;
     if (!fileUri) throw new Error('Failed to get file URI from Gemini API');
+    var requestBody = {
+      contents: [{
+        parts: [
+          { text: prompt },
+          { file_data: { mime_type: mimeType, file_uri: fileUri } }
+        ]
+      }]
+    };
+    console.log('[Gemini] generateContent request body:', requestBody);
     // 3. Generate content using the uploaded file
     return fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent', {
       method: 'POST',
@@ -53,14 +66,7 @@ function geminiTranscribeFile(file, prompt) {
         'x-goog-api-key': apiKey,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        contents: [{
-          parts: [
-            { text: prompt },
-            { file_data: { mime_type: mimeType, file_uri: fileUri } }
-          ]
-        }]
-      })
+      body: JSON.stringify(requestBody)
     });
   })
   .then(function(genRes) {

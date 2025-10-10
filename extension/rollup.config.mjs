@@ -25,7 +25,9 @@ export default [
               'icons',
               'visual',
               'auditory',
-              'autism'
+              'autism',
+              'request-mic.html',
+              'request-mic.js'
             ],
             dest: 'dist'
           }

@@ -13,27 +13,66 @@ function transcribeAudioFile(file, onChunk, onError) {
     });
 }
 
-// --- MediaRecorder/Audio Prompt Demo Logic (from chrome.dev) ---
-// This is a utility for future use, not yet wired to UI
-async function recordAndTranscribeAudio(onChunk, onError) {
-  let audioStream;
+// --- Live mic transcription logic ---
+let micStream = null;
+let recorder = null;
+let isRecording = false;
+let liveTranscript = '';
+
+async function startMicTranscription(scribeText, startBtn, statusDiv) {
   try {
-    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const chunks = [];
-    const recorder = new MediaRecorder(audioStream);
-    recorder.ondataavailable = ({ data }) => {
-      chunks.push(data);
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    liveTranscript = '';
+    if (scribeText) scribeText.textContent = '';
+    recorder = new MediaRecorder(micStream);
+    recorder.ondataavailable = async (e) => {
+      if (e.data && e.data.size > 0) {
+        const chunkBlob = new Blob([e.data], { type: recorder.mimeType });
+        chunkBlob.name = 'mic-chunk.webm';
+        if (chunkBlob.size === 0) {
+          if (statusDiv) statusDiv.textContent = 'Microphone is not accessible or no audio was captured. Please try granting permission in a tab.';
+          if (scribeText) scribeText.textContent = '[No audio captured. Please check microphone permissions.]';
+          return;
+        }
+        if (statusDiv) statusDiv.textContent = 'Transcribing chunk...';
+        try {
+          const partial = await window.geminiTranscribeFile(chunkBlob);
+          liveTranscript += (liveTranscript ? '\n' : '') + partial;
+          if (scribeText) scribeText.textContent = liveTranscript;
+        } catch (err) {
+          if (scribeText) scribeText.textContent = (liveTranscript ? liveTranscript + '\n' : '') + '[Chunk failed: ' + err.message + ']';
+        }
+      }
     };
-    recorder.start();
-    await new Promise((r) => setTimeout(r, 5000)); // Record for 5 seconds
+    recorder.onstop = () => {
+      if (statusDiv) statusDiv.textContent = 'Stopped.';
+      micStream.getTracks().forEach(track => track.stop());
+      micStream = null;
+      recorder = null;
+      isRecording = false;
+      if (startBtn) startBtn.textContent = 'Start Transcribing';
+    };
+    recorder.start(5000); // 5 seconds per chunk
+    isRecording = true;
+    if (startBtn) startBtn.textContent = 'Stop Transcribing';
+    if (statusDiv) statusDiv.textContent = 'Listening... Speak now.';
+  } catch (err) {
+    if (statusDiv) statusDiv.textContent = 'Microphone error: ' + (err && err.message ? err.message : err);
+    isRecording = false;
+    if (startBtn) startBtn.textContent = 'Start Transcribing';
+    // Option 1: open request-mic.html in a new tab to prompt for permission
+    if (window.chrome && chrome.tabs) {
+      chrome.tabs.create({ url: chrome.runtime.getURL('request-mic.html') });
+    } else {
+      window.open('request-mic.html', '_blank');
+    }
+  }
+}
+
+function stopMicTranscription(statusDiv, startBtn) {
+  if (recorder && isRecording) {
     recorder.stop();
-    await new Promise((r) => (recorder.onstop = r));
-    const blob = new Blob(chunks, { type: recorder.mimeType });
-    await transcribeAudioFile(blob, onChunk, onError);
-  } catch (error) {
-    onError(error);
-  } finally {
-    audioStream?.getTracks().forEach((track) => track.stop());
+    if (statusDiv) statusDiv.textContent = 'Stopped.';
   }
 }
 
@@ -79,18 +118,18 @@ function setupScribeTab() {
 
   // Live recording logic for 'Start Transcribing' button
   const startTranscribeBtn = document.getElementById('startTranscribeBtn');
+  const statusDiv = document.getElementById('liveTranscribeStatus');
   if (startTranscribeBtn) {
     startTranscribeBtn.addEventListener('click', async () => {
+      console.log('[Mic] startTranscribeBtn clicked, isRecording:', isRecording);
       // Switch to Scribe tab
       const scribeTabBtn = document.querySelector('.tab-btn[data-tab="tab-scribe"]');
       if (scribeTabBtn) scribeTabBtn.click();
       const scribeText = document.getElementById('scribeText');
-      if (scribeText) {
-        scribeText.textContent = 'Recording and transcribing...';
-        await recordAndTranscribeAudio(
-          chunk => scribeText.textContent += chunk,
-          err => scribeText.textContent = 'Error: ' + err.message
-        );
+      if (!isRecording) {
+        await startMicTranscription(scribeText, startTranscribeBtn, statusDiv);
+      } else {
+        stopMicTranscription(statusDiv, startTranscribeBtn);
       }
     });
   }
