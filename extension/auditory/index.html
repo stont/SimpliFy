@@ -45,6 +45,13 @@
     </div>
     <div id="tab-scribe" class="tab-content">
       <h3 style="font-size:2rem;font-weight:bold;margin-bottom:16px;">Scribe</h3>
+      <div style="margin-bottom:12px;">
+        <label for="transcriptionMode" style="font-weight:600;margin-right:8px;">Transcription Engine:</label>
+        <select id="transcriptionMode" style="padding:4px 8px;font-size:1rem;">
+          <option value="gemini">Gemini (Cloud)</option>
+          <option value="webspeech">Web Speech API (Offline/Local)</option>
+        </select>
+      </div>
       <div class="scribe-container"
         style="height:320px;max-height:40vh;overflow-y:auto;padding:16px;background:#f9fafb;border-radius:12px;box-shadow:0 1px 4px rgba(16,28,34,0.06);font-size:1.1rem;line-height:1.6;">
         <div id="scribeText">This is where your transcribed text will appear. The area is scrollable and styled for
@@ -131,6 +138,7 @@
   <script src="scribe.js"></script>
   <script src="auditory.js"></script>
   <script src="../shared/shared.js"></script>
+  <script src="webspeech.js"></script>
 </body>
 
 </html>

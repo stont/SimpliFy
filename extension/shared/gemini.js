@@ -4,6 +4,7 @@ const apiKey = 'AIzaSyAVG_uJrEm5mtCgajxTMtOIdz6O96HCLHM'; // Replace with your a
 // Returns a Promise that resolves to the transcript text or throws on error
 function geminiTranscribeFile(file, prompt) {
   prompt = prompt || 'Generate a transcript of the speech.';
+  console.log('prompt:', prompt);
   var displayName = file.name || 'AUDIO';
   var mimeType = file.type || 'audio/mpeg';
   var numBytes = file.size;
