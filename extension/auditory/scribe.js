@@ -99,21 +99,7 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
     // Auto download if enabled
     const settings = getScribeSettings();
     if (settings.autoDownload && transcriptSegments.length > 0) {
-      const allText = transcriptSegments.map(seg =>
-        settings.showTimestamps ? `[${seg.timestamp}] ${seg.text}` : seg.text
-      ).join('\n');
-      const blob = new Blob([allText], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'transcript.txt';
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      setTimeout(() => {
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
+      downloadTranscript();
     }
     if (statusDiv) statusDiv.textContent = 'Stopped.';
     if (startBtn) startBtn.textContent = 'Start Transcribing';
@@ -225,12 +211,48 @@ function setupScribeTab() {
     filterWordsSwitch.addEventListener('change', e => setScribeSetting('filterWords', e.target.checked));
   }
 
+  // Download Transcript button
+  const downloadBtn = document.getElementById('downloadTranscriptBtn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', manualDownloadTranscript);
+  }
+
   // Ensure scribeText is scrollable and multi-line
   const scribeText = document.getElementById('scribeText');
   if (scribeText) {
     scribeText.style.overflowY = 'auto';
-    scribeText.style.maxHeight = '400px'; // Limit height for scrolling
   }
+}
+
+function getTranscriptFilename() {
+  const now = new Date();
+  const pad = n => n.toString().padStart(2, '0');
+  const ts = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+  return `transcript_${ts}.txt`;
+}
+
+function manualDownloadTranscript() {
+  downloadTranscript();
+}
+
+function downloadTranscript() {
+  const settings = getScribeSettings();
+  if (!transcriptSegments.length) return;
+  const allText = transcriptSegments.map(seg =>
+    settings.showTimestamps ? `[${seg.timestamp}] ${settings.filterWords ? filterProfanity(seg.text) : seg.text}` : (settings.filterWords ? filterProfanity(seg.text) : seg.text)
+  ).join('\n');
+  const blob = new Blob([allText], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = getTranscriptFilename();
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  setTimeout(() => {
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
 }
 
 document.addEventListener('DOMContentLoaded', setupScribeTab);
