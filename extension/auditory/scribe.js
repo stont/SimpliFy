@@ -11,12 +11,31 @@ function formatTimestamp(date) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
 
+function filterProfanity(text) {
+  // Simple placeholder, replace with a real filter as needed
+  const profane = ["fuck","shit","bitch","asshole","bastard","dick","pussy","cunt","damn","crap","slut","fag","cock","douche","bollocks","bugger","arse","wank","prick","twat","tit","piss","cum","suck","whore","nigger","nigga","spic","chink","gook","kike","wop","dyke","tranny","faggot","retard","homo","queer","spastic","tard","bimbo","skank","slag","tart","tosser","wanker","jerk","jackass","motherfucker","son of a bitch","arsehole","bollocks","shag","git","twit","pillock","minger","munter","numpty","plonker","scrubber","git","berk","div","nonce","ponce","slag","tart","twat","wazzock","yob","yobbo"]; // etc.
+  let filtered = text;
+  profane.forEach(word => {
+    const re = new RegExp(`\\b${word}\\b`, 'gi');
+    filtered = filtered.replace(re, '****');
+  });
+  return filtered;
+}
+
 function updateTranscriptUI(scribeText, currentInterim) {
+  const settings = getScribeSettings();
   if (!scribeText) return;
-  // Show all saved segments with timestamps, then the current interim below
-  let html = transcriptSegments.map(seg => `<div><span style='color:#888;font-size:0.9em;'>[${seg.timestamp}]</span> ${seg.text}</div>`).join('');
+  let html = transcriptSegments.map(seg => {
+    let txt = settings.filterWords ? filterProfanity(seg.text) : seg.text;
+    return settings.showTimestamps
+      ? `<div><span style='color:#888;font-size:0.9em;'>[${seg.timestamp}]</span> ${txt}</div>`
+      : `<div>${txt}</div>`;
+  }).join('');
   if (currentInterim) {
-    html += `<div style='color:#1976d2;'><span style='color:#888;font-size:0.9em;'>[${formatTimestamp(new Date())}]</span> ${currentInterim}</div>`;
+    let interimTxt = settings.filterWords ? filterProfanity(currentInterim) : currentInterim;
+    html += settings.showTimestamps
+      ? `<div style='color:#1976d2;'><span style='color:#888;font-size:0.9em;'>[${formatTimestamp(new Date())}]</span> ${interimTxt}</div>`
+      : `<div style='color:#1976d2;'>${interimTxt}</div>`;
   }
   scribeText.innerHTML = html;
   scribeText.scrollTop = scribeText.scrollHeight;
@@ -34,6 +53,8 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
   wsRecognition.continuous = true;
   wsRecognition.interimResults = true;
   wsRecognition.lang = 'en-US';
+  //log the type of wsRecognition
+  console.log('wsRecognition type:', Object.prototype.toString.call(wsRecognition));
 
   wsRecognition.onresult = (event) => {
     let transcript = '';
@@ -68,7 +89,6 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
   };
   wsRecognition.onend = () => {
     wsIsRecording = false;
-    // Save the last segment if not empty
     if (wsLastTranscript.trim()) {
       transcriptSegments.push({
         text: wsLastTranscript.trim(),
@@ -76,9 +96,12 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
       });
       wsLastTranscript = '';
     }
-    // Prompt to download transcript
-    if (transcriptSegments.length > 0) {
-      const allText = transcriptSegments.map(seg => `[${seg.timestamp}] ${seg.text}`).join('\n');
+    // Auto download if enabled
+    const settings = getScribeSettings();
+    if (settings.autoDownload && transcriptSegments.length > 0) {
+      const allText = transcriptSegments.map(seg =>
+        settings.showTimestamps ? `[${seg.timestamp}] ${seg.text}` : seg.text
+      ).join('\n');
       const blob = new Blob([allText], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -115,6 +138,18 @@ function stopWebSpeechTranscription(statusDiv, startBtn) {
     if (statusDiv) statusDiv.textContent = 'Stopped.';
     if (startBtn) startBtn.textContent = 'Start Transcribing';
   }
+}
+
+// Settings: load and save user preferences
+function getScribeSettings() {
+  return {
+    autoDownload: localStorage.getItem('autoDownload') === 'on',
+    showTimestamps: localStorage.getItem('showTimestamps') === 'on',
+    filterWords: localStorage.getItem('filterWords') === 'on',
+  };
+}
+function setScribeSetting(key, value) {
+  localStorage.setItem(key, value ? 'on' : 'off');
 }
 
 // Scribe tab logic
@@ -171,6 +206,23 @@ function setupScribeTab() {
         stopWebSpeechTranscription(statusDiv, startTranscribeBtn);
       }
     });
+  }
+
+  // Settings switches
+  const autoDownloadSwitch = document.getElementById('autoDownloadSwitch');
+  const showTimestampsSwitch = document.getElementById('showTimestampsSwitch');
+  const filterWordsSwitch = document.getElementById('filterWordsSwitch');
+  if (autoDownloadSwitch) {
+    autoDownloadSwitch.checked = localStorage.getItem('autoDownload') === 'on';
+    autoDownloadSwitch.addEventListener('change', e => setScribeSetting('autoDownload', e.target.checked));
+  }
+  if (showTimestampsSwitch) {
+    showTimestampsSwitch.checked = localStorage.getItem('showTimestamps') === 'on';
+    showTimestampsSwitch.addEventListener('change', e => setScribeSetting('showTimestamps', e.target.checked));
+  }
+  if (filterWordsSwitch) {
+    filterWordsSwitch.checked = localStorage.getItem('filterWords') === 'on';
+    filterWordsSwitch.addEventListener('change', e => setScribeSetting('filterWords', e.target.checked));
   }
 
   // Ensure scribeText is scrollable and multi-line
