@@ -4,6 +4,23 @@
 let wsRecognition = null;
 let wsIsRecording = false;
 let wsTranscript = '';
+let wsLastTranscript = '';
+let transcriptSegments = []; // {text, timestamp}
+
+function formatTimestamp(date) {
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function updateTranscriptUI(scribeText, currentInterim) {
+  if (!scribeText) return;
+  // Show all saved segments with timestamps, then the current interim below
+  let html = transcriptSegments.map(seg => `<div><span style='color:#888;font-size:0.9em;'>[${seg.timestamp}]</span> ${seg.text}</div>`).join('');
+  if (currentInterim) {
+    html += `<div style='color:#1976d2;'><span style='color:#888;font-size:0.9em;'>[${formatTimestamp(new Date())}]</span> ${currentInterim}</div>`;
+  }
+  scribeText.innerHTML = html;
+  scribeText.scrollTop = scribeText.scrollHeight;
+}
 
 function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -24,7 +41,17 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
       transcript += event.results[i][0].transcript;
     }
     wsTranscript = transcript;
-    if (scribeText) scribeText.textContent = wsTranscript;
+    // Detect new sentence (reset/shorter transcript)
+    if (wsTranscript.length < wsLastTranscript.length && wsLastTranscript.length > 0) {
+      // Save the last transcript segment with timestamp
+      transcriptSegments.push({
+        text: wsLastTranscript.trim(),
+        timestamp: formatTimestamp(new Date())
+      });
+    }
+    wsLastTranscript = wsTranscript;
+    updateTranscriptUI(scribeText, wsTranscript);
+    console.log('Interim Transcript:', wsTranscript);
     if (scribeText) scribeText.scrollTop = scribeText.scrollHeight;
   };
 
@@ -41,6 +68,30 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
   };
   wsRecognition.onend = () => {
     wsIsRecording = false;
+    // Save the last segment if not empty
+    if (wsLastTranscript.trim()) {
+      transcriptSegments.push({
+        text: wsLastTranscript.trim(),
+        timestamp: formatTimestamp(new Date())
+      });
+      wsLastTranscript = '';
+    }
+    // Prompt to download transcript
+    if (transcriptSegments.length > 0) {
+      const allText = transcriptSegments.map(seg => `[${seg.timestamp}] ${seg.text}`).join('\n');
+      const blob = new Blob([allText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'transcript.txt';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      setTimeout(() => {
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    }
     if (statusDiv) statusDiv.textContent = 'Stopped.';
     if (startBtn) startBtn.textContent = 'Start Transcribing';
   };
@@ -120,6 +171,13 @@ function setupScribeTab() {
         stopWebSpeechTranscription(statusDiv, startTranscribeBtn);
       }
     });
+  }
+
+  // Ensure scribeText is scrollable and multi-line
+  const scribeText = document.getElementById('scribeText');
+  if (scribeText) {
+    scribeText.style.overflowY = 'auto';
+    scribeText.style.maxHeight = '400px'; // Limit height for scrolling
   }
 }
 
