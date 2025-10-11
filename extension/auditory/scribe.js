@@ -160,7 +160,7 @@ function setupScribeTab() {
     });
   }
 
-  // Handle file selection (playback only, no Gemini)
+  // Handle file selection (playback and live transcription)
   fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -168,12 +168,16 @@ function setupScribeTab() {
     const scribeTabBtn = document.querySelector('.tab-btn[data-tab="tab-scribe"]');
     if (scribeTabBtn) scribeTabBtn.click();
     const scribeText = document.getElementById('scribeText');
-    if (scribeText) {
-      scribeText.textContent = 'Playing audio...';
-      const audio = new Audio(URL.createObjectURL(file));
-      audio.play();
-      // Optionally, you can try to use Web Speech API on the played audio, but browser support is limited
-      scribeText.textContent = 'Please use the mic for live captions. File transcription is not supported offline.';
+    const audioPlayer = document.getElementById('scribeAudioPlayer');
+    if (audioPlayer) {
+      audioPlayer.src = URL.createObjectURL(file);
+      audioPlayer.style.display = 'block';
+      audioPlayer.load();
+      audioPlayer.play();
+    }
+    // Start live transcription from mic (Web Speech API cannot transcribe file directly, but can transcribe if played aloud)
+    if (!wsIsRecording) {
+      startWebSpeechTranscription(scribeText, null, null);
     }
   });
 
