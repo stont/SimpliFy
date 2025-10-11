@@ -1,55 +1,68 @@
 // scribe.js - Handles Scribe tab logic and file transcription
 
-// Utility: transcribe audio file using Gemini only
-function transcribeAudioFile(file, onChunk, onError) {
-  onChunk('Transcribing with Gemini...\n');
-  window.geminiTranscribeFile(file)
-    .then(function(transcript) {
-      onChunk(transcript);
-    })
-    .catch(function(err) {
-      console.error('Transcription error:', err);
-      onError(err);
-    });
-}
+// --- Web Speech API live mic transcription logic ---
+let wsRecognition = null;
+let wsIsRecording = false;
+let wsTranscript = '';
 
-// --- Live mic transcription logic ---
-let micStream = null;
-let recorder = null;
-let isRecording = false;
-let liveTranscript = '';
-
-// Track transcription mode: 'gemini' or 'webspeech'
-let transcriptionMode = localStorage.getItem('transcriptionMode') || 'gemini';
-
-// Load webspeech.js
-const script = document.createElement('script');
-script.src = 'webspeech.js';
-document.head.appendChild(script);
-
-function updateTranscriptionModeUI() {
-  const modeSelect = document.getElementById('transcriptionMode');
-  if (modeSelect) modeSelect.value = transcriptionMode;
-}
-
-function saveTranscriptionMode(mode) {
-  transcriptionMode = mode;
-  localStorage.setItem('transcriptionMode', mode);
-}
-
-async function startMicTranscriptionUnified(scribeText, startBtn, statusDiv) {
-  if (transcriptionMode === 'webspeech') {
-    window.startWebSpeechTranscription(scribeText, startBtn, statusDiv);
-  } else {
-    await startMicTranscription(scribeText, startBtn, statusDiv);
+function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    if (statusDiv) statusDiv.textContent = 'Web Speech API not supported in this browser.';
+    return;
   }
+  if (wsRecognition) wsRecognition.stop();
+  wsTranscript = '';
+  if (scribeText) scribeText.textContent = '';
+  wsRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  wsRecognition.continuous = true;
+  wsRecognition.interimResults = true;
+  wsRecognition.lang = 'en-US';
+
+  wsRecognition.onresult = (event) => {
+    let transcript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      transcript += event.results[i][0].transcript;
+    }
+    wsTranscript = transcript;
+    if (scribeText) scribeText.textContent = wsTranscript;
+    if (scribeText) scribeText.scrollTop = scribeText.scrollHeight;
+  };
+
+  wsRecognition.onerror = (event) => {
+    if (statusDiv) statusDiv.textContent = `Error: ${event.error}. Ensure offline language pack is downloaded.`;
+    wsIsRecording = false;
+    if (startBtn) startBtn.textContent = 'Start Transcribing';
+  };
+
+  wsRecognition.onstart = () => {
+    wsIsRecording = true;
+    if (statusDiv) statusDiv.textContent = 'Listening (Web Speech API)... Speak now!';
+    if (startBtn) startBtn.textContent = 'Stop Transcribing';
+  };
+  wsRecognition.onend = () => {
+    wsIsRecording = false;
+    if (statusDiv) statusDiv.textContent = 'Stopped.';
+    if (startBtn) startBtn.textContent = 'Start Transcribing';
+  };
+  wsRecognition.start();
+
+  // Request mic permission if needed
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    // Stream not used directly, but ensures permission
+  }).catch(err => {
+    if (statusDiv) statusDiv.textContent = 'Mic access denied.';
+    wsRecognition.stop();
+    wsIsRecording = false;
+    if (startBtn) startBtn.textContent = 'Start Transcribing';
+  });
 }
 
-function stopMicTranscriptionUnified(statusDiv, startBtn) {
-  if (transcriptionMode === 'webspeech') {
-    window.stopWebSpeechTranscription(statusDiv, startBtn);
-  } else {
-    stopMicTranscription(statusDiv, startBtn);
+function stopWebSpeechTranscription(statusDiv, startBtn) {
+  if (wsRecognition && wsIsRecording) {
+    wsRecognition.stop();
+    wsIsRecording = false;
+    if (statusDiv) statusDiv.textContent = 'Stopped.';
+    if (startBtn) startBtn.textContent = 'Start Transcribing';
   }
 }
 
@@ -75,7 +88,7 @@ function setupScribeTab() {
     });
   }
 
-  // Handle file selection
+  // Handle file selection (playback only, no Gemini)
   fileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -84,23 +97,13 @@ function setupScribeTab() {
     if (scribeTabBtn) scribeTabBtn.click();
     const scribeText = document.getElementById('scribeText');
     if (scribeText) {
-      scribeText.textContent = 'Transcribing...';
-      await transcribeAudioFile(
-        file,
-        chunk => scribeText.textContent += chunk,
-        err => scribeText.textContent = 'Error: ' + err.message
-      );
+      scribeText.textContent = 'Playing audio...';
+      const audio = new Audio(URL.createObjectURL(file));
+      audio.play();
+      // Optionally, you can try to use Web Speech API on the played audio, but browser support is limited
+      scribeText.textContent = 'Please use the mic for live captions. File transcription is not supported offline.';
     }
   });
-
-  // Transcription mode dropdown logic
-  const modeSelect = document.getElementById('transcriptionMode');
-  if (modeSelect) {
-    updateTranscriptionModeUI();
-    modeSelect.addEventListener('change', (e) => {
-      saveTranscriptionMode(e.target.value);
-    });
-  }
 
   // Live recording logic for 'Start Transcribing' button
   const startTranscribeBtn = document.getElementById('startTranscribeBtn');
@@ -111,16 +114,10 @@ function setupScribeTab() {
       const scribeTabBtn = document.querySelector('.tab-btn[data-tab="tab-scribe"]');
       if (scribeTabBtn) scribeTabBtn.click();
       const scribeText = document.getElementById('scribeText');
-      let currentlyRecording = false;
-      if (transcriptionMode === 'webspeech') {
-        currentlyRecording = window.wsIsRecording && window.wsIsRecording();
+      if (!wsIsRecording) {
+        startWebSpeechTranscription(scribeText, startTranscribeBtn, statusDiv);
       } else {
-        currentlyRecording = isRecording;
-      }
-      if (!currentlyRecording) {
-        await startMicTranscriptionUnified(scribeText, startTranscribeBtn, statusDiv);
-      } else {
-        stopMicTranscriptionUnified(statusDiv, startTranscribeBtn);
+        stopWebSpeechTranscription(statusDiv, startTranscribeBtn);
       }
     });
   }
