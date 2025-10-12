@@ -15,8 +15,15 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    id: 'summarizeText',
+    title: 'Summarize selected text',
+    contexts: ['selection']
+  });
+});
 
-chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === 'scribeAudio' && info.srcUrl) {
     try {
       const response = await fetch(info.srcUrl);
@@ -35,5 +42,28 @@ chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
         text: error.message
       });
     }
+  }
+
+  if (info.menuItemId === 'summarizeText' && info.selectionText) {
+    // Relay to content script in the active tab
+    chrome.runtime.sendMessage({
+      action: 'summarize-text',
+      text: info.selectionText
+    });
+  }
+});
+
+// Relay messages from extension pages to content scripts in the active tab
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'update-dom-text' && message.text) {
+    console.log('Background received text to update DOM:', message.text);
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      if (tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'update-dom-text',
+          text: message.text
+        });
+      }
+    });
   }
 });
