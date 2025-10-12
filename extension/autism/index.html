@@ -1,30 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Autism & Cognitive Support Home</title>
-  <script type="module" src="../material-bundle.dist.js"></script>
-  <link rel="stylesheet" href="../shared/roboto.css">
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Stitch Design</title>
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+  <script src="../tailwind_v405.js"></script>
+  <script src="../autism/autism.js"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet" />
   <style>
-    body { background: #f6f7f8; color: #101c22; margin: 0; font-family: 'Roboto', system-ui, Arial, sans-serif; }
-    .main { max-width: 480px; margin: 0 auto; padding: 24px; min-height: 100vh; display: flex; flex-direction: column; }
-    .material-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 8px 0 rgba(16,28,34,0.08); padding: 24px; margin-bottom: 24px; }
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
   </style>
 </head>
-<body>
-  <div class="main">
-    <div class="material-card" style="flex:1;">
-      <h1 style="font-size:1.5rem;font-weight:bold;margin-bottom:16px;">Autism & Cognitive Support</h1>
-      <ul style="margin-bottom:16px;">
-        <li>Simplify Posts/Comments</li>
-        <li>Disable Animations</li>
-        <li>Read Comments Aloud</li>
-        <li>Emotional Tone Guidance</li>
-      </ul>
-      <md-filled-button onclick="window.location.href='settings.html'">Settings</md-filled-button>
+
+<body class="font-display bg-[#f6f7f8] dark:bg-[#101c22]">
+  <div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
+    <div class="flex-grow">
+      <header class="flex items-center justify-between p-4 bg-[#f6f7f8] dark:bg-[#101c22]">
+        <button class="text-slate-800" id="backBtn">
+          <span class="material-symbols-outlined">arrow_back_ios_new</span>
+        </button>
+        <h1 class="flex-1 text-center text-lg font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight">Autism &
+          Cognitive Support
+        </h1>
+        <div class="flex w-12 items-center justify-end">
+          <button
+            class="flex h-12 w-12 items-center justify-center rounded-full text-[#101c22] dark:text-[#f6f7f8] relative">
+            <span class="material-symbols-outlined text-2xl">
+              notifications
+            </span>
+            <div
+              class="absolute top-2 right-2 h-3 w-3 rounded-full bg-[#ffc107] border-2 border-[#f6f7f8] dark:border-[#101c22]">
+            </div>
+          </button>
+        </div>
+      </header>
+
+      <!-- Home page -->
+      <main class="p-4" id="homePage">
+        <h2 class="text-2xl font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight px-4 pb-4">Autism &amp;
+          Cognitive Support</h2>
+        <div class="space-y-4">
+          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
+            <div class="p-4">
+              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Text Simplification</h3>
+              <div class="flex items-center justify-between gap-4 mt-1">
+                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Simplify complex text for
+                  easier understanding.</p>
+                <button
+                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
+                  Simplify
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
+            <div class="p-4">
+              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Upload Audio</h3>
+              <div class="flex items-center justify-between gap-4 mt-2">
+                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Get a simple version of
+                  your audio file.</p>
+                <button
+                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm flex items-center gap-2">
+                  <span class="material-symbols-outlined text-base">upload</span>
+                  <span>Upload</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
+            <div class="p-4">
+              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Toggle Animations</h3>
+              <div class="flex items-center justify-between gap-4 mt-1">
+                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Reduce distractions by
+                  turning off animations.</p>
+                <button
+                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
+                  Toggle
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Settings page -->
+      <main class="flex-1 overflow-y-auto" style="display: none;" id="settingsPage">
+        <div class="p-4 space-y-8">
+          <div>
+            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Text Simplification</h2>
+            <div class="p-4 space-y-4 rounded-lg bg-white dark:bg-slate-800/50">
+              <div class="flex items-center justify-between">
+                <label class="font-medium text-slate-800 dark:text-slate-200" for="simplification-level">Simplification
+                  Level</label>
+                <span class="font-medium text-[#13a4ec]">Medium</span>
+              </div>
+              <div class="relative w-full">
+                <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
+                  id="simplification-level" max="5" min="1" type="range" value="3" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Visual Adjustments</h2>
+            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-medium text-slate-800 dark:text-slate-200">Toggle Animations</p>
+                  <p class="text-sm text-slate-500 dark:text-slate-400">Reduce motion and animations</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input checked="" class="sr-only peer" type="checkbox" value="" />
+                  <div
+                    class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#13a4ec]/50 dark:peer-focus:ring-[#13a4ec] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-[#13a4ec]">
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Audio Adjustments</h2>
+            <div class="p-4 space-y-6 rounded-lg bg-white dark:bg-slate-800/50">
+              <div>
+                <div class="flex items-center justify-between">
+                  <label class="font-medium text-slate-800 dark:text-slate-200" for="read-aloud-speed">Read-Aloud
+                    Speed</label>
+                  <span class="font-medium text-[#13a4ec]">1.0x</span>
+                </div>
+                <div class="relative w-full mt-4">
+                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
+                    id="read-aloud-speed" max="2" min="0.5" step="0.1" type="range" value="1" />
+                </div>
+              </div>
+              <div>
+                <div class="flex items-center justify-between">
+                  <label class="font-medium text-slate-800 dark:text-slate-200" for="volume">Volume</label>
+                  <span class="font-medium text-[#13a4ec]">100%</span>
+                </div>
+                <div class="relative w-full mt-4">
+                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
+                    id="volume" max="100" min="0" type="range" value="100" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Content Filtering</h2>
+            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
+              <button class="flex items-center justify-between w-full text-left">
+                <div>
+                  <p class="font-medium text-slate-800 dark:text-slate-200">Filter Adult/Profane Words</p>
+                  <p class="text-sm text-slate-500 dark:text-slate-400">Filter out adult or profane words</p>
+                </div>
+                <div class="flex items-center">
+                  <span class="mr-2 font-medium text-[#13a4ec]">On (default)</span>
+                  <span class="material-symbols-outlined text-slate-500 dark:text-slate-400">arrow_forward_ios</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
-    <md-filled-button id="backBtn" style="margin-top:auto;">&larr; Back</md-filled-button>
+    <footer
+      class="sticky bottom-0 border-t border-[#e3e8ed] dark:border-border-dark bg-[#f6f7f8]/80 dark:bg-[#101c22]/80 backdrop-blur-sm">
+      <div class="flex justify-around py-2">
+        <button class="flex flex-col items-center justify-end gap-1 text-[#13a4ec]" id="homeBtn">
+          <span class="material-symbols-outlined text-2xl">home</span>
+          <p class="text-xs font-medium">Home</p>
+        </button>
+        <button class="flex flex-col items-center justify-end gap-1 text-[#5b6b75] dark:text-[#a1b1bd]"
+          id="settingsBtn">
+          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">settings</span>
+          <p class="text-xs font-medium">Settings</p>
+        </button>
+      </div>
+      <div class="h-safe-area-bottom bg-[#f6f7f8] dark:bg-[#101c22]"></div>
+    </footer>
   </div>
-  <script src="../shared/shared.js"></script>
+
 </body>
+
 </html>
