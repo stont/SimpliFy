@@ -32,7 +32,7 @@ function populateLanguageSelect(selectId = 'language') {
   select.innerHTML = '';
   Object.entries(languageNames).forEach(([code, name]) => {
     // For Material Web select
-    const option = document.createElement('md-select-option');
+    const option = document.createElement('option');
     option.value = code;
     option.textContent = name;
     select.appendChild(option);
