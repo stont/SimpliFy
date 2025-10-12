@@ -174,6 +174,14 @@ function setupScribeTab() {
       audioPlayer.style.display = 'block';
       audioPlayer.load();
       audioPlayer.play();
+      // When audio finishes, stop transcription and auto-download if enabled
+      audioPlayer.onended = () => {
+        stopWebSpeechTranscription(null, null);
+        const settings = getScribeSettings();
+        if (settings.autoDownload && transcriptSegments.length > 0) {
+          downloadTranscript();
+        }
+      };
     }
     // Start live transcription from mic (Web Speech API cannot transcribe file directly, but can transcribe if played aloud)
     if (!wsIsRecording) {
