@@ -22,7 +22,9 @@
         <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:4px;">Live Audio Transcribe</h3>
         <p style="margin-bottom:16px;text-align:center;">Real-time transcription of spoken content into text.</p>
         <button class="main-btn" id="startTranscribeBtn" style="margin-bottom:16px;">Start Transcribing</button>
+        <div id="liveTranscribeStatus" style="margin-top:8px;color:#1976d2;font-size:1rem;" aria-live="polite"></div>
       </div>
+
       <div class="material-card">
         <div class="row">
           <span style="font-size:2rem;">🎬</span>
@@ -35,9 +37,13 @@
       </div>
     </div>
     <div id="tab-scribe" class="tab-content">
-      <h3 style="font-size:2rem;font-weight:bold;margin-bottom:16px;">Scribe</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h3 style="font-size:2rem;font-weight:bold;">Scribe</h3>
+        <button id="downloadTranscriptBtn" class="main-btn" style="font-size:1rem;padding:6px 16px;">Download Transcript</button>
+      </div>
+      <audio id="scribeAudioPlayer" style="width:100%;margin-bottom:12px;display:none;" controls></audio>
       <div class="scribe-container"
-        style="height:320px;max-height:40vh;overflow-y:auto;padding:16px;background:#f9fafb;border-radius:12px;box-shadow:0 1px 4px rgba(16,28,34,0.06);font-size:1.1rem;line-height:1.6;">
+        style="overflow-y:auto;padding:16px;background:#f9fafb;border-radius:12px;box-shadow:0 1px 4px rgba(16,28,34,0.06);font-size:1.1rem;line-height:1.6;">
         <div id="scribeText">This is where your transcribed text will appear. The area is scrollable and styled for
           readability.</div>
       </div>
@@ -45,68 +51,28 @@
     <div id="tab-settings" class="tab-content">
       <div class="row row-between" style="margin-bottom:16px;">
         <h2 style="font-size:2rem;font-weight:bold;">Auditory Settings</h2>
-        <span class="icon settings-icon">⚙️</span>
       </div>
-      <div class="material-card">
-        <h2 style="font-size:1rem;font-weight:bold;margin-bottom:16px;">Transcription & Filtering</h2>
-        <div class="row row-between" style="margin-bottom:8px;">
-          <div class="col">
-            <span style="font-weight:600;">Transcribe Media Files</span>
-            <span style="font-size:0.9rem;color:#64748b;">On-demand</span>
-          </div>
-          <div class="segmented-btn-group" data-setting="transcribeMedia">
-            <button class="segmented-btn" data-value="off">Off</button>
-            <button class="segmented-btn" data-value="ondemand">On-demand</button>
-            <button class="segmented-btn" data-value="on">On</button>
-          </div>
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div class="row row-between" style="align-items:center;">
+          <span style="font-weight:600;">Auto download Transcribe Text on Stop recording</span>
+          <label class="switch">
+            <input type="checkbox" id="autoDownloadSwitch" data-setting="autoDownload" />
+            <span class="slider"></span>
+          </label>
         </div>
-        <div class="row row-between" style="margin-bottom:8px;">
-          <div class="col">
-            <span style="font-weight:600;">Filter out Adult/profane words</span>
-            <span style="font-size:0.9rem;color:#64748b;">On</span>
-          </div>
-          <div class="segmented-btn-group" data-setting="filterWords">
-            <button class="segmented-btn" data-value="off">Off</button>
-            <button class="segmented-btn" data-value="ondemand">On-demand</button>
-            <button class="segmented-btn" data-value="on">On</button>
-          </div>
+        <div class="row row-between" style="align-items:center;">
+          <span style="font-weight:600;">Show timestamps in Transcribe</span>
+          <label class="switch">
+            <input type="checkbox" id="showTimestampsSwitch" data-setting="showTimestamps" />
+            <span class="slider"></span>
+          </label>
         </div>
-        <div class="row row-between">
-          <div class="col">
-            <span style="font-weight:600;">Live Audio Transcribe</span>
-            <span style="font-size:0.9rem;color:#64748b;">On</span>
-          </div>
-          <div class="segmented-btn-group" data-setting="liveTranscribe">
-            <button class="segmented-btn" data-value="off">Off</button>
-            <button class="segmented-btn" data-value="ondemand">On-demand</button>
-            <button class="segmented-btn" data-value="on">On</button>
-          </div>
-        </div>
-      </div>
-      <div class="material-card row row-between" style="align-items:center;">
-        <div class="col" style="flex:1;">
-          <span style="font-weight:600;">Audio Alerts</span>
-          <span style="font-size:0.9rem;color:#64748b;">Enable or disable audio alerts for notifications.</span>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="audioSwitch" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="material-card row" style="background:#e3f2fd;align-items:flex-start;">
-        <span class="icon info-icon" style="color:#1976d2;margin-right:12px;">ℹ️</span>
-        <div>
-          <h4 style="font-weight:bold;color:#1976d2;">Important Information</h4>
-          <p style="color:#1976d2;">For the best experience, please ensure your device's microphone is enabled and has
-            the necessary permissions.</p>
-        </div>
-      </div>
-      <div class="material-card row" style="background:#e3f2fd;align-items:flex-start;">
-        <span class="icon info-icon" style="color:#1976d2;margin-right:12px;">ℹ️</span>
-        <div>
-          <h4 style="font-weight:bold;color:#1976d2;">How it works</h4>
-          <p style="color:#1976d2;">When "On-demand" is selected, a transcription button will appear on media players.
-            Tap it to start transcribing. "On" will automatically transcribe all content.</p>
+        <div class="row row-between" style="align-items:center;">
+          <span style="font-weight:600;">Filter out Adult/profane words</span>
+          <label class="switch">
+            <input type="checkbox" id="filterWordsSwitch" data-setting="filterWords" />
+            <span class="slider"></span>
+          </label>
         </div>
       </div>
     </div>
@@ -118,8 +84,9 @@
       <button class="tab-btn" data-tab="tab-settings"><span class="icon">⚙️</span>Settings</button>
     </div>
   </div>
-  <script src="auditory.js"></script>
+  <script src="../shared/gemini.js"></script>
   <script src="scribe.js"></script>
+  <script src="auditory.js"></script>
   <script src="../shared/shared.js"></script>
 </body>
 

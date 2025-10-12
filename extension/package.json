@@ -1,5 +1,5 @@
 {
-  "name": "Universal Web Access Extension",
+  "name": "Simplifyed",
   "private": true,
   "version": "1.0.0",
   "description": "Offline Chrome extension for accessibility (blindness, deafness, autism, etc.)",
@@ -17,6 +17,7 @@
     "rollup-plugin-copy": "^3.5.0"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@material/web": "^2.4.0",
     "tslib": "^2.8.1"
   }

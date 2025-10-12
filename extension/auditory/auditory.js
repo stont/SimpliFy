@@ -9,6 +9,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  chrome.runtime.onMessage.addListener(async function (request) {
+    if (request.action === 'scribe-audio') {
+      const text = request.text;
+      //show the text in the scribe tab
+      const scribeTabBtn = document.querySelector('.tab-btn[data-tab="tab-scribe"]');
+      if (scribeTabBtn) scribeTabBtn.click();
+      const scribeText = document.getElementById('scribeText');
+      if (scribeText) scribeText.textContent = text;
+    } else if (request.action === 'scribe-audio-blob') {
+      // Reconstruct Blob from ArrayBuffer
+      console.log('[Scribe] Received buffer length:', request.buffer ? request.buffer.byteLength : 'none');
+      console.log('[Scribe] Received mimeType:', request.mimeType);
+      console.log('[Scribe] Received fileName:', request.fileName);
+      const blob = new Blob([request.buffer], { type: request.mimeType || 'audio/mpeg' });
+      blob.name = request.fileName || 'audio';
+      console.log('[Scribe] Blob size:', blob.size, 'type:', blob.type, 'name:', blob.name);
+      // Show loading state
+      const scribeTabBtn = document.querySelector('.tab-btn[data-tab="tab-scribe"]');
+      if (scribeTabBtn) scribeTabBtn.click();
+      const scribeText = document.getElementById('scribeText');
+      if (scribeText) scribeText.textContent = 'Transcribing...';
+      try {
+        const transcript = await window.geminiTranscribeFile(blob);
+        if (scribeText) scribeText.textContent = transcript;
+      } catch (err) {
+        if (scribeText) scribeText.textContent = 'Transcription failed: ' + err.message;
+      }
+    }
+  });
+
   // Home button navigation (for settings page)
   const homeNav = document.querySelector('footer nav a[href$="index.html"]');
   if (homeNav) {
