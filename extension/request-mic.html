@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Request Microphone Access</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 60px; }
+    .msg { margin: 24px 0; font-size: 1.2rem; }
+    button { font-size: 1.1rem; padding: 10px 24px; }
+  </style>
+</head>
+<body>
+  <h2>Microphone Access Required</h2>
+  <div class="msg">To use live transcription, please grant microphone access.</div>
+  <button id="requestMicBtn">Grant Microphone Access</button>
+  <div id="status" style="margin-top:20px;color:#1976d2;"></div>
+  <script src="request-mic.js"></script>
+</body>
+</html>
