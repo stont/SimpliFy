@@ -31,7 +31,8 @@ function populateLanguageSelect(selectId = 'language') {
   if (!select) return;
   select.innerHTML = '';
   Object.entries(languageNames).forEach(([code, name]) => {
-    const option = document.createElement('option');
+    // For Material Web select
+    const option = document.createElement('md-select-option');
     option.value = code;
     option.textContent = name;
     select.appendChild(option);
@@ -42,12 +43,14 @@ function setupBackButton(btnId = 'backBtn') {
   const btn = document.getElementById(btnId);
   if (btn) {
     btn.addEventListener('click', () => {
+      // Clear navigation storage before navigating back
+      localStorage.removeItem('accessibilityCondition');
       window.location.href = '../onboard/index.html';
     });
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  populateLanguageSelect();
+  //populateLanguageSelect();
   setupBackButton();
 });

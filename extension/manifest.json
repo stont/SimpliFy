@@ -3,8 +3,20 @@
   "name": "SimpliFy",
   "description": "Your accessibility companion. Supercharging everyday accessibility.",
   "version": "1.0.0",
-  "permissions": ["storage", "sidePanel"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "activeTab",
+    "contextMenus",
+    "clipboardWrite",
+    "tabCapture"
+  ],
+  "trial_tokens": [
+    "A7l2y8XKLy0UfdwNiXHs15dZ6tMMtyXGjT04oQfOGJczo2qIX5E4TNyLNga1+u2G3ZyOTCvdk3HuDBre20Y6xAcAAACPeyJvcmlnaW4iOiJjaHJvbWUtZXh0ZW5zaW9uOi8vYmxucGJpbG1vZHBtY2VhY29obm1obHBiZ2VvaWxsbGUiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzVGhpcmRQYXJ0eSI6dHJ1ZX0="
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js"
   },

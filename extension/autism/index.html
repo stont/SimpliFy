@@ -3,21 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <title>Autism & Cognitive Support Home</title>
-  <link href="../tailwind.css" rel="stylesheet">
+  <script type="module" src="../material-bundle.dist.js"></script>
+  <link rel="stylesheet" href="../shared/roboto.css">
+  <style>
+    body { background: #f6f7f8; color: #101c22; margin: 0; font-family: 'Roboto', system-ui, Arial, sans-serif; }
+    .main { max-width: 480px; margin: 0 auto; padding: 24px; min-height: 100vh; display: flex; flex-direction: column; }
+    .material-card { background: #fff; border-radius: 16px; box-shadow: 0 2px 8px 0 rgba(16,28,34,0.08); padding: 24px; margin-bottom: 24px; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <div class="max-w-lg mx-auto p-6 flex flex-col min-h-screen">
-    <div class="flex-1">
-      <h1 class="text-2xl font-bold mb-4">Autism & Cognitive Support</h1>
-      <ul class="list-disc ml-6 mb-4">
+<body>
+  <div class="main">
+    <div class="material-card" style="flex:1;">
+      <h1 style="font-size:1.5rem;font-weight:bold;margin-bottom:16px;">Autism & Cognitive Support</h1>
+      <ul style="margin-bottom:16px;">
         <li>Simplify Posts/Comments</li>
         <li>Disable Animations</li>
         <li>Read Comments Aloud</li>
         <li>Emotional Tone Guidance</li>
       </ul>
-      <a href="settings.html" class="text-blue-600 underline">Settings</a>
+      <md-filled-button onclick="window.location.href='settings.html'">Settings</md-filled-button>
     </div>
-    <button id="backBtn" class="mt-6 px-3 py-2 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 w-full">&larr; Back</button>
+    <md-filled-button id="backBtn" style="margin-top:auto;">&larr; Back</md-filled-button>
   </div>
   <script src="../shared/shared.js"></script>
 </body>

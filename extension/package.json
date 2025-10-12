@@ -1,11 +1,12 @@
 {
-  "name": "Universal Web Access Extension",
+  "name": "Simplifyed",
   "private": true,
   "version": "1.0.0",
   "description": "Offline Chrome extension for accessibility (blindness, deafness, autism, etc.)",
   "main": "background.js",
   "scripts": {
-    "build": "rollup -c rollup.config.mjs"
+    "build": "rollup -c rollup.config.mjs",
+    "dev": "rollup -c rollup.config.mjs -w"
   },
   "keywords": [],
   "license": "Apache 2.0",
@@ -14,5 +15,10 @@
     "@rollup/plugin-node-resolve": "^15.3.0",
     "rollup": "^4.24.4",
     "rollup-plugin-copy": "^3.5.0"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@material/web": "^2.4.0",
+    "tslib": "^2.8.1"
   }
 }

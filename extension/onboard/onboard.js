@@ -1,13 +1,19 @@
-// onboard.js - onboarding logic for SimpliFy
+// onboard.js - onboarding logic for SimpliFy -
 
-document.querySelectorAll('.access-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const type = this.getAttribute('data-type');
-    localStorage.setItem('accessibilityCondition', type);
-    // Redirect to selected homepage
-    window.location.href = `../${type}/index.html`;
+// Auto-navigate to last selected page if it exists
+const lastPage = localStorage.getItem('accessibilityCondition');
+if (lastPage === 'visual' || lastPage === 'auditory' || lastPage === 'autism') {
+  window.location.href = `../${lastPage}/index.html`;
+} else {
+  // Wait for user input
+  document.querySelectorAll('.access-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const type = this.getAttribute('data-type');
+      localStorage.setItem('accessibilityCondition', type);
+      window.location.href = `../${type}/index.html`;
+    });
   });
-});
+}
 
 // Language selection logic
 function detectBrowserLanguage() {
