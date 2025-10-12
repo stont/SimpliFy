@@ -27,6 +27,7 @@ export default [
               'auditory',
               'autism',
               'request-mic.html',
+              'tailwind_v405.js',
               'request-mic.js'
             ],
             dest: 'dist'
