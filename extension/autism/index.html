@@ -3,181 +3,66 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Stitch Design</title>
-  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
-  <script src="../tailwind_v405.js"></script>
-  <script src="../autism/autism.js"></script>
-  <link href="https://fonts.googleapis.com" rel="preconnect" />
-  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    rel="stylesheet" />
-  <style>
-    .material-symbols-outlined {
-      font-variation-settings:
-        'FILL' 1,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24
-    }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autism Help</title>
+  <link rel="stylesheet" href="autism.css">
 </head>
 
-<body class="font-display bg-[#f6f7f8] dark:bg-[#101c22]">
-  <div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
-    <div class="flex-grow">
-      <header class="flex items-center justify-between p-4 bg-[#f6f7f8] dark:bg-[#101c22]">
-        <button class="text-slate-800" id="backBtn">
-          <span class="material-symbols-outlined">arrow_back_ios_new</span>
-        </button>
-        <h1 class="flex-1 text-center text-lg font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight">Autism Help
-        </h1>
-        <div class="flex w-12 items-center justify-end">
-          <button
-            class="flex h-12 w-12 items-center justify-center rounded-full text-[#101c22] dark:text-[#f6f7f8] relative">
-            <span class="material-symbols-outlined text-2xl">
-              notifications
-            </span>
-            <div
-              class="absolute top-2 right-2 h-3 w-3 rounded-full bg-[#ffc107] border-2 border-[#f6f7f8] dark:border-[#101c22]">
-            </div>
-          </button>
-        </div>
-      </header>
-
-      <!-- Home page -->
-      <main class="p-4" id="homePage">
-        <!-- <h2 class="text-2xl font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight px-4 pb-4">Autism &amp;
-          Cognitive Support</h2> -->
-        <div class="space-y-4">
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
-            <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Make Text Simple</h3>
-              <div class="flex items-center justify-between gap-4 mt-1">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Change hard words so you can understand.</p>
-                <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
-                  Make Simple
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
-            <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Summarize</h3>
-              <div class="flex items-center justify-between gap-4 mt-1">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Change hard words so you can understand.</p>
-                <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
-                  Summarize
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
-            <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Turn Off Moving Pictures</h3>
-              <div class="flex items-center justify-between gap-4 mt-1">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Stop things from moving to help you focus.</p>
-                <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
-                  Turn Off
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <!-- Settings page -->
-      <main class="flex-1 overflow-y-auto" style="display: none;" id="settingsPage">
-        <div class="p-4 space-y-8">
-          <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Make Text Simple</h2>
-            <div class="p-4 space-y-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <div class="flex items-center justify-between">
-                <label class="font-medium text-slate-800 dark:text-slate-200" for="simplification-level">How simple do
-                  you want the words?</label>
-                <span class="font-medium text-[#13a4ec]">Medium</span>
-              </div>
-              <div class="relative w-full">
-                <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
-                  id="simplification-level" max="5" min="1" type="range" value="3" />
-              </div>
-            </div>
-          </div>
-          <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Turn Off Moving Pictures</h2>
-            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="font-medium text-slate-800 dark:text-slate-200">Stop things from moving</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">This helps you focus</p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input checked="" class="sr-only peer" type="checkbox" value="" />
-                  <div
-                    class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#13a4ec]/50 dark:peer-focus:ring-[#13a4ec] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-[#13a4ec]">
-                  </div>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Block Bad Words</h2>
-            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <button class="flex items-center justify-between w-full text-left">
-                <div>
-                  <p class="font-medium text-slate-800 dark:text-slate-200">Block adult or rude words</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">This keeps things safe</p>
-                </div>
-                <div class="flex items-center">
-                  <span class="mr-2 font-medium text-[#13a4ec]">On (default)</span>
-                  <span class="material-symbols-outlined text-slate-500 dark:text-slate-400">arrow_forward_ios</span>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-    <footer
-      class="sticky bottom-0 border-t border-[#e3e8ed] dark:border-border-dark bg-[#f6f7f8]/80 dark:bg-[#101c22]/80 backdrop-blur-sm">
-      <div class="flex justify-around py-2">
-        <button class="flex flex-col items-center justify-end gap-1 text-[#13a4ec]" id="homeBtn">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          <p class="text-xs font-medium">Home</p>
-        </button>
-        <button class="flex flex-col items-center justify-end gap-1 text-[#5b6b75] dark:text-[#a1b1bd]"
-          id="settingsBtn">
-          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">settings</span>
-          <p class="text-xs font-medium">Settings</p>
-        </button>
+<body>
+  <div class="main-content">
+    <button id="backBtn" class="main-btn"
+      style="position:absolute;left:16px;top:16px;z-index:2;min-width:40px;padding:8px 12px;font-size:1.1rem;display:flex;align-items:center;gap:6px;">
+      <span aria-hidden="true">&#8592;</span> Back
+    </button>
+    <div style="height:40px;"></div>
+    <div id="tab-home" class="tab-content active">
+      <div class="material-card">
+        <h3 style="font-size:1.5rem;font-weight:bold;margin-bottom:8px;">Make Text Simple</h3>
+        <p style="margin-bottom:16px;">Change hard words so you can understand.</p>
+        <button class="main-btn" id="makeSimpleBtn">Make Simple</button>
       </div>
-      <div class="h-safe-area-bottom bg-[#f6f7f8] dark:bg-[#101c22]"></div>
-    </footer>
+      <div class="material-card">
+        <h3 style="font-size:1.5rem;font-weight:bold;margin-bottom:8px;">Summarize</h3>
+        <p style="margin-bottom:16px;">Change hard words so you can understand.</p>
+        <button class="main-btn" id="summarizeBtn">Summarize</button>
+      </div>
+      <div class="material-card">
+        <h3 style="font-size:1.5rem;font-weight:bold;margin-bottom:8px;">Turn Off Moving Pictures</h3>
+        <p style="margin-bottom:16px;">Stop things from moving to help you focus.</p>
+        <button class="main-btn" id="turnOffBtn">Turn Off</button>
+      </div>
+    </div>
+    <div id="tab-settings" class="tab-content" style="display:none;">
+      <div class="material-card">
+        <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:8px;">Text Simplification Level</h3>
+        <label for="simplifyLevel">How simple do you want the words?</label>
+        <input type="range" id="simplifyLevel" min="0" max="100" value="50" />
+        <span id="simplifyLevelValue">50</span>
+      </div>
+      <div class="material-card">
+        <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:8px;">Turn Off Moving Pictures</h3>
+        <label for="disableAnimations">Stop things from moving</label>
+        <input type="checkbox" id="disableAnimations" />
+      </div>
+      <div class="material-card">
+        <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:8px;">Block Bad Words</h3>
+        <label for="blockBadWords">Block adult or rude words</label>
+        <input type="checkbox" id="blockBadWords" checked />
+      </div>
+      <div class="material-card">
+        <button class="main-btn" id="clearCacheBtn">Clear Saved Storage</button>
+        <div id="clearCacheMsg" style="display:none;"></div>
+      </div>
+    </div>
   </div>
-
+  <div class="material-tabs-bar">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-home"><span class="icon">🏠</span>Home</button>
+      <button class="tab-btn" data-tab="tab-settings"><span class="icon">⚙️</span>Settings</button>
+    </div>
+  </div>
+  <script src="autism.js"></script>
+  <script src="settings.js"></script>
 </body>
 
 </html>

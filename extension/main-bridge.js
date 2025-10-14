@@ -1,5 +1,18 @@
 // main-bridge.js - Runs in MAIN world, can access DOM
 
+// Helper to get current simplification level
+function getSimplificationLevel() {
+    return Number(localStorage.getItem('autismSimplificationLevel') || 50);
+}
+// Helper to generate AI prompt based on slider value
+function getSimplificationPrompt(level) {
+    if (level == 0) return 'Do not change the text.';
+    if (level >= 10 && level <= 40) return 'Slightly simplify the text for someone with autism to easily understand.';
+    if (level == 50) return 'Simplify the text to a medium level for accessibility.';
+    if (level >= 60) return 'Make the text super simple and easy, suitable for kids or those needing maximum clarity.';
+    return 'Simplify the text.';
+}
+
 // Utility: DFS to collect all text nodes
 function collectTextNodes(root) {
     const nodes = [];
@@ -58,13 +71,15 @@ async function rewriteTextViaAI(original, simplifyLevel) {
             console.error('[CLIENT] Rewriter API is not usable.');
             return '[AI ERROR] Rewriter API is not usable.';
         }
-        // Reuse Rewriter if options match, else destroy and create new
+        // Use the prompt from the slider
+        const prompt = getSimplificationPrompt(simplifyLevel);
         const options = {
             tone: 'as-is',
             length: 'as-is',
             format: 'plain-text',
-            sharedContext: 'Simplify this text for people with autism. Level: ' + simplifyLevel
+            sharedContext: prompt
         };
+        console.log('[CLIENT] Rewriter options:', options.sharedContext);
         if (!sharedRewriter || JSON.stringify(sharedRewriterOptions) !== JSON.stringify(options)) {
             if (sharedRewriter) sharedRewriter.destroy();
             sharedAbortController = new AbortController();
@@ -72,7 +87,7 @@ async function rewriteTextViaAI(original, simplifyLevel) {
             sharedRewriterOptions = options;
         }
         try {
-            const rewrittenText = await sharedRewriter.rewrite(original, { context: 'User requested rewrite.' });
+            const rewrittenText = await sharedRewriter.rewrite(original, { context: prompt });
             return rewrittenText;
         } catch (error) {
             console.error('[CLIENT] Rewrite error:', error);
@@ -84,7 +99,6 @@ async function rewriteTextViaAI(original, simplifyLevel) {
 // Replace all text nodes with AI/cached rewrite (calls AI directly)
 async function replaceAllTextNodesWithAI(simplifyLevel) {
     if (simplifyLevel === 0) {
-        console.log('[AI REWRITE] Skipped: AI rewriting is disabled because simplify level is 0.');
         return;
     }
     let cache = {};
@@ -108,21 +122,28 @@ async function replaceAllTextNodesWithAI(simplifyLevel) {
     }
 }
 
-// On page load, trigger AI rewriting automatically
-window.addEventListener('DOMContentLoaded', () => {
-    // Default to 50% simplify if not specified
-    replaceAllTextNodesWithAI(50);
+// On page load, use the saved simplification level
+window.addEventListener('DOMContentLoaded', () => {    
+    const simplifyLevel = getSimplificationLevel();
+    replaceAllTextNodesWithAI(simplifyLevel);
 });
 
-
 window.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'summary-panel') {
-    const selection = window.getSelection();
-    
-    if (!selection.rangeCount) return;
-    const range = selection.getRangeAt(0);
-    // Replace the selected text with the summary
-    range.deleteContents();
-    range.insertNode(document.createTextNode(event.data.message));
-  }
+    if (event.data && event.data.type === 'autism-simplify-panel') {
+        if (event.data.clearCache) {
+            localStorage.removeItem('rewriteCacheV1');
+            return;
+        }
+        // Handle initial value sync from settings and Save the value to storage immediately
+        localStorage.setItem('autismSimplificationLevel', event.data.simplifyLevel);
+        return;
+    }
+    if (event.data && event.data.type === 'summary-panel') {
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+        const range = selection.getRangeAt(0);
+        // Replace the selected text with the summary
+        range.deleteContents();
+        range.insertNode(document.createTextNode(event.data.message));
+    }
 });

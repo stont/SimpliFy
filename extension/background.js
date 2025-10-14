@@ -24,18 +24,3 @@ chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
     });
   }
 });
-
-// Relay messages from extension pages to content scripts in the active tab
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'update-dom-text' && message.text) {
-    console.log('Background received text to update DOM:', message.text);
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      if (tabs[0]) {
-        chrome.tabs.sendMessage(tabs[0].id, {
-          action: 'update-dom-text',
-          text: message.text
-        });
-      }
-    });
-  }
-});
