@@ -21,11 +21,12 @@ const simplificationSlider = document.getElementById('simplifyLevel');
 const simplificationValue = document.getElementById('simplifyLevelValue');
 
 function getSimplificationLabel(val) {
-  if (val == 0) return '0 (No Change)';
-  if (val >= 10 && val <= 40) return val + ' (Slightly Simple)';
-  if (val == 50) return '50 (Medium)';
-  if (val >= 60) return val + ' (Super Simple)';
-  return val;
+  val = Number(val);
+  if (val === 0) return '0 (No Change)';
+  if (val > 0 && val < 50) return val + ' (Slight Simplified)';
+  if (val === 50) return '50 (Medium)';
+  if (val > 50 && val < 100) return val + ' (Strongly Simplified)';
+  if (val >= 100) return val + ' (Max Simplified)';
 }
 
 function initializeSimplificationSlider() {

@@ -33,25 +33,25 @@
       </div>
     </div>
     <div id="tab-settings" class="tab-content" style="display:none;">
-      <div class="material-card">
-        <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:8px;">Text Simplification Level</h3>
-        <label for="simplifyLevel">How simple do you want the words?</label>
-        <input type="range" id="simplifyLevel" min="0" max="100" value="50" />
-        <span id="simplifyLevelValue">50</span>
-      </div>
-      <div class="material-card">
-        <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:8px;">Turn Off Moving Pictures</h3>
-        <label for="disableAnimations">Stop things from moving</label>
-        <input type="checkbox" id="disableAnimations" />
-      </div>
-      <div class="material-card">
-        <h3 style="font-size:1.25rem;font-weight:bold;margin-bottom:8px;">Block Bad Words</h3>
-        <label for="blockBadWords">Block adult or rude words</label>
-        <input type="checkbox" id="blockBadWords" checked />
-      </div>
-      <div class="material-card">
-        <button class="main-btn" id="clearCacheBtn">Clear Saved Storage</button>
-        <div id="clearCacheMsg" style="display:none;"></div>
+      <div style="padding: 20px 16px 0 16px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="simplifyLevel" style="flex:1;">Text Simplification Level</label>
+          <input type="range" id="simplifyLevel" min="0" max="100" value="50"
+            style="flex:2;max-width:100%;" />
+          <span id="simplifyLevelValue" style="min-width:32px;text-align:right;">50</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="disableAnimations" style="flex:1;">Stop things from moving</label>
+          <input type="checkbox" id="disableAnimations" style="flex:0;" />
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="blockBadWords" style="flex:1;">Block adult or rude words</label>
+          <input type="checkbox" id="blockBadWords" checked style="flex:0;" />
+        </div>
+        <div style="margin-top:24px;">
+          <button class="main-btn" id="clearCacheBtn">Clear Saved Storage</button>
+          <div id="clearCacheMsg" style="display:none;"></div>
+        </div>
       </div>
     </div>
   </div>
