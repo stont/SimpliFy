@@ -19,6 +19,8 @@ if (clearBtn) {
 // Use the correct IDs from the HTML
 const simplificationSlider = document.getElementById('simplifyLevel');
 const simplificationValue = document.getElementById('simplifyLevelValue');
+const disableAnimationsCheckbox = document.getElementById('disableAnimations');
+const blockBadWordsCheckbox = document.getElementById('blockBadWords');
 
 function getSimplificationLabel(val) {
   val = Number(val);
@@ -29,7 +31,9 @@ function getSimplificationLabel(val) {
   if (val >= 100) return val + ' (Max Simplified)';
 }
 
-function initializeSimplificationSlider() {
+// Initialize settings from localStorage to form elements
+function initializeSettings() {
+  // Simplification Level
   if (simplificationSlider && simplificationValue) {
     const saved = getSimplificationLevel();
     if (saved !== null) {
@@ -40,16 +44,37 @@ function initializeSimplificationSlider() {
       simplificationValue.textContent = getSimplificationLabel(50);
     }
   }
+  // Disable Animations
+  if (disableAnimationsCheckbox) {
+    const saved = getDisableAnimations();
+    disableAnimationsCheckbox.checked = saved === 'true';
+  }
+  // Block Bad Words
+  if (blockBadWordsCheckbox) {
+    const saved = getBlockBadWords();
+    blockBadWordsCheckbox.checked = saved !== 'false'; // default true
+  }
 }
 
 if (simplificationSlider && simplificationValue) {
-  initializeSimplificationSlider();
+  initializeSettings();
   // Only send on slider change, not on load
   simplificationSlider.addEventListener('input', function() {
     simplificationValue.textContent = getSimplificationLabel(Number(this.value));
     localStorage.setItem('autismSimplificationLevel', this.value);
-    // Send message to content script to update simplify level
-    sendSimplificationLevel();
+    sendAllSettings();
+  });
+}
+if (disableAnimationsCheckbox) {
+  disableAnimationsCheckbox.addEventListener('change', function() {
+    localStorage.setItem('autismDisableAnimations', this.checked);
+    sendAllSettings();
+  });
+}
+if (blockBadWordsCheckbox) {
+  blockBadWordsCheckbox.addEventListener('change', function() {
+    localStorage.setItem('autismBlockBadWords', this.checked);
+    sendAllSettings();
   });
 }
 
@@ -58,7 +83,7 @@ const settingsBtn = document.getElementById('settingsBtn');
 const settingsPage = document.getElementById('settingsPage');
 if (settingsBtn && settingsPage) {
   settingsBtn.addEventListener('click', function() {
-    initializeSimplificationSlider();
+    initializeSettings();
   });
 }
 
@@ -67,17 +92,31 @@ function getSimplificationLevel() {
   return Number(localStorage.getItem('autismSimplificationLevel') || 50);
 }
 
-// On page load, auto-send
-window.addEventListener('DOMContentLoaded', sendSimplificationLevel);
+function getDisableAnimations() {
+   const val = localStorage.getItem('autismDisableAnimations');
+  return val === null ? true : val === 'true';
+}
+function getBlockBadWords() {
+  // Default to true if not set
+  const val = localStorage.getItem('autismBlockBadWords');
+  return val === null ? true : val === 'true';
+}
 
-function sendSimplificationLevel() {
+// On page load, auto-send
+window.addEventListener('DOMContentLoaded', sendAllSettings);
+
+function sendAllSettings() {
   const level = getSimplificationLevel();
+  const disableAnimations = getDisableAnimations();
+  const blockBadWords = getBlockBadWords();
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs && tabs[0]) {
       chrome.tabs.sendMessage(tabs[0].id, {
         data: {
           type: 'autism-simplify-panel',
-          simplifyLevel: level
+          simplifyLevel: level,
+          disableAnimations: disableAnimations,
+          blockBadWords: blockBadWords
         }
       });
     }

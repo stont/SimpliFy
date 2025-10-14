@@ -4,12 +4,25 @@
 function getSimplificationLevel() {
     return Number(localStorage.getItem('autismSimplificationLevel') || 50);
 }
+
+//Get current value of disable animations and block bad words in boolean form
+function getDisableAnimations() {
+    const val = localStorage.getItem('autismDisableAnimations');
+    return val === null ? true : val === 'true';
+}
+function getBlockBadWords() {
+    // Default to true if not set
+    const val = localStorage.getItem('autismBlockBadWords');
+    return val === null ? true : val === 'true';
+}
+
 // Helper to generate AI prompt based on slider value
 function getSimplificationPrompt(level) {
-    if (level == 0) return 'Do not change the text.';
-    if (level >= 10 && level <= 40) return 'Slightly simplify the text for someone with autism to easily understand.';
-    if (level == 50) return 'Simplify the text to a medium level for accessibility.';
-    if (level >= 60) return 'Make the text super simple and easy, suitable for kids or those needing maximum clarity.';
+    level = Number(level);
+    if (level === 0) return 'Do not change the text.';
+    if (level > 0 && level < 50) return 'Slightly simplify the text for someone with autism to easily understand.';
+    if (level === 50) return 'Simplify the text to a medium level for accessibility.';
+    if (level > 50) return 'Make the text as simple and clear as possible, suitable for maximum accessibility.';
     return 'Simplify the text.';
 }
 
@@ -60,7 +73,7 @@ let sharedRewriter = null;
 let sharedRewriterOptions = null;
 let sharedAbortController = null;
 
-async function rewriteTextViaAI(original, simplifyLevel) {
+async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
     return enqueueAIRewrite(async () => {
         if (!('Rewriter' in self)) {
             console.error('[CLIENT] Gemini Nano Rewriter API not available.');
@@ -72,14 +85,18 @@ async function rewriteTextViaAI(original, simplifyLevel) {
             return '[AI ERROR] Rewriter API is not usable.';
         }
         // Use the prompt from the slider
-        const prompt = getSimplificationPrompt(simplifyLevel);
+        let prompt = getSimplificationPrompt(simplifyLevel);
         const options = {
             tone: 'as-is',
             length: 'as-is',
             format: 'plain-text',
             sharedContext: prompt
         };
-        console.log('[CLIENT] Rewriter options:', options.sharedContext);
+
+        if (filterBadWords) {
+            prompt += ' Also, filter out any bad words (cursed words).';
+        }
+        console.log('prompt:', prompt);
         if (!sharedRewriter || JSON.stringify(sharedRewriterOptions) !== JSON.stringify(options)) {
             if (sharedRewriter) sharedRewriter.destroy();
             sharedAbortController = new AbortController();
@@ -97,7 +114,7 @@ async function rewriteTextViaAI(original, simplifyLevel) {
 }
 
 // Replace all text nodes with AI/cached rewrite (calls AI directly)
-async function replaceAllTextNodesWithAI(simplifyLevel) {
+async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
     if (simplifyLevel === 0) {
         return;
     }
@@ -112,7 +129,7 @@ async function replaceAllTextNodesWithAI(simplifyLevel) {
             console.log(`[CACHE RETRIEVED] Key: ${key}`);
         } else {
             console.log(`[AI REWRITE] Processing: "${node.nodeValue}" at time ${new Date().toISOString()}`);
-            const rewritten = await rewriteTextViaAI(node.nodeValue, simplifyLevel);
+            const rewritten = await rewriteTextViaAI(node.nodeValue, simplifyLevel, filterBadWords);
             console.log(`[AI REWRITE] Before: "${node.nodeValue}" | After: "${rewritten}"`);
             node.nodeValue = rewritten;
             cache[key] = rewritten;
@@ -125,7 +142,8 @@ async function replaceAllTextNodesWithAI(simplifyLevel) {
 // On page load, use the saved simplification level
 window.addEventListener('DOMContentLoaded', () => {    
     const simplifyLevel = getSimplificationLevel();
-    replaceAllTextNodesWithAI(simplifyLevel);
+    const filterBadWords = getBlockBadWords();
+    replaceAllTextNodesWithAI(simplifyLevel, filterBadWords);
 });
 
 window.addEventListener('message', (event) => {
@@ -134,8 +152,16 @@ window.addEventListener('message', (event) => {
             localStorage.removeItem('rewriteCacheV1');
             return;
         }
-        // Handle initial value sync from settings and Save the value to storage immediately
-        localStorage.setItem('autismSimplificationLevel', event.data.simplifyLevel);
+        // Save all received settings to storage
+        if (typeof event.data.simplifyLevel !== 'undefined') {
+            localStorage.setItem('autismSimplificationLevel', event.data.simplifyLevel);
+        }
+        if (typeof event.data.disableAnimations !== 'undefined') {
+            localStorage.setItem('autismDisableAnimations', event.data.disableAnimations);
+        }
+        if (typeof event.data.blockBadWords !== 'undefined') {
+            localStorage.setItem('autismBlockBadWords', event.data.blockBadWords);
+        }
         return;
     }
     if (event.data && event.data.type === 'summary-panel') {
