@@ -1,11 +1,4 @@
-{
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "run_at": "document_end"
-    }
-  ],
+{  
   "manifest_version": 3,
   "name": "SimpliFy",
   "description": "Your accessibility companion. Supercharging everyday accessibility.",
@@ -27,6 +20,19 @@
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["main-bridge.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["bridge.js"],
+      "run_at": "document_start"
+    }
+  ],
   "side_panel": {
     "default_path": "onboard/index.html"
   },

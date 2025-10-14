@@ -84,23 +84,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 length: 'medium'
             };
 
-            generateSummary(text, options).then((summary) => {
-                console.log('Generated summary:', summary);
+            const summary = await generateSummary(text, options)
+            console.log('Generated summary:', summary);
 
-                // const selection = window.getSelection();
-                // console.log('Current selection range count:', selection.rangeCount);
-                // if (!selection.rangeCount) return;
-
-                // const range = selection.getRangeAt(0);
-                // range.deleteContents();
-                // range.insertNode(document.createTextNode(summary));
-
-                // Send message to background, which will relay to content script in active tab
-                chrome.runtime.sendMessage({
-                    action: 'update-dom-text',
-                    text: summary
-                });
-            })
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                console.log('The tab: ', tabs);
+                if (tabs && tabs[0]) {
+                    chrome.tabs.sendMessage(tabs[0].id, { data: { type: 'summary-panel', message: summary } });
+                }
+            });
         }
     });
 });
