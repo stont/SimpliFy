@@ -1,6 +1,7 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy';
+import postcss from 'rollup-plugin-postcss';
 
 export default [
   // Bundle for background.js (if needed)
@@ -14,6 +15,13 @@ export default [
     plugins: [
       commonjs(),
       nodeResolve({ browser: true, preferBuiltins: false }),
+      postcss({
+        config: {
+          path: './postcss.config.js'
+        },
+        extract: 'styles/tailwind.css',
+        minimize: true
+      }),
       copy({
         targets: [
           {
@@ -27,8 +35,11 @@ export default [
               'auditory',
               'autism',
               'request-mic.html',
-              'tailwind_v405.js',
-              'request-mic.js'
+              'request-mic.js',
+              'postcss.config.js',
+              'tailwind.config.js',
+              'styles/tailwind.css',
+              'tailwind_v405.js'
             ],
             dest: 'dist'
           }

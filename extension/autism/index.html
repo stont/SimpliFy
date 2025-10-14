@@ -8,6 +8,43 @@
   <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
   <script src="../tailwind_v405.js"></script>
   <script src="../autism/autism.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Simplification level slider
+      const simplificationSlider = document.getElementById('simplification-level');
+      const simplificationValue = document.querySelector('[data-simplification-value]');
+      const levels = ['Very Low', 'Low', 'Medium', 'High', 'Very High'];
+      
+      if (simplificationSlider && simplificationValue) {
+        simplificationSlider.addEventListener('input', function() {
+          const value = parseInt(this.value);
+          const levelText = levels[value - 1];
+          simplificationValue.textContent = levelText;
+        });
+      }
+
+      // Read-aloud speed slider
+      const speedSlider = document.getElementById('read-aloud-speed');
+      const speedValue = document.querySelector('[data-speed-value]');
+      
+      if (speedSlider && speedValue) {
+        speedSlider.addEventListener('input', function() {
+          const value = parseFloat(this.value).toFixed(1);
+          speedValue.textContent = value + 'x';
+        });
+      }
+
+      // Volume slider
+      const volumeSlider = document.getElementById('volume');
+      const volumeValue = document.querySelector('[data-volume-value]');
+      
+      if (volumeSlider && volumeValue) {
+        volumeSlider.addEventListener('input', function() {
+          volumeValue.textContent = this.value + '%';
+        });
+      }
+    });
+  </script>
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap"
@@ -28,82 +65,121 @@
     body {
       min-height: max(884px, 100dvh);
     }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
+
+    .accessibility-option {
+      padding: 24px;
+      border: 1px solid #f0f0f0;
+      border-radius: 16px;
+      background: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
     }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
+
+    .accessibility-option:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .language-selector select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+    }
+
+    /* Custom range input styling */
+    input[type="range"] {
+      height: 6px;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0095FF;
+      cursor: pointer;
+      border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Improved switch animation */
+    .peer:checked ~ div {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Search input focus ring */
+    input[type="text"]:focus {
+      box-shadow: 0 0 0 2px rgba(0,149,255,0.1);
+      border-color: #0095FF;
+    }
+
+    /* Smooth transitions */
+    .transition-all {
+      transition: all 0.2s ease-in-out;
     }
   </style>
 </head>
 
-<body class="font-display bg-[#f6f7f8] dark:bg-[#101c22]">
+<body class="font-display bg-white">
   <div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
     <div class="flex-grow">
-      <header class="flex items-center justify-between p-4 bg-[#f6f7f8] dark:bg-[#101c22]">
-        <button class="text-slate-800" id="backBtn">
-          <span class="material-symbols-outlined">arrow_back_ios_new</span>
+      <header class="flex items-center justify-between p-4 bg-white sticky top-0 z-40 border-b border-gray-100">
+        <button class="p-2 -ml-2 hover:bg-gray-50 rounded-full" id="backBtn">
+          <span class="material-symbols-outlined">arrow_back</span>
         </button>
-        <h1 class="flex-1 text-center text-lg font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight">Autism &
-          Cognitive Support
-        </h1>
-        <div class="flex w-12 items-center justify-end">
-          <button
-            class="flex h-12 w-12 items-center justify-center rounded-full text-[#101c22] dark:text-[#f6f7f8] relative">
-            <span class="material-symbols-outlined text-2xl">
-              notifications
-            </span>
-            <div
-              class="absolute top-2 right-2 h-3 w-3 rounded-full bg-[#ffc107] border-2 border-[#f6f7f8] dark:border-[#101c22]">
-            </div>
-          </button>
+        <div class="flex-1 text-center">
+          <h1 class="text-xl sm:text-2xl font-bold text-black tracking-tight">
+            Accessibility Settings
+          </h1>
         </div>
+        <div class="w-10"></div><!-- For balance -->
       </header>
 
       <!-- Home page -->
-      <main class="p-4" id="homePage">
-        <h2 class="text-2xl font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight px-4 pb-4">Autism &amp;
+      <main class="p-4 pb-16" id="homePage">
+        <h2 class="text-lg font-bold text-gray-900 tracking-tight px-2 pb-4">Autism &amp;
           Cognitive Support</h2>
-        <div class="space-y-4">
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
+        <div class="space-y-3">
+          <div class="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden">
             <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Text Simplification</h3>
-              <div class="flex items-center justify-between gap-4 mt-1">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Simplify complex text for
+              <h3 class="text-base font-semibold text-gray-900 mb-2">Text Simplification</h3>
+              <div class="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+                <p class="text-gray-600 text-sm leading-relaxed">Simplify complex text for
                   easier understanding.</p>
                 <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
+                  class="flex-none rounded-full bg-[#0095FF] px-5 py-2 text-sm font-medium text-white shadow-sm active:bg-[#0084E5] transition-colors min-w-[90px]">
                   Simplify
                 </button>
               </div>
             </div>
           </div>
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
+          <div class="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden">
             <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Upload Audio</h3>
-              <div class="flex items-center justify-between gap-4 mt-2">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Get a simple version of
+              <h3 class="text-base font-semibold text-gray-900 mb-2">Upload Audio</h3>
+              <div class="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+                <p class="text-gray-600 text-sm leading-relaxed">Get a simple version of
                   your audio file.</p>
                 <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm flex items-center gap-2">
+                  class="flex-none rounded-full bg-[#0095FF] px-5 py-2 text-sm font-medium text-white shadow-sm active:bg-[#0084E5] transition-colors min-w-[90px] flex items-center justify-center gap-2">
                   <span class="material-symbols-outlined text-base">upload</span>
                   <span>Upload</span>
                 </button>
               </div>
             </div>
           </div>
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
+          <div class="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden">
             <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Toggle Animations</h3>
-              <div class="flex items-center justify-between gap-4 mt-1">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Reduce distractions by
+              <h3 class="text-base font-semibold text-gray-900 mb-2">Toggle Animations</h3>
+              <div class="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
+                <p class="text-gray-600 text-sm leading-relaxed">Reduce distractions by
                   turning off animations.</p>
                 <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
+                  class="flex-none rounded-full bg-[#0095FF] px-5 py-2 text-sm font-medium text-white shadow-sm active:bg-[#0084E5] transition-colors min-w-[90px]">
                   Toggle
                 </button>
               </div>
@@ -113,76 +189,76 @@
       </main>
 
       <!-- Settings page -->
-      <main class="flex-1 overflow-y-auto" style="display: none;" id="settingsPage">
-        <div class="p-4 space-y-8">
+      <main class="flex-1 overflow-y-auto pb-16" style="display: none;" id="settingsPage">
+        <div class="p-4 space-y-6">
           <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Text Simplification</h2>
-            <div class="p-4 space-y-4 rounded-lg bg-white dark:bg-slate-800/50">
+            <h2 class="px-2 mb-3 text-base font-semibold text-gray-900">Text Simplification</h2>
+            <div class="p-4 space-y-4 rounded-xl bg-white border border-gray-100 shadow-sm">
               <div class="flex items-center justify-between">
-                <label class="font-medium text-slate-800 dark:text-slate-200" for="simplification-level">Simplification
+                <label class="font-medium text-sm text-gray-900" for="simplification-level">Simplification
                   Level</label>
-                <span class="font-medium text-[#13a4ec]">Medium</span>
+                <span class="font-medium text-sm text-[#0095FF]" data-simplification-value>Medium</span>
               </div>
               <div class="relative w-full">
-                <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
+                <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#0095FF]/15 accent-[#0095FF] touch-pan-x"
                   id="simplification-level" max="5" min="1" type="range" value="3" />
               </div>
             </div>
           </div>
           <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Visual Adjustments</h2>
-            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <div class="flex items-center justify-between">
+            <h2 class="px-2 mb-3 text-base font-semibold text-gray-900">Visual Adjustments</h2>
+            <div class="p-4 rounded-xl bg-white border border-gray-100 shadow-sm">
+              <div class="flex items-center justify-between gap-4">
                 <div>
-                  <p class="font-medium text-slate-800 dark:text-slate-200">Toggle Animations</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">Reduce motion and animations</p>
+                  <p class="font-medium text-sm text-gray-900">Toggle Animations</p>
+                  <p class="text-xs text-gray-600 mt-0.5">Reduce motion and animations</p>
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer">
+                <label class="relative inline-flex items-center cursor-pointer touch-manipulation">
                   <input checked="" class="sr-only peer" type="checkbox" value="" />
                   <div
-                    class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#13a4ec]/50 dark:peer-focus:ring-[#13a4ec] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-[#13a4ec]">
+                    class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#0095FF]/50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0095FF]">
                   </div>
                 </label>
               </div>
             </div>
           </div>
           <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Audio Adjustments</h2>
-            <div class="p-4 space-y-6 rounded-lg bg-white dark:bg-slate-800/50">
+            <h2 class="px-2 mb-4 text-lg font-semibold text-gray-900">Audio Adjustments</h2>
+            <div class="p-4 space-y-6 rounded-xl bg-white border border-gray-100 shadow-sm">
               <div>
-                <div class="flex items-center justify-between">
-                  <label class="font-medium text-slate-800 dark:text-slate-200" for="read-aloud-speed">Read-Aloud
+                <div class="flex items-center justify-between mb-3">
+                  <label class="font-medium text-sm text-gray-900" for="read-aloud-speed">Read-Aloud
                     Speed</label>
-                  <span class="font-medium text-[#13a4ec]">1.0x</span>
+                  <span class="font-medium text-sm text-[#0095FF]" data-speed-value>1.0x</span>
                 </div>
-                <div class="relative w-full mt-4">
-                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
+                <div class="relative w-full">
+                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#0095FF]/15 accent-[#0095FF] touch-pan-x"
                     id="read-aloud-speed" max="2" min="0.5" step="0.1" type="range" value="1" />
                 </div>
               </div>
               <div>
-                <div class="flex items-center justify-between">
-                  <label class="font-medium text-slate-800 dark:text-slate-200" for="volume">Volume</label>
-                  <span class="font-medium text-[#13a4ec]">100%</span>
+                <div class="flex items-center justify-between mb-3">
+                  <label class="font-medium text-sm text-gray-900" for="volume">Volume</label>
+                  <span class="font-medium text-sm text-[#0095FF]" data-volume-value>100%</span>
                 </div>
-                <div class="relative w-full mt-4">
-                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
+                <div class="relative w-full">
+                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#0095FF]/15 accent-[#0095FF] touch-pan-x"
                     id="volume" max="100" min="0" type="range" value="100" />
                 </div>
               </div>
             </div>
           </div>
           <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Content Filtering</h2>
-            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <button class="flex items-center justify-between w-full text-left">
+            <h2 class="px-2 mb-4 text-lg font-semibold text-gray-900">Content Filtering</h2>
+            <div class="p-6 rounded-2xl bg-white border border-gray-100 shadow-sm">
+              <button class="flex items-center justify-between w-full text-left hover:bg-gray-50/50 rounded-xl transition-colors">
                 <div>
-                  <p class="font-medium text-slate-800 dark:text-slate-200">Filter Adult/Profane Words</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">Filter out adult or profane words</p>
+                  <p class="font-medium text-gray-900 mb-1">Filter Adult/Profane Words</p>
+                  <p class="text-sm text-gray-600">Filter out adult or profane words</p>
                 </div>
                 <div class="flex items-center">
-                  <span class="mr-2 font-medium text-[#13a4ec]">On (default)</span>
-                  <span class="material-symbols-outlined text-slate-500 dark:text-slate-400">arrow_forward_ios</span>
+                  <span class="mr-3 font-medium text-[#0095FF]">On (default)</span>
+                  <span class="material-symbols-outlined text-gray-400">arrow_forward_ios</span>
                 </div>
               </button>
             </div>
@@ -190,20 +266,26 @@
         </div>
       </main>
     </div>
-    <footer
-      class="sticky bottom-0 border-t border-[#e3e8ed] dark:border-border-dark bg-[#f6f7f8]/80 dark:bg-[#101c22]/80 backdrop-blur-sm">
-      <div class="flex justify-around py-2">
-        <button class="flex flex-col items-center justify-end gap-1 text-[#13a4ec]" id="homeBtn">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          <p class="text-xs font-medium">Home</p>
+    <footer class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200">
+      <nav class="flex items-center justify-between h-14">
+        <a href="../visual/index.html" class="flex-1 flex flex-col items-center justify-center h-full">
+        
+          <span class="text-xs text-gray-500 mt-1">Visual</span>
+        </a>
+        <a href="../auditory/index.html" class="flex-1 flex flex-col items-center justify-center h-full">
+          
+          <span class="text-xs text-gray-500 mt-1">Auditory</span>
+        </a>
+        
+        <button id="homeBtn" class="flex-1 flex flex-col items-center justify-center h-full">
+         
+          <span class="text-xs text-gray-500 mt-1">Autism</span>
         </button>
-        <button class="flex flex-col items-center justify-end gap-1 text-[#5b6b75] dark:text-[#a1b1bd]"
-          id="settingsBtn">
-          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">settings</span>
-          <p class="text-xs font-medium">Settings</p>
+        <button id="settingsBtn" class="flex-1 flex flex-col items-center justify-center h-full">
+          
+          <span class="text-xs text-gray-500 mt-1">Settings</span>
         </button>
-      </div>
-      <div class="h-safe-area-bottom bg-[#f6f7f8] dark:bg-[#101c22]"></div>
+      </nav>
     </footer>
   </div>
 

@@ -25,6 +25,10 @@ function filterProfanity(text) {
 function updateTranscriptUI(scribeText, currentInterim) {
   const settings = getScribeSettings();
   if (!scribeText) return;
+  
+  // Update word count
+  updateWordCount();
+  
   let html = transcriptSegments.map(seg => {
     let txt = settings.filterWords ? filterProfanity(seg.text) : seg.text;
     return settings.showTimestamps
@@ -86,6 +90,17 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
     wsIsRecording = true;
     if (statusDiv) statusDiv.textContent = 'Listening (Web Speech API)... Speak now!';
     if (startBtn) startBtn.textContent = 'Stop Transcribing';
+    // show active waveform if scribe tab visible
+    const waveform = document.getElementById('scribeWaveform');
+    if (waveform) {
+      waveform.classList.add('active');
+      waveform.classList.remove('buffering');
+      // kickstart per-bar animation heights for visual variety
+      Array.from(waveform.children).forEach((bar, i) => {
+        const h = 8 + Math.round(Math.random() * 40);
+        bar.style.height = h + 'px';
+      });
+    }
   };
   wsRecognition.onend = () => {
     wsIsRecording = false;
@@ -103,6 +118,17 @@ function startWebSpeechTranscription(scribeText, startBtn, statusDiv) {
     }
     if (statusDiv) statusDiv.textContent = 'Stopped.';
     if (startBtn) startBtn.textContent = 'Start Transcribing';
+    const waveform = document.getElementById('scribeWaveform');
+    if (waveform) {
+      waveform.classList.remove('active');
+      // return to buffering shimmer only if Scribe tab still active
+      const scribeTab = document.getElementById('tab-scribe');
+      if (scribeTab && scribeTab.classList.contains('active')) {
+        waveform.classList.add('buffering');
+      } else {
+        waveform.classList.remove('buffering');
+      }
+    }
   };
   wsRecognition.start();
 
@@ -139,7 +165,115 @@ function setScribeSetting(key, value) {
 }
 
 // Scribe tab logic
+// UI helper functions
+function updateWordCount() {
+  const wordCount = document.getElementById('wordCount');
+  if (!wordCount) return;
+  
+  const text = transcriptSegments.map(seg => seg.text).join(' ');
+  const count = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  wordCount.textContent = count.toLocaleString();
+}
+
+function updateDuration() {
+  const duration = document.getElementById('duration');
+  if (!duration || !wsIsRecording) return;
+  
+  const start = window.recordingStartTime || new Date();
+  const elapsed = Math.floor((new Date() - start) / 1000);
+  const minutes = Math.floor(elapsed / 60);
+  const seconds = elapsed % 60;
+  duration.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function setupTranscriptSearch() {
+  const searchInput = document.getElementById('searchTranscript');
+  const searchMatches = document.getElementById('searchMatches');
+  const scribeText = document.getElementById('scribeText');
+  
+  if (!searchInput || !searchMatches || !scribeText) return;
+  
+  let searchTimeout;
+  searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      const query = e.target.value.trim().toLowerCase();
+      if (!query) {
+        searchMatches.textContent = '';
+        // Remove highlights
+        scribeText.innerHTML = scribeText.innerHTML.replace(/<mark>/g, '').replace(/<\/mark>/g, '');
+        return;
+      }
+      
+      const text = scribeText.textContent;
+      const regex = new RegExp(query, 'gi');
+      const matches = (text.match(regex) || []).length;
+      searchMatches.textContent = matches ? `${matches} found` : 'No matches';
+      
+      // Highlight matches
+      scribeText.innerHTML = text.replace(regex, match => `<mark>${match}</mark>`);
+    }, 300);
+  });
+}
+
+function setupFontSizeControls() {
+  const container = document.getElementById('transcriptContainer');
+  const decrease = document.getElementById('decreaseFontBtn');
+  const increase = document.getElementById('increaseFontBtn');
+  
+  if (!container || !decrease || !increase) return;
+  
+  const sizes = [14, 16, 18, 20, 22];
+  let currentIndex = 1; // Start at 16px
+  
+  decrease.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      container.style.fontSize = sizes[currentIndex] + 'px';
+    }
+  });
+  
+  increase.addEventListener('click', () => {
+    if (currentIndex < sizes.length - 1) {
+      currentIndex++;
+      container.style.fontSize = sizes[currentIndex] + 'px';
+    }
+  });
+}
+
+function setupCopyButton() {
+  const copyBtn = document.getElementById('copyTranscriptBtn');
+  if (!copyBtn) return;
+  
+  copyBtn.addEventListener('click', async () => {
+    const text = transcriptSegments.map(seg => {
+      const settings = getScribeSettings();
+      return settings.showTimestamps 
+        ? `[${seg.timestamp}] ${settings.filterWords ? filterProfanity(seg.text) : seg.text}`
+        : (settings.filterWords ? filterProfanity(seg.text) : seg.text);
+    }).join('\n');
+    
+    try {
+      await navigator.clipboard.writeText(text);
+      // Show feedback
+      copyBtn.classList.add('success');
+      setTimeout(() => copyBtn.classList.remove('success'), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  });
+}
+
+// Original setupScribeTab with added UI initialization
 function setupScribeTab() {
+  // Initialize UI components
+  setupTranscriptSearch();
+  setupFontSizeControls();
+  setupCopyButton();
+  
+  // Start duration timer
+  setInterval(updateDuration, 1000);
+  
   // Add file input if not present
   let fileInput = document.getElementById('audioFileInput');
   if (!fileInput) {
@@ -234,6 +368,36 @@ function setupScribeTab() {
   if (scribeText) {
     scribeText.style.overflowY = 'auto';
   }
+
+  // Create waveform bars if not present
+  const waveform = document.getElementById('scribeWaveform');
+  if (waveform && waveform.childElementCount === 0) {
+    // create 8 bars
+    for (let i = 0; i < 8; i++) {
+      const b = document.createElement('div');
+      b.className = 'bar';
+      // randomize initial height
+      b.style.height = (8 + Math.round(Math.random() * 24)) + 'px';
+      waveform.appendChild(b);
+    }
+  }
+
+  // When Scribe tab is activated show buffering shimmer; when left hide it
+  document.addEventListener('tab-activated', (ev) => {
+    const id = ev && ev.detail ? ev.detail.tabId : null;
+    if (!waveform) return;
+    if (id === 'tab-scribe') {
+      waveform.classList.add('buffering');
+      // if currently transcribing, also add active
+      if (wsIsRecording) {
+        waveform.classList.add('active');
+        waveform.classList.remove('buffering');
+      }
+    } else {
+      waveform.classList.remove('buffering');
+      waveform.classList.remove('active');
+    }
+  });
 }
 
 function getTranscriptFilename() {

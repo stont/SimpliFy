@@ -56,7 +56,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+// Default settings configuration
+const DEFAULT_SETTINGS = {
+  autoDownload: false,
+  showTimestamps: true,
+  filterWords: true
+};
+
+// Load settings from storage
+function loadSettings() {
+  const saved = JSON.parse(localStorage.getItem('auditorySettings') || '{}');
+  return { ...DEFAULT_SETTINGS, ...saved };
+}
+
+// Save settings to storage
+function saveSettings(settings) {
+  localStorage.setItem('auditorySettings', JSON.stringify(settings));
+}
+
+// Initialize settings UI
+function initializeSettings() {
+  const settings = loadSettings();
+  
+  // Initialize switches
+  Object.entries(settings).forEach(([key, value]) => {
+    const switch_element = document.querySelector(`input[data-setting="${key}"]`);
+    if (switch_element) {
+      switch_element.checked = value;
+      
+      // Add change listener
+      switch_element.addEventListener('change', (e) => {
+        const newSettings = loadSettings();
+        newSettings[key] = e.target.checked;
+        saveSettings(newSettings);
+        
+        // Show feedback
+        showSettingsFeedback('Settings saved');
+      });
+    }
+  });
+  
+  // Reset button functionality
+  const resetBtn = document.getElementById('resetSettingsBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset all settings to default?')) {
+        saveSettings(DEFAULT_SETTINGS);
+        
+        // Update UI
+        Object.entries(DEFAULT_SETTINGS).forEach(([key, value]) => {
+          const switch_element = document.querySelector(`input[data-setting="${key}"]`);
+          if (switch_element) {
+            switch_element.checked = value;
+          }
+        });
+        
+        showSettingsFeedback('Settings reset to default');
+      }
+    });
+  }
+}
+
+// Show feedback message
+function showSettingsFeedback(message) {
+  // Create feedback element if it doesn't exist
+  let feedback = document.getElementById('settings-feedback');
+  if (!feedback) {
+    feedback = document.createElement('div');
+    feedback.id = 'settings-feedback';
+    feedback.style.cssText = `
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    `;
+    document.body.appendChild(feedback);
+  }
+  
+  feedback.textContent = message;
+  feedback.style.opacity = '1';
+  
+  setTimeout(() => {
+    feedback.style.opacity = '0';
+  }, 2000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize settings
+  initializeSettings();
+  
   // Material Tabs logic
   const tabs = document.querySelector('md-tabs#auditory-tabs');
   const panels = [
@@ -83,11 +179,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const settings = { ...defaultSettings, ...saved };
 
   ['transcribeMedia', 'filterWords', 'liveTranscribe'].forEach(setting => {
-    const value = settings[setting];
-    document.querySelectorAll(`md-outlined-segmented-button[data-setting='${setting}']`).forEach(btn => {
-      btn.selected = (btn.dataset.value === value);
-    });
+  
+  const value = settings && settings[setting] !== undefined ? settings[setting] : false;
+  
+  document.querySelectorAll(`.md-outlined-segmented-button[data-setting='${setting}']`).forEach(btn => {
+    btn.selected = (btn.dataset.value === value);
   });
+});
 
   document.querySelectorAll('md-outlined-segmented-button').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -155,6 +253,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.getElementById(tabId).classList.add('active');
     evt.currentTarget.classList.add('active');
+    // Emit a custom event so other scripts can respond to tab activation
+    try {
+      const detail = { tabId };
+      const e = new CustomEvent('tab-activated', { detail });
+      document.dispatchEvent(e);
+    } catch (err) {
+      // ignore if CustomEvent not supported
+    }
   }
 
   // Attach event listeners to tab buttons (now includes Scribe)
