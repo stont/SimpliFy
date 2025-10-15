@@ -120,7 +120,7 @@ async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
     }
     let cache = {};
     let cacheChanged = false;
-    try { cache = JSON.parse(localStorage.getItem('rewriteCacheV1')) || {}; } catch {}
+    try { cache = JSON.parse(localStorage.getItem('rewriteCacheV1')) || {}; } catch { }
     const nodes = collectTextNodes(document.body);
     for (const node of nodes) {
         const key = `${simplifyLevel}:${node.nodeValue}`;
@@ -138,11 +138,54 @@ async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
     }
 }
 
+async function removeAnimationsFromPage() {
+    const style = document.createElement('style');
+    style.textContent = `
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Remove GIFs
+    document.querySelectorAll('img[src$=".gif"]').forEach(img => img.remove());
+
+    // 3. Stop and remove <lottie-player> components
+    document.querySelectorAll('lottie-player').forEach(player => {
+        if (typeof player.stop === 'function') player.stop();
+        player.remove();
+    });
+
+    // 4. Stop and destroy lottie-web animations (if any)
+    if (window.lottie && typeof window.lottie.getRegisteredAnimations === 'function') {
+        const animations = window.lottie.getRegisteredAnimations();
+        animations.forEach(anim => {
+            if (typeof anim.stop === 'function') anim.stop();
+            if (typeof anim.destroy === 'function') anim.destroy();
+        });
+    }
+
+    // 5. Remove <canvas> elements (used by Lottie or other animations)
+    document.querySelectorAll('canvas').forEach(canvas => canvas.remove());
+
+    // 6. Remove SVG elements containing <animateTransform>
+    document.querySelectorAll('svg').forEach(svg => {
+        if (svg.querySelector('animateTransform')) {
+            svg.remove();
+        }
+    });
+}
+
 // On page load, use the saved simplification level
-window.addEventListener('DOMContentLoaded', () => {    
+window.addEventListener('DOMContentLoaded', () => {
     const simplifyLevel = getSimplificationLevel();
     const filterBadWords = getBlockBadWords();
+    if (getDisableAnimations()) {
+        removeAnimationsFromPage();
+    }
     replaceAllTextNodesWithAI(simplifyLevel, filterBadWords);
+
 });
 
 window.addEventListener('message', (event) => {
@@ -157,6 +200,9 @@ window.addEventListener('message', (event) => {
         }
         if (typeof event.data.disableAnimations !== 'undefined') {
             localStorage.setItem('autismDisableAnimations', event.data.disableAnimations);
+            if (event.data.disableAnimations) {
+                removeAnimationsFromPage();
+            }
         }
         if (typeof event.data.blockBadWords !== 'undefined') {
             localStorage.setItem('autismBlockBadWords', event.data.blockBadWords);
