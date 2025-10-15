@@ -119,23 +119,22 @@ async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
         return;
     }
     let cache = {};
-    try { cache = JSON.parse(localStorage.getItem('rewriteCacheV1')) || {}; } catch { }
+    let cacheChanged = false;
+    try { cache = JSON.parse(localStorage.getItem('rewriteCacheV1')) || {}; } catch {}
     const nodes = collectTextNodes(document.body);
     for (const node of nodes) {
         const key = `${simplifyLevel}:${node.nodeValue}`;
         if (cache[key]) {
-            console.log(`[CACHE HIT] Before: "${node.nodeValue}" | After: "${cache[key]}"`);
             node.nodeValue = cache[key];
-            console.log(`[CACHE RETRIEVED] Key: ${key}`);
         } else {
-            console.log(`[AI REWRITE] Processing: "${node.nodeValue}" at time ${new Date().toISOString()}`);
             const rewritten = await rewriteTextViaAI(node.nodeValue, simplifyLevel, filterBadWords);
-            console.log(`[AI REWRITE] Before: "${node.nodeValue}" | After: "${rewritten}"`);
             node.nodeValue = rewritten;
             cache[key] = rewritten;
-            localStorage.setItem('rewriteCacheV1', JSON.stringify(cache));
-            console.log(`[CACHE SAVED] Key: ${key}`);
+            cacheChanged = true;
         }
+    }
+    if (cacheChanged) {
+        localStorage.setItem('rewriteCacheV1', JSON.stringify(cache));
     }
 }
 
