@@ -5,22 +5,7 @@ let currentSimplificationLevel = 50;
 let currentDisableAnimations = false;
 let currentBlockBadWords = false;
 let currentAutomaticSimplification = false;
-
-// Helper to get current simplification level
-function getSimplificationLevel() {
-    return currentSimplificationLevel;
-}
-
-//Get current value of disable animations and block bad words in boolean form
-function getDisableAnimations() {
-    return currentDisableAnimations;
-}
-function getBlockBadWords() {
-    return currentBlockBadWords;
-}
-function getAutomaticSimplification() {
-    return currentAutomaticSimplification;
-}
+let isAutomaticSimplificationActive = false;
 
 // Helper to generate AI prompt based on slider value
 function getSimplificationPrompt(level) {
@@ -81,6 +66,9 @@ let sharedAbortController = null;
 
 async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
     return enqueueAIRewrite(async () => {
+        if (!isAutomaticSimplificationActive) {
+            throw new Error('Cancelled');
+        }
         if (!('Rewriter' in self)) {
             console.error('[CLIENT] Gemini Nano Rewriter API not available.');
             return '[AI ERROR] Gemini Nano Rewriter API not available.';
@@ -103,6 +91,9 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
             prompt += ' Also, filter out any bad words (cursed words).';
         }
         console.log('prompt:', prompt);
+        if (!isAutomaticSimplificationActive) {
+            throw new Error('Cancelled');
+        }
         if (!sharedRewriter || JSON.stringify(sharedRewriterOptions) !== JSON.stringify(options)) {
             if (sharedRewriter) sharedRewriter.destroy();
             sharedAbortController = new AbortController();
@@ -129,14 +120,30 @@ async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
     try { cache = JSON.parse(localStorage.getItem('rewriteCacheV1')) || {}; } catch { }
     const nodes = collectTextNodes(document.body);
     for (const node of nodes) {
+        if (!isAutomaticSimplificationActive) break;
         const key = `${simplifyLevel}:${node.nodeValue}`;
         if (cache[key]) {
             node.nodeValue = cache[key];
         } else {
-            const rewritten = await rewriteTextViaAI(node.nodeValue, simplifyLevel, filterBadWords);
-            node.nodeValue = rewritten;
-            cache[key] = rewritten;
-            cacheChanged = true;
+            try {
+                const rewritten = await rewriteTextViaAI(node.nodeValue, simplifyLevel, filterBadWords);
+                if (isAutomaticSimplificationActive) {
+                    node.nodeValue = rewritten;
+                    cache[key] = rewritten;
+                    cacheChanged = true;
+                }
+            } catch (e) {
+                if (e.message === 'Cancelled') {
+                    // Do not update the node
+                } else {
+                    console.error('[CLIENT] Rewrite error:', e);
+                    if (isAutomaticSimplificationActive) {
+                        node.nodeValue = '[AI ERROR] ' + e.message;
+                        cache[key] = node.nodeValue;
+                        cacheChanged = true;
+                    }
+                }
+            }
         }
     }
     if (cacheChanged) {
@@ -202,6 +209,7 @@ window.addEventListener('message', (event) => {
         }
         if (event.data.data.autismAutomaticSimplification !== undefined) {
             currentAutomaticSimplification = event.data.data.autismAutomaticSimplification;
+            isAutomaticSimplificationActive = currentAutomaticSimplification;
         }
         // Apply settings after loading
         if (currentDisableAnimations) {
@@ -227,6 +235,27 @@ window.addEventListener('message', (event) => {
             currentBlockBadWords = event.data.data.autismBlockBadWords;
         }
         if (event.data.data.autismAutomaticSimplification !== undefined) {
+            const wasActive = currentAutomaticSimplification;
+            if (!event.data.data.autismAutomaticSimplification) {
+                // Disabling automatic simplification: abort ongoing AI operations and clean up
+                isAutomaticSimplificationActive = false;
+                if (sharedAbortController) {
+                    sharedAbortController.abort();
+                }
+                if (sharedRewriter) {
+                    sharedRewriter.destroy();
+                    sharedRewriter = null;
+                }
+                sharedRewriterOptions = null;
+                // Clear the queue to stop pending tasks
+                aiRewriteQueue.length = 0;
+                aiRewriteActive = false;
+            } else {
+                isAutomaticSimplificationActive = true;
+                if (!wasActive && currentSimplificationLevel > 0) {
+                    replaceAllTextNodesWithAI(currentSimplificationLevel, currentBlockBadWords);
+                }
+            }
             currentAutomaticSimplification = event.data.data.autismAutomaticSimplification;
         }
         return;
