@@ -1,19 +1,25 @@
 // main-bridge.js - Runs in MAIN world, can access DOM
 
+// Global settings variables, initialized with defaults
+let currentSimplificationLevel = 50;
+let currentDisableAnimations = false;
+let currentBlockBadWords = false;
+let currentAutomaticSimplification = false;
+
 // Helper to get current simplification level
 function getSimplificationLevel() {
-    return Number(localStorage.getItem('autismSimplificationLevel') || 50);
+    return currentSimplificationLevel;
 }
 
 //Get current value of disable animations and block bad words in boolean form
 function getDisableAnimations() {
-    const val = localStorage.getItem('autismDisableAnimations');
-    return val === null ? true : val === 'true';
+    return currentDisableAnimations;
 }
 function getBlockBadWords() {
-    // Default to true if not set
-    const val = localStorage.getItem('autismBlockBadWords');
-    return val === null ? true : val === 'true';
+    return currentBlockBadWords;
+}
+function getAutomaticSimplification() {
+    return currentAutomaticSimplification;
 }
 
 // Helper to generate AI prompt based on slider value
@@ -179,33 +185,56 @@ async function removeAnimationsFromPage() {
 
 // On page load, use the saved simplification level
 window.addEventListener('DOMContentLoaded', () => {
-    const simplifyLevel = getSimplificationLevel();
-    const filterBadWords = getBlockBadWords();
-    if (getDisableAnimations()) {
-        removeAnimationsFromPage();
-    }
-    replaceAllTextNodesWithAI(simplifyLevel, filterBadWords);
-
+    // Delay automatic actions until settings are received via message
 });
 
 window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'autism-settings-init') {
+        // Set global variables from chrome.storage data
+        if (event.data.data.autismSimplificationLevel !== undefined) {
+            currentSimplificationLevel = Number(event.data.data.autismSimplificationLevel);
+        }
+        if (event.data.data.autismDisableAnimations !== undefined) {
+            currentDisableAnimations = event.data.data.autismDisableAnimations;
+        }
+        if (event.data.data.autismBlockBadWords !== undefined) {
+            currentBlockBadWords = event.data.data.autismBlockBadWords;
+        }
+        if (event.data.data.autismAutomaticSimplification !== undefined) {
+            currentAutomaticSimplification = event.data.data.autismAutomaticSimplification;
+        }
+        // Apply settings after loading
+        if (currentDisableAnimations) {
+            removeAnimationsFromPage();
+        }
+        if (currentAutomaticSimplification && currentSimplificationLevel > 0) {
+            replaceAllTextNodesWithAI(currentSimplificationLevel, currentBlockBadWords);
+        }
+        return;
+    }
+    if (event.data && event.data.type === 'autism-settings-update') {
+        // Update global variables from storage changes
+        if (event.data.data.autismSimplificationLevel !== undefined) {
+            currentSimplificationLevel = Number(event.data.data.autismSimplificationLevel);
+        }
+        if (event.data.data.autismDisableAnimations !== undefined) {
+            currentDisableAnimations = event.data.data.autismDisableAnimations;
+            if (currentDisableAnimations) {
+                removeAnimationsFromPage();
+            }
+        }
+        if (event.data.data.autismBlockBadWords !== undefined) {
+            currentBlockBadWords = event.data.data.autismBlockBadWords;
+        }
+        if (event.data.data.autismAutomaticSimplification !== undefined) {
+            currentAutomaticSimplification = event.data.data.autismAutomaticSimplification;
+        }
+        return;
+    }
     if (event.data && event.data.type === 'autism-simplify-panel') {
         if (event.data.clearCache) {
             localStorage.removeItem('rewriteCacheV1');
             return;
-        }
-        // Save all received settings to storage
-        if (typeof event.data.simplifyLevel !== 'undefined') {
-            localStorage.setItem('autismSimplificationLevel', event.data.simplifyLevel);
-        }
-        if (typeof event.data.disableAnimations !== 'undefined') {
-            localStorage.setItem('autismDisableAnimations', event.data.disableAnimations);
-            if (event.data.disableAnimations) {
-                removeAnimationsFromPage();
-            }
-        }
-        if (typeof event.data.blockBadWords !== 'undefined') {
-            localStorage.setItem('autismBlockBadWords', event.data.blockBadWords);
         }
         return;
     }

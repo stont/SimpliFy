@@ -4,8 +4,9 @@
 const clearBtn = document.getElementById('clearCacheBtn');
 const msg = document.getElementById('clearCacheMsg');
 if (clearBtn) {
-  clearBtn.addEventListener('click', function() {
-    localStorage.clear();
+  clearBtn.addEventListener('click', async function() {
+    await chrome.storage.local.clear();
+    await initializeSettings();
     if (msg) {
       msg.textContent = 'Local cache cleared.';
       msg.style.display = 'block';
@@ -21,6 +22,7 @@ const simplificationSlider = document.getElementById('simplifyLevel');
 const simplificationValue = document.getElementById('simplifyLevelValue');
 const disableAnimationsCheckbox = document.getElementById('disableAnimations');
 const blockBadWordsCheckbox = document.getElementById('blockBadWords');
+const automaticSimplificationCheckbox = document.getElementById('automaticSimplification');
 
 function getSimplificationLabel(val) {
   val = Number(val);
@@ -31,29 +33,27 @@ function getSimplificationLabel(val) {
   if (val >= 100) return val + ' (Max Simplified)';
 }
 
-// Initialize settings from localStorage to form elements
-function initializeSettings() {
+// Initialize settings from chrome.storage.local to form elements
+async function initializeSettings() {
+  const result = await chrome.storage.local.get(['autismSimplificationLevel', 'autismDisableAnimations', 'autismBlockBadWords', 'autismAutomaticSimplification']);
   // Simplification Level
-  if (simplificationSlider && simplificationValue) {
-    const saved = getSimplificationLevel();
-    if (saved !== null) {
-      simplificationSlider.value = saved;
-      simplificationValue.textContent = getSimplificationLabel(Number(saved));
-    } else {
-      simplificationSlider.value = 50;
-      simplificationValue.textContent = getSimplificationLabel(50);
-    }
+  const savedLevel = result.autismSimplificationLevel;
+  if (savedLevel !== undefined) {
+    simplificationSlider.value = savedLevel;
+    simplificationValue.textContent = getSimplificationLabel(Number(savedLevel));
+  } else {
+    simplificationSlider.value = 50;
+    simplificationValue.textContent = getSimplificationLabel(50);
   }
   // Disable Animations
-  if (disableAnimationsCheckbox) {
-    const saved = getDisableAnimations();
-    disableAnimationsCheckbox.checked = saved === 'true';
-  }
+  const savedDisable = result.autismDisableAnimations;
+  disableAnimationsCheckbox.checked = savedDisable !== undefined ? savedDisable : false;
   // Block Bad Words
-  if (blockBadWordsCheckbox) {
-    const saved = getBlockBadWords();
-    blockBadWordsCheckbox.checked = saved !== 'false'; // default true
-  }
+  const savedBlock = result.autismBlockBadWords;
+  blockBadWordsCheckbox.checked = savedBlock !== undefined ? savedBlock : false;
+  // Automatic Simplification
+  const savedAuto = result.autismAutomaticSimplification;
+  automaticSimplificationCheckbox.checked = savedAuto !== undefined ? savedAuto : false;
 }
 
 if (simplificationSlider && simplificationValue) {
@@ -61,20 +61,22 @@ if (simplificationSlider && simplificationValue) {
   // Only send on slider change, not on load
   simplificationSlider.addEventListener('input', function() {
     simplificationValue.textContent = getSimplificationLabel(Number(this.value));
-    localStorage.setItem('autismSimplificationLevel', this.value);
-    sendAllSettings();
+    chrome.storage.local.set({ 'autismSimplificationLevel': this.value });
   });
 }
 if (disableAnimationsCheckbox) {
   disableAnimationsCheckbox.addEventListener('change', function() {
-    localStorage.setItem('autismDisableAnimations', this.checked);
-    sendAllSettings();
+    chrome.storage.local.set({ 'autismDisableAnimations': this.checked });
   });
 }
 if (blockBadWordsCheckbox) {
   blockBadWordsCheckbox.addEventListener('change', function() {
-    localStorage.setItem('autismBlockBadWords', this.checked);
-    sendAllSettings();
+    chrome.storage.local.set({ 'autismBlockBadWords': this.checked });
+  });
+}
+if (automaticSimplificationCheckbox) {
+  automaticSimplificationCheckbox.addEventListener('change', function() {
+    chrome.storage.local.set({ 'autismAutomaticSimplification': this.checked });
   });
 }
 
@@ -84,42 +86,6 @@ const settingsPage = document.getElementById('settingsPage');
 if (settingsBtn && settingsPage) {
   settingsBtn.addEventListener('click', function() {
     initializeSettings();
-  });
-}
-
-// Helper to get current simplification level
-function getSimplificationLevel() {
-  return Number(localStorage.getItem('autismSimplificationLevel') || 50);
-}
-
-function getDisableAnimations() {
-   const val = localStorage.getItem('autismDisableAnimations');
-  return val === null ? true : val === 'true';
-}
-function getBlockBadWords() {
-  // Default to true if not set
-  const val = localStorage.getItem('autismBlockBadWords');
-  return val === null ? true : val === 'true';
-}
-
-// On page load, auto-send
-window.addEventListener('DOMContentLoaded', sendAllSettings);
-
-function sendAllSettings() {
-  const level = getSimplificationLevel();
-  const disableAnimations = getDisableAnimations();
-  const blockBadWords = getBlockBadWords();
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (tabs && tabs[0]) {
-      chrome.tabs.sendMessage(tabs[0].id, {
-        data: {
-          type: 'autism-simplify-panel',
-          simplifyLevel: level,
-          disableAnimations: disableAnimations,
-          blockBadWords: blockBadWords
-        }
-      });
-    }
   });
 }
 

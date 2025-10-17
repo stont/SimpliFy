@@ -31,9 +31,12 @@
       <div style="padding: 20px 16px 0 16px;">
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
           <label for="simplifyLevel" style="flex:1;">Text Simplification Level</label>
-          <input type="range" id="simplifyLevel" min="0" max="100" value="50"
-            style="flex:2;max-width:100%;" />
+          <input type="range" id="simplifyLevel" min="0" max="100" value="50" style="flex:2;max-width:100%;" />
           <span id="simplifyLevelValue" style="min-width:32px;text-align:right;">50</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="automaticSimplification" style="flex:1;">Make texts simple automatically</label>
+          <input type="checkbox" id="automaticSimplification" style="flex:0;" />
         </div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
           <label for="disableAnimations" style="flex:1;">Stop things from moving</label>
@@ -41,7 +44,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
           <label for="blockBadWords" style="flex:1;">Block adult or rude words</label>
-          <input type="checkbox" id="blockBadWords" checked style="flex:0;" />
+          <input type="checkbox" id="blockBadWords" style="flex:0;" />
         </div>
         <div style="margin-top:24px;">
           <button class="main-btn" id="clearCacheBtn">Clear Saved Storage</button>
