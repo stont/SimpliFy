@@ -5,8 +5,6 @@ const clearBtn = document.getElementById('clearCacheBtn');
 const msg = document.getElementById('clearCacheMsg');
 if (clearBtn) {
   clearBtn.addEventListener('click', async function() {
-    await chrome.storage.local.clear();
-    await initializeSettings();
     if (msg) {
       msg.textContent = 'Local cache cleared.';
       msg.style.display = 'block';

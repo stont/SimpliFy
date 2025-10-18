@@ -1,6 +1,42 @@
 // Placeholder for background logic (if needed)
 // All processing is local/offline
 
+// Global AI permission to prevent concurrent AI operations across tabs
+let isAIActive = false;
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'request-ai-permission') {
+    if (!isAIActive) {
+      isAIActive = true;
+      sendResponse({ granted: true });
+    } else {
+      sendResponse({ granted: false });
+    }
+  } else if (message.type === 'release-ai-permission') {
+    isAIActive = false;
+    sendResponse({ ok: true });
+  }
+  // Existing listeners...
+  if (message.action === 'summarize-text') {
+    // Handle summarize-text
+  }
+});
+
+// Release AI permission if the active tab is closed
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  // If AI was active and the tab closed, release the permission
+  if (isAIActive) {
+    isAIActive = false;
+    // Notify other tabs to retry their AI queues immediately
+    const tabs = await chrome.tabs.query({});
+    tabs.forEach(tab => {
+      if (tab.id !== tabId) { // Don't send to the closed tab
+        chrome.tabs.sendMessage(tab.id, { type: 'retry-ai-queue' }).catch(() => {}); // Ignore errors
+      }
+    });
+  }
+});
+
 // Enable auto-opening of the side panel when the extension icon is clicked
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })

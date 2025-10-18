@@ -1,6 +1,20 @@
 // Listen for messages from the extension and forward to page (MAIN world)
 chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === 'retry-ai-queue') {
+    window.postMessage({ type: 'retry-ai-queue' }, '*');
+  }
   window.postMessage({ type: 'autism-simplify-panel', ...message.data }, '*');
+});
+
+// Handle AI permission requests from main-bridge
+window.addEventListener('message', async (event) => {
+  if (event.data.type === 'request-ai-permission') {
+    const response = await chrome.runtime.sendMessage({ type: 'request-ai-permission' });
+    window.postMessage({ type: 'ai-permission-response', granted: response.granted, id: event.data.id }, '*');
+  } else if (event.data.type === 'release-ai-permission') {
+    await chrome.runtime.sendMessage({ type: 'release-ai-permission' });
+    window.postMessage({ type: 'ai-permission-released', id: event.data.id }, '*');
+  }
 });
 
 // On load, send current settings to main-bridge

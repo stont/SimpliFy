@@ -22,7 +22,8 @@ function collectTextNodes(root) {
     const nodes = [];
     function dfs(node) {
         for (let child of node.childNodes) {
-            if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim()) {
+            if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim() && /[a-zA-Z]/.test(child.nodeValue) && !/:\/|www\./.test(child.nodeValue) && (!child.parentNode || child.parentNode.nodeName !== 'SCRIPT')) {
+                console.log('Child:', child.nodeName, 'Parent:', child.parentNode ? child.parentNode.nodeName : 'none');
                 nodes.push(child);
             } else {
                 dfs(child);
@@ -36,6 +37,26 @@ function collectTextNodes(root) {
 // FIFO queue for AI rewrite requests (client-side)
 const aiRewriteQueue = [];
 let aiRewriteActive = false;
+let permissionRequestId = 0;
+
+function requestAIPermission() {
+  return new Promise((resolve) => {
+    const id = ++permissionRequestId;
+    window.postMessage({ type: 'request-ai-permission', id }, '*');
+    const listener = (event) => {
+      if (event.data.type === 'ai-permission-response' && event.data.id === id) {
+        window.removeEventListener('message', listener);
+        resolve(event.data.granted);
+      }
+    };
+    window.addEventListener('message', listener);
+  });
+}
+
+function releaseAIPermission() {
+  const id = ++permissionRequestId;
+  window.postMessage({ type: 'release-ai-permission', id }, '*');
+}
 
 function enqueueAIRewrite(task) {
     return new Promise((resolve, reject) => {
@@ -46,6 +67,13 @@ function enqueueAIRewrite(task) {
 
 async function processAIRewriteQueue() {
     if (aiRewriteActive || aiRewriteQueue.length === 0) return;
+    // Request permission from background to ensure only one AI operation globally
+    const granted = await requestAIPermission();
+    if (!granted) {
+        // Permission denied, retry after a short delay
+        setTimeout(processAIRewriteQueue, 1000);
+        return;
+    }
     aiRewriteActive = true;
     const { task, resolve, reject } = aiRewriteQueue.shift();
     try {
@@ -55,6 +83,8 @@ async function processAIRewriteQueue() {
         reject(e);
     } finally {
         aiRewriteActive = false;
+        // Release permission
+        releaseAIPermission();
         processAIRewriteQueue();
     }
 }
@@ -64,6 +94,9 @@ let sharedRewriter = null;
 let sharedRewriterOptions = null;
 let sharedAbortController = null;
 
+// AI rules for rewriting
+const aiRules = "Do not change proper names, dates, numbers, or technical terms. Preserve the original meaning and structure as much as possible. If the text is already simple, leave it unchanged. Do not define terms, explain concepts, or summarize content. Only simplify words and phrases within the existing sentences. Ignore code snippets, programming code, or technical code.";
+
 async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
     return enqueueAIRewrite(async () => {
         if (!isAutomaticSimplificationActive) {
@@ -71,12 +104,12 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
         }
         if (!('Rewriter' in self)) {
             console.error('[CLIENT] Gemini Nano Rewriter API not available.');
-            return '[AI ERROR] Gemini Nano Rewriter API not available.';
+            return original;
         }
         const available = await Rewriter.availability();
         if (available === 'unavailable') {
             console.error('[CLIENT] Rewriter API is not usable.');
-            return '[AI ERROR] Rewriter API is not usable.';
+            return original;
         }
         // Use the prompt from the slider
         let prompt = getSimplificationPrompt(simplifyLevel);
@@ -84,13 +117,13 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
             tone: 'as-is',
             length: 'as-is',
             format: 'plain-text',
-            sharedContext: prompt
+            sharedContext: aiRules
         };
 
         if (filterBadWords) {
             prompt += ' Also, filter out any bad words (cursed words).';
         }
-        console.log('prompt:', prompt);
+        //console.log('prompt:', prompt);
         if (!isAutomaticSimplificationActive) {
             throw new Error('Cancelled');
         }
@@ -102,10 +135,11 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
         }
         try {
             const rewrittenText = await sharedRewriter.rewrite(original, { context: prompt });
+            //console.log('[AI Transform]\nOriginal:', original, '\nRewritten:', rewrittenText);
             return rewrittenText;
         } catch (error) {
             console.error('[CLIENT] Rewrite error:', error);
-            return '[AI ERROR] Rewrite failed: ' + error.message;
+            return original;
         }
     });
 }
@@ -193,6 +227,7 @@ async function removeAnimationsFromPage() {
 // On page load, use the saved simplification level
 window.addEventListener('DOMContentLoaded', () => {
     // Delay automatic actions until settings are received via message
+    //console.log('[MAIN] Page loaded, waiting for settings...');
 });
 
 window.addEventListener('message', (event) => {
@@ -274,5 +309,14 @@ window.addEventListener('message', (event) => {
         // Replace the selected text with the summary
         range.deleteContents();
         range.insertNode(document.createTextNode(event.data.message));
+    }
+    if (event.data && event.data.type === 'retry-ai-queue') {
+        processAIRewriteQueue();
+    }
+    if (event.data && event.data.type === 'ai-permission-response') {
+        // handled in requestAIPermission
+    }
+    if (event.data && event.data.type === 'ai-permission-released') {
+        // handled
     }
 });
