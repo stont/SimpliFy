@@ -16,37 +16,6 @@ function openTab(evt, tabId) {
   evt.currentTarget.classList.add('active');
 }
 
-async function generateSummary(text, options) {
-    try {
-        const availability = await Summarizer.availability();
-        if (availability === 'unavailable') {
-            console.log('Summarizer API is not available')
-        }
-        if (availability === 'available') {
-            summarizer = await Summarizer.create(options);
-        }
-        else {
-            summarizer = await Summarizer.create(options);
-            if (typeof summarizer.addEventListener === 'function') {
-                summarizer.addEventListener('downloadprogress', (e) => {
-                    console.log(`Downloaded ${e.loaded * 100}%`);
-                });
-            }
-            if (summarizer.ready) {
-                await summarizer.ready;
-            }
-        }
-        const summary = await summarizer.summarize(text);
-        summarizer.destroy();
-        return summary;
-    } catch (e) {
-        console.log('Summary generation failed');
-        console.error(e);
-        return 'Error: ' + e.message;
-    }
-}
-
-
 document.addEventListener('DOMContentLoaded', function () {
     const homebtn = document.getElementById('homeBtn');
     const settingsBtn = document.getElementById('settingsBtn');
@@ -87,25 +56,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Subscriber
     chrome.runtime.onMessage.addListener(async function (request) {
-        if (request.action === 'summarize-text') {
-            const text = request.text;
-            console.log('Received text for summarization:', text);
-
-            const options = {
-                sharedContext: 'this is a website',
-                type: 'tldr',
-                length: 'medium'
-            };
-
-            const summary = await generateSummary(text, options)
-            console.log('Generated summary:', summary);
-
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                console.log('The tab: ', tabs);
-                if (tabs && tabs[0]) {
-                    chrome.tabs.sendMessage(tabs[0].id, { data: { type: 'summary-panel', message: summary } });
-                }
-            });
-        }
+        // Removed summarize-text and simplify-text handling, now handled in main-bridge.js
     });
 });

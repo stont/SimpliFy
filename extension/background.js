@@ -44,19 +44,52 @@ chrome.sidePanel
 
 
 chrome.runtime.onInstalled.addListener(() => {
+  console.log('[BACKGROUND] Creating context menus');
   chrome.contextMenus.create({
     id: 'summarizeText',
     title: 'Generate summary',
     contexts: ['selection']
   });
+  chrome.contextMenus.create({
+    id: 'simplifyText',
+    title: 'Simplify text',
+    contexts: ['selection']
+  });
+  console.log('[BACKGROUND] Context menus created');
 });
 
-chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  console.log('[BACKGROUND] Context menu clicked:', info.menuItemId, 'selectionText:', !!info.selectionText, 'tabId:', tab?.id);
+  if (!tab || !tab.id) {
+    console.error('[BACKGROUND] No valid tab information');
+    return;
+  }
   if (info.menuItemId === 'summarizeText' && info.selectionText) {
+    console.log('[BACKGROUND] Sending summarize-text message with text length:', info.selectionText.length);
     // Relay to content script in the active tab
-    chrome.runtime.sendMessage({
-      action: 'summarize-text',
-      text: info.selectionText
-    });
+    try {
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: 'summarize-text',
+        text: info.selectionText
+      });
+      console.log('[BACKGROUND] Message sent successfully');
+    } catch (error) {
+      console.error('[BACKGROUND] Failed to send message:', error);
+    }
+   } 
+  else if (info.menuItemId === 'simplifyText' && info.selectionText) {
+    console.log('[BACKGROUND] Sending simplify-text message with text length:', info.selectionText.length);
+    // Relay to content script in the active tab
+    try {
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: 'simplify-text',
+        text: info.selectionText
+      });
+      console.log('[BACKGROUND] Message sent successfully');
+    } catch (error) {
+      console.error('[BACKGROUND] Failed to send message:', error);
+    }
+  } else {
+    console.log('[BACKGROUND] Context menu click ignored - no selection or unknown menu item');
   }
 });

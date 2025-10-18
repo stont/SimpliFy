@@ -1,7 +1,19 @@
 // Listen for messages from the extension and forward to page (MAIN world)
+
 chrome.runtime.onMessage.addListener((message) => {
+  console.log('[BRIDGE] Received runtime message:', message);
   if (message.type === 'retry-ai-queue') {
+    console.log('[BRIDGE] Forwarding retry-ai-queue to page');
     window.postMessage({ type: 'retry-ai-queue' }, '*');
+  }
+  if (message.action === 'summarize-text') {
+    console.log('[BRIDGE] Forwarding summarize-text to page, text length:', message.text?.length);
+    console.log('[BRIDGE] Forwarding summarize-text to page, text length:', message.text?.length);
+    window.postMessage({ type: 'summarize-text', text: message.text }, '*');
+  }
+  if (message.action === 'simplify-text') {
+    console.log('[BRIDGE] Forwarding simplify-text to page, text length:', message.text?.length);
+    window.postMessage({ type: 'simplify-text', text: message.text }, '*');
   }
   window.postMessage({ type: 'autism-simplify-panel', ...message.data }, '*');
 });
