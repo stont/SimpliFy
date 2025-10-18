@@ -39,22 +39,22 @@ let aiRewriteActive = false;
 let permissionRequestId = 0;
 
 function requestAIPermission() {
-  return new Promise((resolve) => {
-    const id = ++permissionRequestId;
-    window.postMessage({ type: 'request-ai-permission', id }, '*');
-    const listener = (event) => {
-      if (event.data.type === 'ai-permission-response' && event.data.id === id) {
-        window.removeEventListener('message', listener);
-        resolve(event.data.granted);
-      }
-    };
-    window.addEventListener('message', listener);
-  });
+    return new Promise((resolve) => {
+        const id = ++permissionRequestId;
+        window.postMessage({ type: 'request-ai-permission', id }, '*');
+        const listener = (event) => {
+            if (event.data.type === 'ai-permission-response' && event.data.id === id) {
+                window.removeEventListener('message', listener);
+                resolve(event.data.granted);
+            }
+        };
+        window.addEventListener('message', listener);
+    });
 }
 
 function releaseAIPermission() {
-  const id = ++permissionRequestId;
-  window.postMessage({ type: 'release-ai-permission', id }, '*');
+    const id = ++permissionRequestId;
+    window.postMessage({ type: 'release-ai-permission', id }, '*');
 }
 
 function enqueueAIRewrite(task) {
@@ -218,8 +218,8 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
     });
 }
 
-// Replace all text nodes with AI/cached rewrite (calls AI directly)
-async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
+
+async function replaceAllTextNodesWithAI2(simplifyLevel, filterBadWords) {
     if (simplifyLevel === 0) {
         return;
     }
@@ -302,7 +302,150 @@ async function removeAnimationsFromPage() {
 window.addEventListener('DOMContentLoaded', () => {
     // Delay automatic actions until settings are received via message
     //console.log('[MAIN] Page loaded, waiting for settings...');
+
+    const pageContent = safeGetVisibleText();
+    console.log('[MAIN] Extracted page content length:', pageContent.length);
+    promptText(pageContent);
+    // sendToExtension(pageContent);
+
+
+
 });
+
+async function promptText(pageContent) {
+    console.log('abount to prompt text:: ', pageContent)
+    const session = await LanguageModel.create({
+        initialPrompts: [
+            {
+                role: 'system',
+                content:
+                    `You are a skilled analyst who correlates patterns across multiple images.
+                    Your task:
+                        1. Identify the main purpose of the page (e.g., article, news story, product page, blog post, documentation, etc.).
+                        2. Summarize the most important information in a clear and conversational tone.
+                        3. Describe any key images, links, or buttons (if mentioned in the text).
+                        4. Ignore ads, navigation menus, sidebars, or footers.
+                        5. Use simple, natural English suitable for text-to-speech.
+                        6. Limit response to about 250 words unless the page is very detailed.
+
+                        When responding:
+                        - Start with a short overview: "This page is about..."
+                        - Then describe main content sections in a logical order.
+                        - End with: "Thats the main content of the page."
+
+                        
+
+                    `,
+            },
+        ],
+        expectedInputs: [
+            { type: "text", languages: ["en"] }
+        ],
+        expectedOutputs: [
+            { type: "text", languages: ["en"] }
+        ]
+    });
+
+    const result = await session.prompt(`Here is the extracted text content of the page:
+                        ---
+                        ${pageContent}
+                        ---
+                        Now, generate your response.`);
+    // for await (const chunk of stream) {
+        // console.log(chunk);
+        console.log('============ Prompt result======= ', result)
+        const chunks = chunkText(result);
+        sendToExtension(chunks)
+        
+    // }
+
+    
+}
+
+function chunkText(text, maxChars = 700) {
+    const paragraphs = text.split(/\n{1,}/).map(p => p.trim()).filter(Boolean);
+    const chunks = [];
+    let cur = '';
+    for (const p of paragraphs) {
+      if ((cur + '\n\n' + p).length > maxChars) {
+        if (cur) { chunks.push(cur.trim()); cur = p; }
+        else {
+          // paragraph itself large: slice
+          for (let i=0;i<p.length;i+=maxChars) {
+            chunks.push(p.slice(i, i+maxChars));
+          }
+          cur = '';
+        }
+      } else {
+        cur = cur ? (cur + '\n\n' + p) : p;
+      }
+    }
+    if (cur) chunks.push(cur.trim());
+    console.log("final chunk:::", chunks)
+    return chunks;
+  }
+
+function safeGetVisibleText() {
+    try {
+        // Ensure DOM is ready
+        if (!document.body) {
+            console.warn("Body not yet available. Retrying...");
+            setTimeout(safeGetVisibleText, 300);
+            return;
+        }
+
+        const walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            {
+                acceptNode(node) {
+                    // Filter out invisible, script, style, and irrelevant nodes
+                    const parent = node.parentNode;
+                    if (
+                        !parent ||
+                        ["SCRIPT", "STYLE", "NOSCRIPT", "IFRAME", "OBJECT"].includes(parent.nodeName)
+                    ) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+
+                    const text = node.nodeValue?.trim() || "";
+                    if (text.length === 0) return NodeFilter.FILTER_REJECT;
+                    return NodeFilter.FILTER_ACCEPT;
+                },
+            }
+        );
+
+        let textContent = "";
+        let node;
+        while ((node = walker.nextNode())) {
+            textContent += node.nodeValue.trim() + " ";
+        }
+
+
+        return textContent;
+    } catch (err) {
+        console.error("❌ Error using TreeWalker:", err);
+        return "";
+    }
+}
+
+// Run safely after DOM is ready
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", safeGetVisibleText);
+} else {
+    safeGetVisibleText();
+}
+
+
+// main-bridge.js
+function sendToExtension(data) {
+    console.log('[MAIN-BRIDGE] Sending data to extension, length:', data?.length);
+    window.postMessage({
+        type: "from-main-bridge",
+        message: data
+    }, "*");
+}
+
 
 window.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'autism-settings-init') {
@@ -437,3 +580,5 @@ window.addEventListener('message', (event) => {
         // handled
     }
 });
+
+// Voice reader 

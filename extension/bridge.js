@@ -26,6 +26,10 @@ window.addEventListener('message', async (event) => {
   } else if (event.data.type === 'release-ai-permission') {
     await chrome.runtime.sendMessage({ type: 'release-ai-permission' });
     window.postMessage({ type: 'ai-permission-released', id: event.data.id }, '*');
+  } else if (event.data.type === "from-main-bridge") {
+    console.log('[BRIDGE] Forwarding message to background:', event.data.message);
+    // Forward to background
+    chrome.runtime.sendMessage({ type: "from-main-bridge", data: event.data.message })
   }
 });
 
@@ -46,4 +50,13 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
       window.postMessage({ type: 'autism-settings-update', data: updated }, '*');
     }
   }
+});
+
+// bridge.js
+window.addEventListener("message", (event) => {
+  // Only accept messages from our page context
+  if (event.source !== window || !event.data || event.data.direction !== "from-page") return;
+
+  // Forward to background
+  chrome.runtime.sendMessage(event.data.message);
 });

@@ -5,6 +5,7 @@
 let isAIActive = false;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('Message listener', message)
   if (message.type === 'request-ai-permission') {
     if (!isAIActive) {
       isAIActive = true;
@@ -20,7 +21,39 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'summarize-text') {
     // Handle summarize-text
   }
+  if (message.type === 'from-main-bridge') {
+    console.log('[BACKGROUND] Received from main-bridge:', message.data);
+    // chrome.tts.speak(message.data, { rate: 1.0 });
+    const chunks = Array.isArray(message.data) ? message.data : [message.data];
+    speakChunks(chunks, { rate: 1.0 });
+  }
 });
+
+function speakChunks(chunks, options) {
+  // default options
+  const voiceName = 'Nate'//options.voiceName || '';
+  const rate = options.rate || 1.0;
+  const pitch = options.pitch || 1.0;
+  const volume = typeof options.volume === 'number' ? options.volume : 1.0;
+console.log("speakChunks called with chunks: ", Array.isArray(chunks), "options:", options);
+  if (!Array.isArray(chunks) || chunks.length === 0) return;
+  // speak each chunk sequentially using enqueue
+  chunks.forEach((chunk, i) => {
+    // Ensure chunk is not empty and under API per-utterance limit (32,768)
+    const utterance = (chunk || '').slice(0, 32768);
+    chrome.tts.speak(utterance, {
+      voiceName: voiceName || undefined,
+      rate,
+      pitch,
+      volume,
+      enqueue: i > 0
+    }, function () {
+      if (chrome.runtime.lastError) {
+        console.warn('TTS error:', chrome.runtime.lastError.message);
+      }
+    });
+  });
+}
 
 // Release AI permission if the active tab is closed
 chrome.tabs.onRemoved.addListener(async (tabId) => {
@@ -31,7 +64,7 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
     const tabs = await chrome.tabs.query({});
     tabs.forEach(tab => {
       if (tab.id !== tabId) { // Don't send to the closed tab
-        chrome.tabs.sendMessage(tab.id, { type: 'retry-ai-queue' }).catch(() => {}); // Ignore errors
+        chrome.tabs.sendMessage(tab.id, { type: 'retry-ai-queue' }).catch(() => { }); // Ignore errors
       }
     });
   }
@@ -76,7 +109,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     } catch (error) {
       console.error('[BACKGROUND] Failed to send message:', error);
     }
-   } 
+  }
   else if (info.menuItemId === 'simplifyText' && info.selectionText) {
     console.log('[BACKGROUND] Sending simplify-text message with text length:', info.selectionText.length);
     // Relay to content script in the active tab
