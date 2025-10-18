@@ -22,8 +22,7 @@ function collectTextNodes(root) {
     const nodes = [];
     function dfs(node) {
         for (let child of node.childNodes) {
-            if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim() && /[a-zA-Z]/.test(child.nodeValue) && !/:\/|www\./.test(child.nodeValue) && (!child.parentNode || child.parentNode.nodeName !== 'SCRIPT')) {
-                console.log('Child:', child.nodeName, 'Parent:', child.parentNode ? child.parentNode.nodeName : 'none');
+            if (child.nodeType === Node.TEXT_NODE && child.nodeValue.trim() && /[a-zA-Z]/.test(child.nodeValue) && !/:\/|www\./.test(child.nodeValue) && (!child.parentNode || !['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'OBJECT', 'EMBED', 'SVG'].includes(child.parentNode.nodeName))) {
                 nodes.push(child);
             } else {
                 dfs(child);
