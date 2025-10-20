@@ -1,0 +1,195 @@
+        :root {
+            --blue-primary: #1a73e8;
+            /* Google/Material-like blue */
+            --blue-light: #e8f0fe;
+            --text-dark: #202124;
+            --text-medium: #5f6368;
+            --border-light: #dadce0;
+            --radius-default: 8px;
+            --padding-vertical: 40px;
+        }
+
+        body {
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            /* Typical mobile screen width */
+            padding: 20px;
+        }
+
+        /* --- Common Styles --- */
+        .screen {
+            display: none;
+            /* Hide all screens by default */
+            flex-direction: column;
+            align-items: center;
+            padding-top: var(--padding-vertical);
+            padding-bottom: var(--padding-vertical);
+        }
+
+        .screen-header {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: var(--padding-vertical);
+            color: var(--text-dark);
+        }
+
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon-cloud-off {
+            color: var(--blue-primary);
+            font-size: 48px;
+            position: relative;
+        }
+
+        .icon-cloud-off::before {
+            content: '☁️';
+            /* Cloud emoji */
+            position: absolute;
+            font-size: 60px;
+            top: -15px;
+            left: -10px;
+            opacity: 0.6;
+        }
+
+        .icon-cloud-off::after {
+            content: '/';
+            /* Slash for the "off" look */
+            position: absolute;
+            font-size: 80px;
+            top: -15px;
+            left: 20px;
+            transform: rotate(-30deg);
+            color: #ccc;
+            font-weight: 100;
+        }
+
+        /* A simpler, cleaner cloud-off icon to match the image better */
+        .icon-cloud-off-simple {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--blue-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon-cloud-off-simple svg {
+            color: var(--blue-primary);
+        }
+
+
+        .icon-success {
+            background-color: var(--blue-light);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .icon-success svg {
+            color: var(--blue-primary);
+            width: 40px;
+            height: 40px;
+            stroke-width: 3;
+        }
+
+        .main-text {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .sub-text {
+            font-size: 1rem;
+            color: var(--text-medium);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .button-primary {
+            background-color: var(--blue-primary);
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: var(--radius-default);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-primary:hover {
+            background-color: #1669d6;
+        }
+
+        .button-secondary {
+            background-color: transparent;
+            color: var(--blue-primary);
+            padding: 14px 24px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-default);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .button-secondary:hover {
+            background-color: #f6f6f6;
+        }
+
+        /* --- Downloading Screen Specifics --- */
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #f1f3f4;
+            border-radius: 4px;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 75%;
+            /* Initial state matching the image */
+            background-color: var(--blue-primary);
+            border-radius: 4px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .progress-percent {
+            font-size: 1rem;
+            color: var(--text-medium);
+            text-align: right;
+            width: 100%;
+            margin-bottom: 40px;
+        }
