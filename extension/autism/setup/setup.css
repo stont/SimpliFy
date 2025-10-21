@@ -1,3 +1,5 @@
+        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet');
+
         :root {
             --blue-primary: #1a73e8;
             /* Google/Material-like blue */
@@ -27,6 +29,10 @@
             max-width: 400px;
             /* Typical mobile screen width */
             padding: 20px;
+        }
+
+        .progress-circle {
+            transition: stroke-dashoffset 0.5s ease;
         }
 
         /* --- Common Styles --- */

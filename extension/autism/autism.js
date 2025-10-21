@@ -20,45 +20,26 @@ async function CheckAiAvailability(params) {
 
   if (!'Summarizer' in self && !'Rewriter' in self) {
     //Navigate to extension\autism\setup\setup.html
-    window.location.href = '/setup/setup.html';
+    window.location.href = 'setup/setup.html';
   }
 
   //If both exists, check for availability.
   if ('Summarizer' in self && 'Rewriter' in self) {
     // The Summarizer and Rewriter APIs are supported.
 
-    const availability = await Summarizer.availability();
+    const summerizerAvailability = await Summarizer.availability();
+    const rewriterAvailability = await Summarizer.availability();
     //downloading,available,unavailable
-    if (availability === 'downloadable') { }
-    if (navigator.userActivation.isActive) {
+    if (summerizerAvailability === 'downloadable' || rewriterAvailability === 'downloadable') {
+      window.location.href = 'setup/setup.html';
     }
-    const summarizer = await Summarizer.create({
-      monitor(m) {
-        m.addEventListener('downloadprogress', (e) => {
-          console.log(`Downloaded ${e.loaded * 100}%`);
-        });
-      }
-    });
+    
   }
-
-  if ('Rewriter' in self) {
-    // The Rewriter API is supported.
-    const availability = await Rewriter.availability();
-
-    const rewriter = await Rewriter.create({
-      monitor(m) {
-        m.addEventListener("downloadprogress", e => {
-          console.log(`Downloaded ${e.loaded * 100}%`);
-        });
-      }
-    });
-  }
-
 }
 
 document.addEventListener('DOMContentLoaded', function () {
 
-
+  CheckAiAvailability()
 
   const homebtn = document.getElementById('homeBtn');
   const settingsBtn = document.getElementById('settingsBtn');
