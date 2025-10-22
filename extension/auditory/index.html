@@ -259,47 +259,6 @@
   <script src="auditory.js"></script>
   <script src="../shared/shared.js"></script>
   
-  <!-- Add indicator update script -->
-  <script>
-    // Update Scribe tab indicator when content exists
-    function updateScribeTabIndicator() {
-      const scribeTab = document.querySelector('.tab-btn[data-tab="tab-scribe"]');
-      const scribeText = document.getElementById('scribeText');
-      const wordCount = document.getElementById('wordCount');
-      
-      if (scribeTab) {
-        // Check if there's actual content (not just placeholder text)
-        const hasContent = scribeText && scribeText.textContent.trim().length > 0 && 
-                          scribeText.textContent !== "This is where your transcribed text will appear. The area is scrollable and styled for readability." ||
-                          (wordCount && parseInt(wordCount.textContent) > 0);
-        
-        if (hasContent) {
-          scribeTab.classList.add('has-content');
-        } else {
-          scribeTab.classList.remove('has-content');
-        }
-      }
-    }
-    
-    // Monitor changes to scribe content
-    const observer = new MutationObserver(updateScribeTabIndicator);
-    const scribeText = document.getElementById('scribeText');
-    const wordCount = document.getElementById('wordCount');
-    
-    if (scribeText) {
-      observer.observe(scribeText, { childList: true, subtree: true, characterData: true });
-    }
-    if (wordCount) {
-      observer.observe(wordCount, { childList: true, characterData: true });
-    }
-    
-    // Initial check
-    updateScribeTabIndicator();
-    
-    // Also update when transcript is updated (hook into existing functions if they exist)
-    // This ensures compatibility with your existing code
-    window.addEventListener('transcriptUpdated', updateScribeTabIndicator);
-  </script>
 </body>
 
 </html>

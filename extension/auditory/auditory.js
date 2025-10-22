@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.querySelectorAll('md-outlined-segmented-button').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
       const setting = this.dataset.setting;
       const value = this.dataset.value;
       document.querySelectorAll(`md-outlined-segmented-button[data-setting='${setting}']`).forEach(b => {
@@ -115,9 +115,46 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Update Scribe tab indicator when content exists
+function updateScribeTabIndicator() {
+  const scribeTab = document.querySelector('.tab-btn[data-tab="tab-scribe"]');
+  const scribeText = document.getElementById('scribeText');
+  const wordCount = document.getElementById('wordCount');
+
+  if (scribeTab) {
+    // Check if there's actual content (not just placeholder text)
+    const hasContent = scribeText && scribeText.textContent.trim().length > 0 &&
+      scribeText.textContent !== "This is where your transcribed text will appear. The area is scrollable and styled for readability." ||
+      (wordCount && parseInt(wordCount.textContent) > 0);
+
+    if (hasContent) {
+      scribeTab.classList.add('has-content');
+    } else {
+      scribeTab.classList.remove('has-content');
+    }
+  }
+}
+
+
+
 
 // home.js - logic for auditory home page (index.html)
 document.addEventListener('DOMContentLoaded', () => {
+  // Monitor changes to scribe content
+  const observer = new MutationObserver(updateScribeTabIndicator);
+  const scribeText = document.getElementById('scribeText');
+  const wordCount = document.getElementById('wordCount');
+
+  if (scribeText) {
+    observer.observe(scribeText, { childList: true, subtree: true, characterData: true });
+  }
+  if (wordCount) {
+    observer.observe(wordCount, { childList: true, characterData: true });
+  }
+
+  // Initial check
+  updateScribeTabIndicator();
+
   // Settings button navigation
   const settingsBtn = document.getElementById('settingsBtn');
   if (settingsBtn) {
@@ -131,13 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
   navLinks.forEach((link, idx) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      if (idx === 0) window.scrollTo({top: 0, behavior: 'smooth'});
+      if (idx === 0) window.scrollTo({ top: 0, behavior: 'smooth' });
       if (idx === 1) window.location.href = 'settings.html';
     });
   });
 
   // Replace icon placeholders with SVGs
-  import('./icons.js').then(({getIcon}) => {
+  import('./icons.js').then(({ getIcon }) => {
     document.querySelectorAll('[data-icon]').forEach(el => {
       el.innerHTML = getIcon(el.dataset.icon);
     });
@@ -160,10 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Attach event listeners to tab buttons (now includes Scribe)
   const tabBtns = document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn => {
-    btn.addEventListener('click', function(evt) {
+    btn.addEventListener('click', function (evt) {
       openTab(evt, btn.getAttribute('data-tab'));
     });
   });
+
+  // Also update when transcript is updated (hook into existing functions if they exist)
+  // This ensures compatibility with your existing code
+  window.addEventListener('transcriptUpdated', updateScribeTabIndicator);
 
   // Set initial active tab (default to Home)
   document.querySelector('.tab-btn[data-tab="tab-home"]').classList.add('active');
