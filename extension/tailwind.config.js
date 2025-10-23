@@ -4,8 +4,7 @@ module.exports = {
         './onboard/index.html',
         './background.js',
         './content.js',
-    ],
-    darkMode: "class",
+    ],    
     theme: {
         extend: {
             colors: {
