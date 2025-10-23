@@ -26,6 +26,7 @@ export default [
               'visual',
               'auditory',
               'autism',
+              'distcss',
               'request-mic.html',
               'tailwind_v405.js',
               'request-mic.js',
