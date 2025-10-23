@@ -135,9 +135,6 @@ function updateScribeTabIndicator() {
   }
 }
 
-
-
-
 // home.js - logic for auditory home page (index.html)
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -147,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     window.open('request-mic.html', '_blank');
   }
-  
+
   // Monitor changes to scribe content
   const observer = new MutationObserver(updateScribeTabIndicator);
   const scribeText = document.getElementById('scribeText');

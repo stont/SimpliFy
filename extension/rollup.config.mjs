@@ -28,10 +28,10 @@ export default [
               'autism',
               'distcss',
               'request-mic.html',
-              'tailwind_v405.js',
               'request-mic.js',
               'bridge.js',
-              'main-bridge.js'
+              'main-bridge.js',
+              'tailwind.config.js'
             ],
             dest: 'dist'
           }
