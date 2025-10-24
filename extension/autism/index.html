@@ -1,3 +1,64 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autism Help</title>
+  <link rel="stylesheet" href="autism.css">
+</head>
+
+<body>
+  <div class="main-content">
+    <button id="backBtn" class="main-btn"
+      style="position:absolute;left:16px;top:16px;z-index:2;min-width:40px;padding:8px 12px;font-size:1.1rem;display:flex;align-items:center;gap:6px;">
+      <span aria-hidden="true">&#8592;</span> Back
+    </button>
+    <div style="height:40px;"></div>
+    <div id="tab-home" class="tab-content active">
+    
+      <div class="material-card">
+        <h3 style="font-size:1.5rem;font-weight:bold;margin-bottom:8px;">Stats: </h3>
+        <label id="counterLabel" style="flex:1;"></label>
+      </div>
+    </div>
+    <div id="tab-settings" class="tab-content" style="display:none;">
+      <div style="padding: 20px 16px 0 16px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="simplifyLevel" style="flex:1;">Text Simplification Level</label>
+          <input type="range" id="simplifyLevel" min="0" max="100" value="50" style="flex:2;max-width:100%;" />
+          <span id="simplifyLevelValue" style="min-width:32px;text-align:right;">50</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="automaticSimplification" style="flex:1;">Make texts simple automatically</label>
+          <input type="checkbox" id="automaticSimplification" style="flex:0;" />
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="disableAnimations" style="flex:1;">Stop things from moving</label>
+          <input type="checkbox" id="disableAnimations" style="flex:0;" />
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="blockBadWords" style="flex:1;">Block adult or rude words</label>
+          <input type="checkbox" id="blockBadWords" style="flex:0;" />
+        </div>
+        <div style="margin-top:24px;">
+          <button class="main-btn" id="clearCacheBtn">Clear Saved Storage</button>
+          <div id="clearCacheMsg" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="material-tabs-bar">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-home"><span class="icon">🏠</span>Home</button>
+      <button class="tab-btn" data-tab="tab-settings"><span class="icon">⚙️</span>Settings</button>
+    </div>
+  </div>
+  <script src="autism.js"></script>
+  <script src="settings.js"></script>
+</body>
+
+</html> -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +71,7 @@
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
- 
+
   <style>
     .material-symbols-outlined {
       font-variation-settings:
@@ -27,68 +88,64 @@
   </style>
 </head>
 
-<body class="font-display bg-background-light dark:bg-background-dark text-black dark:text-white">
+<body class="font-display bg-[#f6f7f8] text-black">
   <div class="flex flex-col h-screen justify-between">
     <main class="flex-grow overflow-y-auto">
-      <header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm z-10">
+      <header class="sticky top-0 bg-[#f6f7f8]/80 backdrop-blur-sm z-10">
         <div class="flex items-center p-4">
-          <button class="p-2 -ml-2">
-            <span class="material-symbols-outlined text-black dark:text-white">arrow_back</span>
+          <button class="p-2 -ml-2" id="backBtn">
+            <span class="material-symbols-outlined text-black">arrow_back</span>
           </button>
           <h1 class="text-lg font-bold flex-1 text-center pr-8">Autism &amp; Cognitive Support</h1>
         </div>
       </header>
       <div class="p-4 space-y-4">
-        <div
-          class="bg-white dark:bg-background-dark/50 rounded-lg p-4 shadow-sm border border-black/5 dark:border-white/5">
+        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5 dark:border-white/5">
           <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black dark:text-white">Text Simplification</h2>
-            <p class="text-sm text-black/60 dark:text-white/60">Simplify complex text for easier understanding.</p>
+            <h2 class="text-base font-bold text-black ">Text Simplification</h2>
+            <p class="text-sm text-black/60">Simplify complex text for easier understanding.</p>
             <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
               Simplify
             </button>
           </div>
         </div>
-        <div
-          class="bg-white dark:bg-background-dark/50 rounded-lg p-4 shadow-sm border border-black/5 dark:border-white/5">
+        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
           <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black dark:text-white">Upload Audio</h2>
-            <p class="text-sm text-black/60 dark:text-white/60">Get a simple version of your audio file.</p>
-            <button class="mt-2 w-fit bg-primary text-white text-sm font-medium py-2 px-6 rounded-full self-start">
+            <h2 class="text-base font-bold text-black ">Upload Audio</h2>
+            <p class="text-sm text-black/60">Get a simple version of your audio file.</p>
+            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
               Upload
             </button>
           </div>
         </div>
-        <div
-          class="bg-white dark:bg-background-dark/50 rounded-lg p-4 shadow-sm border border-black/5 dark:border-white/5">
+        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
           <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black dark:text-white">Toggle Animations</h2>
-            <p class="text-sm text-black/60 dark:text-white/60">Reduce distractions by turning off animations.</p>
-            <button class="mt-2 w-fit bg-primary text-white text-sm font-medium py-2 px-6 rounded-full self-start">
+            <h2 class="text-base font-bold text-black">Toggle Animations</h2>
+            <p class="text-sm text-black/60 ">Reduce distractions by turning off animations.</p>
+            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
               Toggle
             </button>
           </div>
         </div>
       </div>
     </main>
-    <footer
-      class="bg-background-light dark:bg-background-dark border-t border-black/10 dark:border-white/10 sticky bottom-0">
+    <footer class="bg-[#f6f7f8] border-t border-black/10 sticky bottom-0">
       <nav class="flex justify-around items-center px-2 py-2">
-        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-primary" href="#">
+        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-[#137fec]" href="#">
           <span class="material-symbols-outlined">home</span>
           <span class="text-xs font-medium">Home</span>
         </a>
-        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 dark:text-white/60 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary"
+        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
           href="#">
           <span class="material-symbols-outlined !font-normal">settings</span>
           <span class="text-xs font-medium">Settings</span>
         </a>
-        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 dark:text-white/60 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary"
+        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
           href="#">
           <span class="material-symbols-outlined !font-normal">volume_up</span>
           <span class="text-xs font-medium">Auditory</span>
         </a>
-        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 dark:text-white/60 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary"
+        <a class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
           href="#">
           <span class="material-symbols-outlined !font-normal">visibility</span>
           <span class="text-xs font-medium">Visual</span>
@@ -96,7 +153,8 @@
       </nav>
     </footer>
   </div>
-
+  <script src="autism.js"></script>
+  <script src="settings.js"></script>
 </body>
 
 </html>

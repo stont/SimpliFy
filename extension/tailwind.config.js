@@ -1,6 +1,7 @@
 module.exports = {
     content: [
         './extension/**/*.{html,js}',
+        './autism/index.html',
         './onboard/index.html',
         './background.js',
         './content.js',
