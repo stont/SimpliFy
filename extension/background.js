@@ -1,6 +1,42 @@
 // Placeholder for background logic (if needed)
 // All processing is local/offline
 
+// Global AI permission to prevent concurrent AI operations across tabs
+let isAIActive = false;
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'request-ai-permission') {
+    if (!isAIActive) {
+      isAIActive = true;
+      sendResponse({ granted: true });
+    } else {
+      sendResponse({ granted: false });
+    }
+  } else if (message.type === 'release-ai-permission') {
+    isAIActive = false;
+    sendResponse({ ok: true });
+  }
+  // Existing listeners...
+  if (message.action === 'summarize-text') {
+    // Handle summarize-text
+  }
+});
+
+// Release AI permission if the active tab is closed
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  // If AI was active and the tab closed, release the permission
+  if (isAIActive) {
+    isAIActive = false;
+    // Notify other tabs to retry their AI queues immediately
+    const tabs = await chrome.tabs.query({});
+    tabs.forEach(tab => {
+      if (tab.id !== tabId) { // Don't send to the closed tab
+        chrome.tabs.sendMessage(tab.id, { type: 'retry-ai-queue' }).catch(() => {}); // Ignore errors
+      }
+    });
+  }
+});
+
 // Enable auto-opening of the side panel when the extension icon is clicked
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
@@ -8,32 +44,52 @@ chrome.sidePanel
 
 
 chrome.runtime.onInstalled.addListener(() => {
+  console.log('[BACKGROUND] Creating context menus');
   chrome.contextMenus.create({
-    id: 'scribeAudio',
-    title: 'Generate transcript from audio',
-    contexts: ['audio']
+    id: 'summarizeText',
+    title: 'Generate summary',
+    contexts: ['selection']
   });
+  chrome.contextMenus.create({
+    id: 'simplifyText',
+    title: 'Simplify text',
+    contexts: ['selection']
+  });
+  console.log('[BACKGROUND] Context menus created');
 });
 
-
-chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
-  if (info.menuItemId === 'scribeAudio' && info.srcUrl) {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  console.log('[BACKGROUND] Context menu clicked:', info.menuItemId, 'selectionText:', !!info.selectionText, 'tabId:', tab?.id);
+  if (!tab || !tab.id) {
+    console.error('[BACKGROUND] No valid tab information');
+    return;
+  }
+  if (info.menuItemId === 'summarizeText' && info.selectionText) {
+    console.log('[BACKGROUND] Sending summarize-text message with text length:', info.selectionText.length);
+    // Relay to content script in the active tab
     try {
-      const response = await fetch(info.srcUrl);
-      const blob = await response.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-      chrome.runtime.sendMessage({
-        action: 'scribe-audio-blob',
-        buffer: arrayBuffer,
-        mimeType: blob.type,
-        fileName: info.srcUrl.split('/').pop() || 'audio',
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: 'summarize-text',
+        text: info.selectionText
       });
+      console.log('[BACKGROUND] Message sent successfully');
     } catch (error) {
-      console.error('Error fetching audio from URL:', error);
-      chrome.runtime.sendMessage({
-        action: 'scribe-audio',
-        text: error.message
-      });
+      console.error('[BACKGROUND] Failed to send message:', error);
     }
+   } 
+  else if (info.menuItemId === 'simplifyText' && info.selectionText) {
+    console.log('[BACKGROUND] Sending simplify-text message with text length:', info.selectionText.length);
+    // Relay to content script in the active tab
+    try {
+      const response = await chrome.tabs.sendMessage(tab.id, {
+        action: 'simplify-text',
+        text: info.selectionText
+      });
+      console.log('[BACKGROUND] Message sent successfully');
+    } catch (error) {
+      console.error('[BACKGROUND] Failed to send message:', error);
+    }
+  } else {
+    console.log('[BACKGROUND] Context menu click ignored - no selection or unknown menu item');
   }
 });

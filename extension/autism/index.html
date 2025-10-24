@@ -1,20 +1,77 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autism Help</title>
+  <link rel="stylesheet" href="autism.css">
+</head>
+
+<body>
+  <div class="main-content">
+    <button id="backBtn" class="main-btn"
+      style="position:absolute;left:16px;top:16px;z-index:2;min-width:40px;padding:8px 12px;font-size:1.1rem;display:flex;align-items:center;gap:6px;">
+      <span aria-hidden="true">&#8592;</span> Back
+    </button>
+    <div style="height:40px;"></div>
+    <div id="tab-home" class="tab-content active">
+    
+      <div class="material-card">
+        <h3 style="font-size:1.5rem;font-weight:bold;margin-bottom:8px;">Stats: </h3>
+        <label id="counterLabel" style="flex:1;"></label>
+      </div>
+    </div>
+    <div id="tab-settings" class="tab-content" style="display:none;">
+      <div style="padding: 20px 16px 0 16px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="simplifyLevel" style="flex:1;">Text Simplification Level</label>
+          <input type="range" id="simplifyLevel" min="0" max="100" value="50" style="flex:2;max-width:100%;" />
+          <span id="simplifyLevelValue" style="min-width:32px;text-align:right;">50</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="automaticSimplification" style="flex:1;">Make texts simple automatically</label>
+          <input type="checkbox" id="automaticSimplification" style="flex:0;" />
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="disableAnimations" style="flex:1;">Stop things from moving</label>
+          <input type="checkbox" id="disableAnimations" style="flex:0;" />
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+          <label for="blockBadWords" style="flex:1;">Block adult or rude words</label>
+          <input type="checkbox" id="blockBadWords" style="flex:0;" />
+        </div>
+        <div style="margin-top:24px;">
+          <button class="main-btn" id="clearCacheBtn">Clear Saved Storage</button>
+          <div id="clearCacheMsg" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="material-tabs-bar">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-home"><span class="icon">🏠</span>Home</button>
+      <button class="tab-btn" data-tab="tab-settings"><span class="icon">⚙️</span>Settings</button>
+    </div>
+  </div>
+  <script src="autism.js"></script>
+  <script src="settings.js"></script>
+</body>
+
+</html> -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Stitch Design</title>
-  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
-  <script src="../tailwind_v405.js"></script>
-  <script src="../autism/autism.js"></script>
+  <title>Autism &amp; Cognitive Support</title>
+  <link href="../distcss/output.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
-  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    rel="stylesheet" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
   <style>
     .material-symbols-outlined {
       font-variation-settings:
@@ -29,184 +86,161 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
 </head>
 
-<body class="font-display bg-[#f6f7f8] dark:bg-[#101c22]">
-  <div class="relative flex h-auto min-h-screen w-full flex-col justify-between overflow-x-hidden">
-    <div class="flex-grow">
-      <header class="flex items-center justify-between p-4 bg-[#f6f7f8] dark:bg-[#101c22]">
-        <button class="text-slate-800" id="backBtn">
-          <span class="material-symbols-outlined">arrow_back_ios_new</span>
-        </button>
-        <h1 class="flex-1 text-center text-lg font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight">Autism &
-          Cognitive Support
-        </h1>
-        <div class="flex w-12 items-center justify-end">
-          <button
-            class="flex h-12 w-12 items-center justify-center rounded-full text-[#101c22] dark:text-[#f6f7f8] relative">
-            <span class="material-symbols-outlined text-2xl">
-              notifications
-            </span>
-            <div
-              class="absolute top-2 right-2 h-3 w-3 rounded-full bg-[#ffc107] border-2 border-[#f6f7f8] dark:border-[#101c22]">
-            </div>
+<body class="font-display bg-[#f6f7f8] text-black">
+  <div class="flex flex-col h-screen justify-between">
+    <main id="homePage" class="flex-grow overflow-y-auto">
+      <header class="sticky top-0 bg-[#f6f7f8]/80 backdrop-blur-sm z-10">
+        <div class="flex items-center p-4">
+          <button class="p-2 -ml-2" id="backBtn">
+            <span class="material-symbols-outlined text-black">arrow_back</span>
           </button>
+          <h1 class="text-lg font-bold flex-1 text-center pr-8">Autism &amp; Cognitive Support</h1>
         </div>
       </header>
-
-      <!-- Home page -->
-      <main class="p-4" id="homePage">
-        <h2 class="text-2xl font-bold text-[#101c22] dark:text-[#f6f7f8] tracking-tight px-4 pb-4">Autism &amp;
-          Cognitive Support</h2>
-        <div class="space-y-4">
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
-            <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Text Simplification</h3>
-              <div class="flex items-center justify-between gap-4 mt-1">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Simplify complex text for
-                  easier understanding.</p>
-                <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
-                  Simplify
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
-            <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Upload Audio</h3>
-              <div class="flex items-center justify-between gap-4 mt-2">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Get a simple version of
-                  your audio file.</p>
-                <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm flex items-center gap-2">
-                  <span class="material-symbols-outlined text-base">upload</span>
-                  <span>Upload</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="bg-white dark:bg-[#101c22]/5 rounded-xl overflow-hidden">
-            <div class="p-4">
-              <h3 class="text-lg font-bold text-[#101c22] dark:text-[#f6f7f8]">Toggle Animations</h3>
-              <div class="flex items-center justify-between gap-4 mt-1">
-                <p class="text-[#5b6b75] dark:text-[#a1b1bd] text-base">Reduce distractions by
-                  turning off animations.</p>
-                <button
-                  class="flex-shrink-0 rounded-full bg-[#13a4ec] px-5 py-2 text-sm font-medium text-white shadow-sm">
-                  Toggle
-                </button>
-              </div>
-            </div>
+      <div class="p-4 space-y-4">
+        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5 dark:border-white/5">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-base font-bold text-black ">Text Simplification</h2>
+            <p class="text-sm text-black/60">Simplify complex text for easier understanding.</p>
+            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
+              Simplify
+            </button>
           </div>
         </div>
-      </main>
-
-      <!-- Settings page -->
-      <main class="flex-1 overflow-y-auto" style="display: none;" id="settingsPage">
-        <div class="p-4 space-y-8">
-          <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Text Simplification</h2>
-            <div class="p-4 space-y-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <div class="flex items-center justify-between">
-                <label class="font-medium text-slate-800 dark:text-slate-200" for="simplification-level">Simplification
-                  Level</label>
-                <span class="font-medium text-[#13a4ec]">Medium</span>
-              </div>
-              <div class="relative w-full">
-                <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
-                  id="simplification-level" max="5" min="1" type="range" value="3" />
-              </div>
-            </div>
-          </div>
-          <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Visual Adjustments</h2>
-            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="font-medium text-slate-800 dark:text-slate-200">Toggle Animations</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">Reduce motion and animations</p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input checked="" class="sr-only peer" type="checkbox" value="" />
-                  <div
-                    class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[#13a4ec]/50 dark:peer-focus:ring-[#13a4ec] peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-[#13a4ec]">
-                  </div>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Audio Adjustments</h2>
-            <div class="p-4 space-y-6 rounded-lg bg-white dark:bg-slate-800/50">
-              <div>
-                <div class="flex items-center justify-between">
-                  <label class="font-medium text-slate-800 dark:text-slate-200" for="read-aloud-speed">Read-Aloud
-                    Speed</label>
-                  <span class="font-medium text-[#13a4ec]">1.0x</span>
-                </div>
-                <div class="relative w-full mt-4">
-                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
-                    id="read-aloud-speed" max="2" min="0.5" step="0.1" type="range" value="1" />
-                </div>
-              </div>
-              <div>
-                <div class="flex items-center justify-between">
-                  <label class="font-medium text-slate-800 dark:text-slate-200" for="volume">Volume</label>
-                  <span class="font-medium text-[#13a4ec]">100%</span>
-                </div>
-                <div class="relative w-full mt-4">
-                  <input class="w-full h-2 rounded-full appearance-none cursor-pointer bg-[#13a4ec]/20 accent-[#13a4ec]"
-                    id="volume" max="100" min="0" type="range" value="100" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h2 class="px-2 mb-4 text-base font-bold text-slate-900 dark:text-slate-50">Content Filtering</h2>
-            <div class="p-4 rounded-lg bg-white dark:bg-slate-800/50">
-              <button class="flex items-center justify-between w-full text-left">
-                <div>
-                  <p class="font-medium text-slate-800 dark:text-slate-200">Filter Adult/Profane Words</p>
-                  <p class="text-sm text-slate-500 dark:text-slate-400">Filter out adult or profane words</p>
-                </div>
-                <div class="flex items-center">
-                  <span class="mr-2 font-medium text-[#13a4ec]">On (default)</span>
-                  <span class="material-symbols-outlined text-slate-500 dark:text-slate-400">arrow_forward_ios</span>
-                </div>
-              </button>
-            </div>
+        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-base font-bold text-black ">Upload Audio</h2>
+            <p class="text-sm text-black/60">Get a simple version of your audio file.</p>
+            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
+              Upload
+            </button>
           </div>
         </div>
-      </main>
-    </div>
-    <footer
-      class="sticky bottom-0 border-t border-[#e3e8ed] dark:border-border-dark bg-[#f6f7f8]/80 dark:bg-[#101c22]/80 backdrop-blur-sm">
-      <div class="flex justify-around py-2">
-        <button class="flex flex-col items-center justify-end gap-1 text-[#13a4ec]" id="homeBtn">
-          <span class="material-symbols-outlined text-2xl">home</span>
-          <p class="text-xs font-medium">Home</p>
-        </button>
-        <button class="flex flex-col items-center justify-end gap-1 text-[#5b6b75] dark:text-[#a1b1bd]"
-          id="settingsBtn">
-          <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">settings</span>
-          <p class="text-xs font-medium">Settings</p>
-        </button>
+        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
+          <div class="flex flex-col gap-2">
+            <h2 class="text-base font-bold text-black">Toggle Animations</h2>
+            <p class="text-sm text-black/60 ">Reduce distractions by turning off animations.</p>
+            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
+              Toggle
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="h-safe-area-bottom bg-[#f6f7f8] dark:bg-[#101c22]"></div>
+    </main>
+
+    <!-- Settings -->
+    <main id="settingsPage" class="flex-grow" style="display: none;">
+      <header class="bg-[#f6f7f8] backdrop-blur-sm sticky top-0 z-10">
+        <div class="flex items-center justify-between p-4">
+          <button class="text-slate-800">
+            <svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z">
+              </path>
+            </svg>
+          </button>
+          <h1 class="text-lg font-bold text-slate-900 flex-1 text-center">Settings</h1>
+          <div class="w-6"></div>
+        </div>
+      </header>
+      <div class="p-4 space-y-8">
+        <section>
+          <h2 class="text-xl font-bold text-slate-900 mb-4">Text Simplification</h2>
+          <div class="bg-white rounded-lg shadow-sm p-4">
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-base font-medium text-slate-800"
+                for="simplification-level">Simplification Level</label>
+              <span class="text-sm font-medium text-primary">Medium</span>
+            </div>
+            <div class="relative pt-1">
+              <input
+                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                id="simplification-level" max="5" min="1" type="range" value="3" />
+            </div>
+          </div>
+        </section>
+        <section>
+          <h2 class="text-xl font-bold text-slate-900 mb-4 mt-4">Visual Adjustments</h2>
+          <div class="bg-white rounded-lg shadow-sm p-4 flex justify-between items-center">
+            <div>
+              <p class="text-base font-medium text-slate-800">Toggle Animations</p>
+              <p class="text-sm text-slate-500">Reduce motion and animations</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input class="sr-only peer" type="checkbox" value="" />
+              <div
+                class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary">
+              </div>
+            </label>
+          </div>
+        </section>
+        <section>
+          <h2 class="text-xl font-bold text-slate-900 mb-4 mt-4">Audio Adjustments</h2>
+          <div class="bg-white rounded-lg shadow-sm p-4 space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-base font-medium text-slate-800"
+                  for="read-aloud-speed">Read-Aloud Speed</label>
+                <span class="text-sm font-medium text-primary">1.0x</span>
+              </div>
+              <div class="relative pt-1">
+                <input
+                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                  id="read-aloud-speed" max="2" min="0.5" step="0.1" type="range" value="1" />
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-base font-medium text-slate-800" for="volume">Volume</label>
+                <span class="text-sm font-medium text-primary">100%</span>
+              </div>
+              <div class="relative pt-1">
+                <input
+                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                  id="volume" max="100" min="0" type="range" value="100" />
+              </div>
+            </div>
+          </div>
+        </section>
+        <section>
+          <h2 class="text-xl font-bold text-slate-900 mb-4 mt-4">Content Filtering</h2>
+          <button
+            class="w-full bg-white rounded-lg shadow-sm p-4 flex justify-between items-center text-left">
+            <div>
+              <p class="text-base font-medium text-slate-800">Filter Adult/Profane Words</p>
+              <p class="text-sm text-slate-500">Filter out adult or profane words.</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-slate-600">On (Default)</span>
+              <svg class="text-slate-400" fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z">
+                </path>
+              </svg>
+            </div>
+          </button>
+        </section>
+      </div>
+    </main>
+    <footer class="bg-[#f6f7f8] border-t border-black/10 sticky bottom-0">
+      <nav class="flex justify-around items-center px-2 py-2">
+        <a id="homeBtn" class="flex flex-col items-center gap-1 p-2 rounded-lg text-[#137fec]" href="#">
+          <span class="material-symbols-outlined">home</span>
+          <span class="text-xs font-medium">Home</span>
+        </a>
+        <a id="settingsBtn" class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
+          href="#">
+          <span class="material-symbols-outlined !font-normal">settings</span>
+          <span class="text-xs font-medium">Settings</span>
+        </a>
+      </nav>
     </footer>
   </div>
-
+  <script src="autism.js"></script>
+  <script src="settings.js"></script>
 </body>
 
 </html>
