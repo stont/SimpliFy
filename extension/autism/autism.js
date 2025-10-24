@@ -16,6 +16,24 @@ function openTab(evt, tabId) {
   evt.currentTarget.classList.add('active');
 }
 
+function handleSwitchView(index) {
+    if (Number(index) === 0) {
+        document.getElementById('homePage').style.display = 'block';
+        document.getElementById('settingsPage').style.display = 'none';
+        document.getElementById('homeBtn').classList.add('text-[#13a4ec]');
+        document.getElementById('homeBtn').classList.remove('text-[#5b6b75]');
+        document.getElementById('settingsBtn').classList.remove('text-[#13a4ec]');
+        document.getElementById('settingsBtn').classList.add('text-[#5b6b75]');
+    } else {
+        document.getElementById('homePage').style.display = 'none';
+        document.getElementById('settingsPage').style.display = 'block';
+        document.getElementById('settingsBtn').classList.add('text-[#13a4ec]');
+        document.getElementById('settingsBtn').classList.remove('text-[#5b6b75]');
+        document.getElementById('homeBtn').classList.remove('text-[#13a4ec]');
+        document.getElementById('homeBtn').classList.add('text-[#5b6b75]');
+    }
+}
+
 async function CheckAiAvailability(params) {
 
   if (!'Summarizer' in self && !'Rewriter' in self) {
