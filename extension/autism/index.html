@@ -130,7 +130,6 @@
       </div>
     </main>
 
-    <!-- Settings -->
     <main id="settingsPage" class="flex-grow" style="display: none;">
       <header class="bg-[#f6f7f8] backdrop-blur-sm sticky top-0 z-10">
         <div class="flex items-center justify-between p-4">
@@ -150,14 +149,26 @@
           <h2 class="text-xl font-bold text-slate-900 mb-4">Text Simplification</h2>
           <div class="bg-white rounded-lg shadow-sm p-4">
             <div class="flex justify-between items-center mb-2">
-              <label class="text-base font-medium text-slate-800"
-                for="simplification-level">Simplification Level</label>
-              <span class="text-sm font-medium text-primary">Medium</span>
+              <label class="text-base font-medium text-slate-800" for="simplification-level">Simplification
+                Level</label>
+              <span id="simplifyLevelValue" class="text-sm font-medium text-[#137fec]">Medium</span>
             </div>
             <div class="relative pt-1">
-              <input
-                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
+              <input id="simplifyLevel"
+                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#137fec]"
                 id="simplification-level" max="5" min="1" type="range" value="3" />
+            </div>
+            <div class="flex justify-between w-full pt-4">
+              <div>
+                <p class="text-sm text-slate-800">Make texts simple automatically</p>
+                <!-- <p class="text-sm text-slate-500">Make texts simple automatically</p> -->
+              </div>
+              <label for="automaticSimplification" class="relative inline-flex items-center cursor-pointer">
+                <input class="sr-only peer" id="automaticSimplification" type="checkbox" value="" />
+                <div
+                  class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-[#137fec]">
+                </div>
+              </label>
             </div>
           </div>
         </section>
@@ -168,60 +179,29 @@
               <p class="text-base font-medium text-slate-800">Toggle Animations</p>
               <p class="text-sm text-slate-500">Reduce motion and animations</p>
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input class="sr-only peer" type="checkbox" value="" />
+            <label for="disableAnimations" class="relative inline-flex items-center cursor-pointer">
+              <input class="sr-only peer" id="disableAnimations" type="checkbox" value="" />
               <div
-                class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary">
+                class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-[#137fec]">
               </div>
             </label>
           </div>
         </section>
         <section>
-          <h2 class="text-xl font-bold text-slate-900 mb-4 mt-4">Audio Adjustments</h2>
-          <div class="bg-white rounded-lg shadow-sm p-4 space-y-4">
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <label class="text-base font-medium text-slate-800"
-                  for="read-aloud-speed">Read-Aloud Speed</label>
-                <span class="text-sm font-medium text-primary">1.0x</span>
-              </div>
-              <div class="relative pt-1">
-                <input
-                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                  id="read-aloud-speed" max="2" min="0.5" step="0.1" type="range" value="1" />
-              </div>
-            </div>
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <label class="text-base font-medium text-slate-800" for="volume">Volume</label>
-                <span class="text-sm font-medium text-primary">100%</span>
-              </div>
-              <div class="relative pt-1">
-                <input
-                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                  id="volume" max="100" min="0" type="range" value="100" />
-              </div>
-            </div>
-          </div>
-        </section>
-        <section>
           <h2 class="text-xl font-bold text-slate-900 mb-4 mt-4">Content Filtering</h2>
-          <button
-            class="w-full bg-white rounded-lg shadow-sm p-4 flex justify-between items-center text-left">
+
+          <div class="bg-white rounded-lg shadow-sm p-4 flex justify-between items-center">
             <div>
               <p class="text-base font-medium text-slate-800">Filter Adult/Profane Words</p>
               <p class="text-sm text-slate-500">Filter out adult or profane words.</p>
             </div>
-            <div class="flex items-center space-x-2">
-              <span class="text-sm font-medium text-slate-600">On (Default)</span>
-              <svg class="text-slate-400" fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z">
-                </path>
-              </svg>
-            </div>
-          </button>
+            <label for="blockBadWords" class="relative inline-flex items-center cursor-pointer">
+              <input class="sr-only peer" id="blockBadWords" type="checkbox" value="" />
+              <div
+                class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-[#137fec]">
+              </div>
+            </label>
+          </div>
         </section>
       </div>
     </main>
@@ -231,7 +211,8 @@
           <span class="material-symbols-outlined">home</span>
           <span class="text-xs font-medium">Home</span>
         </a>
-        <a id="settingsBtn" class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
+        <a id="settingsBtn"
+          class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
           href="#">
           <span class="material-symbols-outlined !font-normal">settings</span>
           <span class="text-xs font-medium">Settings</span>
