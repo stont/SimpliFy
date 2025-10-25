@@ -302,7 +302,6 @@ async function removeAnimationsFromPage() {
 window.addEventListener('DOMContentLoaded', () => {
     // Delay automatic actions until settings are received via message
     //console.log('[MAIN] Page loaded, waiting for settings...');
-    alert('ndndnndn');
     const pageContent = safeGetVisibleText();
     console.log('[MAIN] Extracted page content length:', pageContent.length);
     promptText(pageContent);
@@ -465,7 +464,6 @@ window.addEventListener('message', (event) => {
             removeAnimationsFromPage();
         }
         if (currentAutomaticSimplification && currentSimplificationLevel > 0) {
-            alert('E reach here alaye')
             replaceAllTextNodesWithAI(currentSimplificationLevel, currentBlockBadWords);
         }
         return;
