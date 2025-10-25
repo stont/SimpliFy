@@ -219,7 +219,7 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
 }
 
 
-async function replaceAllTextNodesWithAI2(simplifyLevel, filterBadWords) {
+async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
     if (simplifyLevel === 0) {
         return;
     }
@@ -302,14 +302,11 @@ async function removeAnimationsFromPage() {
 window.addEventListener('DOMContentLoaded', () => {
     // Delay automatic actions until settings are received via message
     //console.log('[MAIN] Page loaded, waiting for settings...');
-
+    alert('ndndnndn');
     const pageContent = safeGetVisibleText();
     console.log('[MAIN] Extracted page content length:', pageContent.length);
     promptText(pageContent);
     // sendToExtension(pageContent);
-
-
-
 });
 
 async function promptText(pageContent) {
@@ -352,14 +349,14 @@ async function promptText(pageContent) {
                         ---
                         Now, generate your response.`);
     // for await (const chunk of stream) {
-        // console.log(chunk);
-        console.log('============ Prompt result======= ', result)
-        const chunks = chunkText(result);
-        sendToExtension(chunks)
-        
+    // console.log(chunk);
+    console.log('============ Prompt result======= ', result)
+    const chunks = chunkText(result);
+    sendToExtension(chunks)
+
     // }
 
-    
+
 }
 
 function chunkText(text, maxChars = 700) {
@@ -367,23 +364,23 @@ function chunkText(text, maxChars = 700) {
     const chunks = [];
     let cur = '';
     for (const p of paragraphs) {
-      if ((cur + '\n\n' + p).length > maxChars) {
-        if (cur) { chunks.push(cur.trim()); cur = p; }
-        else {
-          // paragraph itself large: slice
-          for (let i=0;i<p.length;i+=maxChars) {
-            chunks.push(p.slice(i, i+maxChars));
-          }
-          cur = '';
+        if ((cur + '\n\n' + p).length > maxChars) {
+            if (cur) { chunks.push(cur.trim()); cur = p; }
+            else {
+                // paragraph itself large: slice
+                for (let i = 0; i < p.length; i += maxChars) {
+                    chunks.push(p.slice(i, i + maxChars));
+                }
+                cur = '';
+            }
+        } else {
+            cur = cur ? (cur + '\n\n' + p) : p;
         }
-      } else {
-        cur = cur ? (cur + '\n\n' + p) : p;
-      }
     }
     if (cur) chunks.push(cur.trim());
     console.log("final chunk:::", chunks)
     return chunks;
-  }
+}
 
 function safeGetVisibleText() {
     try {
@@ -468,6 +465,7 @@ window.addEventListener('message', (event) => {
             removeAnimationsFromPage();
         }
         if (currentAutomaticSimplification && currentSimplificationLevel > 0) {
+            alert('E reach here alaye')
             replaceAllTextNodesWithAI(currentSimplificationLevel, currentBlockBadWords);
         }
         return;

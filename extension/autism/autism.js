@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
   // Set initial active tab (default to Home)
-  document.querySelector('.tab-btn[data-tab="tab-home"]').classList.add('active');
+  // document.querySelector('.tab-btn[data-tab="tab-home"]').classList.add('active');
   document.getElementById('tab-home').classList.add('active');
   document.getElementById('tab-home').style.display = '';
   document.getElementById('tab-settings').classList.remove('active');
