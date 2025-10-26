@@ -90,47 +90,9 @@
 
 <body class="font-display bg-[#f6f7f8] text-black">
   <div class="flex flex-col h-screen justify-between">
-    <main id="homePage" class="flex-grow overflow-y-auto">
-      <header class="sticky top-0 bg-[#f6f7f8]/80 backdrop-blur-sm z-10">
-        <div class="flex items-center p-4">
-          <button class="p-2 -ml-2" id="backBtn">
-            <span class="material-symbols-outlined text-black">arrow_back</span>
-          </button>
-          <h1 class="text-lg font-bold flex-1 text-center pr-8">Autism &amp; Cognitive Support</h1>
-        </div>
-      </header>
-      <div class="p-4 space-y-4">
-        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5 dark:border-white/5">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black ">Text Simplification</h2>
-            <p class="text-sm text-black/60">Simplify complex text for easier understanding.</p>
-            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
-              Simplify
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black ">Upload Audio</h2>
-            <p class="text-sm text-black/60">Get a simple version of your audio file.</p>
-            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
-              Upload
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black">Toggle Animations</h2>
-            <p class="text-sm text-black/60 ">Reduce distractions by turning off animations.</p>
-            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
-              Toggle
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
+   
 
-    <main id="settingsPage" class="flex-grow" style="display: none;">
+    <main id="settingsPage" class="flex-grow">
       <header class="bg-[#f6f7f8] backdrop-blur-sm sticky top-0 z-10">
         <div class="flex items-center justify-between p-4">
           <button class="text-slate-800" id="backBtn2">
@@ -205,7 +167,7 @@
         </section>
       </div>
     </main>
-    <footer class="bg-[#f6f7f8] border-t border-black/10 sticky bottom-0">
+    <!-- <footer class="bg-[#f6f7f8] border-t border-black/10 sticky bottom-0">
       <nav class="flex justify-around items-center px-2 py-2">
         <a id="homeBtn" class="flex flex-col items-center gap-1 p-2 rounded-lg text-[#137fec]" href="#">
           <span class="material-symbols-outlined">home</span>
@@ -218,7 +180,7 @@
           <span class="text-xs font-medium">Settings</span>
         </a>
       </nav>
-    </footer>
+    </footer> -->
   </div>
   <script src="autism.js"></script>
   <script src="settings.js"></script>
