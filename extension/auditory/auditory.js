@@ -135,14 +135,40 @@ function updateScribeTabIndicator() {
   }
 }
 
+async function checkMicrophonePermission() {
+  try {
+    // Check current microphone permission state
+    const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+
+    console.log('🎤 Microphone permission state:', permissionStatus.state);
+
+    if (permissionStatus.state === 'granted') {
+      console.log('✅ Mic already granted.');
+      return 'granted';
+    } else if (permissionStatus.state === 'denied') {
+      console.warn('🚫 Mic access denied by user.');
+      return 'denied';
+    } else if (permissionStatus.state === 'prompt') {
+      console.log('⚠️ Mic access not yet requested.');
+      return 'prompt';
+    }
+  } catch (err) {
+    console.error('Permission API not supported for microphone:', err);
+    return 'unknown';
+  }
+}
+
+
 // home.js - logic for auditory home page (index.html)
 document.addEventListener('DOMContentLoaded', () => {
-
+  const micStatus = checkMicrophonePermission();
   // Option 1: open request-mic.html in a new tab to prompt for permission
-  if (window.chrome && chrome.tabs) {
-    chrome.tabs.create({ url: chrome.runtime.getURL('request-mic.html') });
-  } else {
-    window.open('request-mic.html', '_blank');
+  if (micStatus === 'denied' || micStatus === 'prompt') {
+    if (window.chrome && chrome.tabs) {
+      chrome.tabs.create({ url: chrome.runtime.getURL('request-mic.html') });
+    } else {
+      window.open('request-mic.html', '_blank');
+    }
   }
 
   // Monitor changes to scribe content
