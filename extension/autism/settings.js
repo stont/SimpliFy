@@ -25,10 +25,10 @@ const automaticSimplificationCheckbox = document.getElementById('automaticSimpli
 function getSimplificationLabel(val) {
   val = Number(val);
   if (val === 0) return '0 (No Change)';
-  if (val > 0 && val < 3) return val + ' (Slight Simplified)';
-  if (val === 3) return '50 (Medium)';
-  if (val > 3 && val < 5) return val + ' (Strongly Simplified)';
-  if (val >= 5) return val + ' (Max Simplified)';
+  if (val > 0 && val < 50) return '(Slight Simplified)';
+  if (val === 50) return '(Medium)';
+  if (val > 50 && val < 100) return '(Strongly Simplified)';
+  if (val >= 100) return '(Max Simplified)';
 }
 
 // Initialize settings from chrome.storage.local to form elements
@@ -38,8 +38,6 @@ async function initializeSettingsAsync() {
   const savedLevel = result.autismSimplificationLevel;
   if (savedLevel !== undefined) {
     simplificationSlider.value = savedLevel;
-    console.log('Saved level:: ', savedLevel);
-    console.log('Saved level:: ', getSimplificationLabel(Number(savedLevel)));
     simplificationValue.textContent = getSimplificationLabel(Number(savedLevel));
   } else {
     simplificationSlider.value = 50;
@@ -60,6 +58,7 @@ if (simplificationSlider && simplificationValue) {
   initializeSettingsAsync();
   // Only send on slider change, not on load
   simplificationSlider.addEventListener('input', function() {
+    console.log('Simplification level changed to', this.value);
     simplificationValue.textContent = getSimplificationLabel(Number(this.value));
     chrome.storage.local.set({ 'autismSimplificationLevel': this.value });
   });
