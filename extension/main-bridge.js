@@ -478,7 +478,6 @@ window.addEventListener('message', (event) => {
         return;
     }
     if (event.data && event.data.type === 'settings-update') {
-        alert('got here too nigga')
         // Update global variables from storage changes
         if (event.data.data.autismSimplificationLevel !== undefined) {
             currentSimplificationLevel = Number(event.data.data.autismSimplificationLevel);
