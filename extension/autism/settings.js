@@ -32,7 +32,7 @@ function getSimplificationLabel(val) {
 }
 
 // Initialize settings from chrome.storage.local to form elements
-async function initializeSettings() {
+async function initializeSettingsAsync() {
   const result = await chrome.storage.local.get(['autismSimplificationLevel', 'autismDisableAnimations', 'autismBlockBadWords', 'autismAutomaticSimplification']);
   // Simplification Level
   const savedLevel = result.autismSimplificationLevel;
@@ -55,7 +55,7 @@ async function initializeSettings() {
 }
 
 if (simplificationSlider && simplificationValue) {
-  initializeSettings();
+  initializeSettingsAsync();
   // Only send on slider change, not on load
   simplificationSlider.addEventListener('input', function() {
     simplificationValue.textContent = getSimplificationLabel(Number(this.value));
@@ -83,7 +83,7 @@ const settingsBtn = document.getElementById('settingsBtn');
 const settingsPage = document.getElementById('settingsPage');
 if (settingsBtn && settingsPage) {
   settingsBtn.addEventListener('click', function() {
-    initializeSettings();
+    initializeSettingsAsync();
   });
 }
 

@@ -27,6 +27,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const chunks = Array.isArray(message.data) ? message.data : [message.data];
     speakChunks(chunks, { rate: 1.0 });
   }
+  if (message.type === 'VOICE_RESUME') {
+    chrome.tts.resume();
+  }
+  if (message.type === 'VOICE_PAUSE') {
+    chrome.tts.pause();
+  }
 });
 
 function speakChunks(chunks, options) {
@@ -35,7 +41,7 @@ function speakChunks(chunks, options) {
   const rate = options.rate || 1.0;
   const pitch = options.pitch || 1.0;
   const volume = typeof options.volume === 'number' ? options.volume : 1.0;
-console.log("speakChunks called with chunks: ", Array.isArray(chunks), "options:", options);
+  console.log("speakChunks called with chunks: ", Array.isArray(chunks), "options:", options);
   if (!Array.isArray(chunks) || chunks.length === 0) return;
   // speak each chunk sequentially using enqueue
   chunks.forEach((chunk, i) => {

@@ -6,6 +6,8 @@ let currentDisableAnimations = false;
 let currentBlockBadWords = false;
 let currentAutomaticSimplification = false;
 let isAutomaticSimplificationActive = false;
+let enableVoiceCommandReadingCurrent = false;
+let shouldAutoReadPageCurrent = false;
 
 // Helper to generate AI prompt based on slider value
 function getSimplificationPrompt(level) {
@@ -300,12 +302,7 @@ async function removeAnimationsFromPage() {
 
 // On page load, use the saved simplification level
 window.addEventListener('DOMContentLoaded', () => {
-    // Delay automatic actions until settings are received via message
-    //console.log('[MAIN] Page loaded, waiting for settings...');
-    const pageContent = safeGetVisibleText();
-    console.log('[MAIN] Extracted page content length:', pageContent.length);
-    promptText(pageContent);
-    // sendToExtension(pageContent);
+
 });
 
 async function promptText(pageContent) {
@@ -425,12 +422,12 @@ function safeGetVisibleText() {
     }
 }
 
-// Run safely after DOM is ready
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", safeGetVisibleText);
-} else {
-    safeGetVisibleText();
-}
+// // Run safely after DOM is ready
+// if (document.readyState === "loading") {
+//     document.addEventListener("DOMContentLoaded", safeGetVisibleText);
+// } else {
+//     safeGetVisibleText();
+// }
 
 
 // main-bridge.js
@@ -444,7 +441,7 @@ function sendToExtension(data) {
 
 
 window.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'autism-settings-init') {
+    if (event.data && event.data.type === 'settings-init') {
         // Set global variables from chrome.storage data
         if (event.data.data.autismSimplificationLevel !== undefined) {
             currentSimplificationLevel = Number(event.data.data.autismSimplificationLevel);
@@ -459,6 +456,12 @@ window.addEventListener('message', (event) => {
             currentAutomaticSimplification = event.data.data.autismAutomaticSimplification;
             isAutomaticSimplificationActive = currentAutomaticSimplification;
         }
+        if (event.data.data.enableVoiceCommandReading !== undefined) {
+            enableVoiceCommandReadingCurrent = event.data.data.enableVoiceCommandReading;
+        }
+        if (event.data.data.shouldAutoReadPage !== undefined) {
+            shouldAutoReadPageCurrent = event.data.data.shouldAutoReadPage;
+        }
         // Apply settings after loading
         if (currentDisableAnimations) {
             removeAnimationsFromPage();
@@ -466,9 +469,16 @@ window.addEventListener('message', (event) => {
         if (currentAutomaticSimplification && currentSimplificationLevel > 0) {
             replaceAllTextNodesWithAI(currentSimplificationLevel, currentBlockBadWords);
         }
+        if (shouldAutoReadPageCurrent) {
+            const pageContent = safeGetVisibleText();
+            console.log('Page content:: ', pageContent)
+            console.log('[MAIN] Extracted page content length for auto-read:', pageContent.length);
+            promptText(pageContent);
+        }
         return;
     }
-    if (event.data && event.data.type === 'autism-settings-update') {
+    if (event.data && event.data.type === 'settings-update') {
+        alert('got here too nigga')
         // Update global variables from storage changes
         if (event.data.data.autismSimplificationLevel !== undefined) {
             currentSimplificationLevel = Number(event.data.data.autismSimplificationLevel);
@@ -505,6 +515,19 @@ window.addEventListener('message', (event) => {
                 }
             }
             currentAutomaticSimplification = event.data.data.autismAutomaticSimplification;
+        }
+
+        if (event.data.data.shouldAutoReadPage !== undefined) {
+            const newValue = event.data.data.shouldAutoReadPage;
+            if (shouldAutoReadPageCurrent !== newValue) {
+                shouldAutoReadPageCurrent = newValue
+                const pageContent = safeGetVisibleText();
+                console.log('[MAIN] Extracted page content length for auto-read:', pageContent.length);
+                promptText(pageContent);
+            }
+        }
+        if (event.data.data.enableVoiceCommandReading !== undefined) {
+            enableVoiceCommandReadingCurrent = event.data.data.enableVoiceCommandReading;
         }
         return;
     }
