@@ -25,10 +25,10 @@ const automaticSimplificationCheckbox = document.getElementById('automaticSimpli
 function getSimplificationLabel(val) {
   val = Number(val);
   if (val === 0) return '0 (No Change)';
-  if (val > 0 && val < 5) return val + ' (Slight Simplified)';
-  if (val === 5) return '50 (Medium)';
-  if (val > 5 && val < 10) return val + ' (Strongly Simplified)';
-  if (val >= 10) return val + ' (Max Simplified)';
+  if (val > 0 && val < 3) return val + ' (Slight Simplified)';
+  if (val === 3) return '50 (Medium)';
+  if (val > 3 && val < 5) return val + ' (Strongly Simplified)';
+  if (val >= 5) return val + ' (Max Simplified)';
 }
 
 // Initialize settings from chrome.storage.local to form elements
@@ -38,6 +38,8 @@ async function initializeSettingsAsync() {
   const savedLevel = result.autismSimplificationLevel;
   if (savedLevel !== undefined) {
     simplificationSlider.value = savedLevel;
+    console.log('Saved level:: ', savedLevel);
+    console.log('Saved level:: ', getSimplificationLabel(Number(savedLevel)));
     simplificationValue.textContent = getSimplificationLabel(Number(savedLevel));
   } else {
     simplificationSlider.value = 50;
