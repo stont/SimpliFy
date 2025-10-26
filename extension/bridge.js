@@ -30,6 +30,11 @@ window.addEventListener('message', async (event) => {
     console.log('[BRIDGE] Forwarding message to background:', event.data.message);
     // Forward to background
     chrome.runtime.sendMessage({ type: "from-main-bridge", data: event.data.message })
+  } else if (event.data.type === "SPACE_BAR_CLICKED") {
+    console.log('[BRIDGE] Forwarding message to background:', event.data.message);
+    // Forward to background
+    chrome.runtime.sendMessage({ type: "SPACE_BAR_CLICKED", data: event.data.message })
+
   }
 });
 

@@ -478,6 +478,7 @@ window.addEventListener('message', (event) => {
         return;
     }
     if (event.data && event.data.type === 'settings-update') {
+        console.log('Settings update received: ', event.data.data.shouldAutoReadPage);
         // Update global variables from storage changes
         if (event.data.data.autismSimplificationLevel !== undefined) {
             currentSimplificationLevel = Number(event.data.data.autismSimplificationLevel);
@@ -518,11 +519,15 @@ window.addEventListener('message', (event) => {
 
         if (event.data.data.shouldAutoReadPage !== undefined) {
             const newValue = event.data.data.shouldAutoReadPage;
+            console.log('shouldAutoReadPage changed:', shouldAutoReadPageCurrent, '->', newValue);
             if (shouldAutoReadPageCurrent !== newValue) {
                 shouldAutoReadPageCurrent = newValue
-                const pageContent = safeGetVisibleText();
-                console.log('[MAIN] Extracted page content length for auto-read:', pageContent.length);
-                promptText(pageContent);
+                console.log('Updated shouldAutoReadPageCurrent to:', shouldAutoReadPageCurrent);
+                if (shouldAutoReadPageCurrent) {
+                    const pageContent = safeGetVisibleText();
+                    console.log('[MAIN] Extracted page content length for auto-read:', pageContent.length);
+                    promptText(pageContent);
+                }
             }
         }
         if (event.data.data.enableVoiceCommandReading !== undefined) {
@@ -599,4 +604,14 @@ window.addEventListener('message', (event) => {
     }
 });
 
-// Voice reader 
+document.addEventListener("keydown", (event) => {
+  // Spacebar toggles reading
+  if (event.code === "Space") {
+    event.preventDefault(); // stop page scroll
+    console.log('[MAIN-BRIDGE] Space bar event to bridge');
+    window.postMessage({
+        type: "SPACE_BAR_CLICKED",
+    }, "*");
+  }
+});
+
