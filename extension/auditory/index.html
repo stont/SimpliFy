@@ -111,8 +111,8 @@
       </div>
 
       <!-- Audio player when visible -->
-      <div class="audio-player-wrap material-card" style="display:none;">
-        <audio id="scribeAudioPlayer" style="width:100%;" controls></audio>
+      <div class="audio-player-wrap material-card" >
+        <audio id="scribeAudioPlayer" style="width:100%;display:none;" controls></audio>
       </div>
 
       <!-- Waveform visualization -->
@@ -133,7 +133,7 @@
 
       <!-- Transcript container with controls -->
       <div class="material-card">
-        <div class="transcript-controls">
+        <!-- <div class="transcript-controls">
           <div class="transcript-search">
             <input type="text" id="searchTranscript" placeholder="Search in transcript..." 
                    class="search-input" />
@@ -147,7 +147,7 @@
               <span class="icon">A+</span>
             </button>
           </div>
-        </div>
+        </div> -->
         
         <div class="scribe-container" id="transcriptContainer">
           <div id="scribeText">This is where your transcribed text will appear. The area is scrollable and styled for readability.</div>
