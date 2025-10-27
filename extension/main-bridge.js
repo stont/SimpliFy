@@ -478,7 +478,8 @@ window.addEventListener('message', (event) => {
         return;
     }
     if (event.data && event.data.type === 'settings-update') {
-        console.log('Settings update received: ', event.data.data.shouldAutoReadPage);
+        console.log('Settings update received: ', event.data.data.autismSimplificationLevel);
+        console.log('Settings update received: ', event.data.data);
         // Update global variables from storage changes
         if (event.data.data.autismSimplificationLevel !== undefined) {
             currentSimplificationLevel = Number(event.data.data.autismSimplificationLevel);
