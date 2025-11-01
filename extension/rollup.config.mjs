@@ -22,6 +22,7 @@ export default [
               'background.js',
               'onboard',
               'shared',
+              'setup',
               'icons',
               'visual',
               'auditory',
