@@ -33,7 +33,6 @@
   - sidepanel.js: Main side panel logic
   - background.js: Background event handler
   - manifest.json: Extension manifest
-  - tailwind.css: Compiled Tailwind CSS
 
 ## Build & Distribution
 - Use Rollup (rollup.config.mjs) to bundle JS and copy assets to /dist
@@ -105,7 +104,6 @@
 ## Best Practices
 - All processing is local/offline (no backend)
 - Use browser storage for all user data
-- Use Tailwind CSS for accessible, modern UI
 - Use modular folder structure for maintainability
 
 ---

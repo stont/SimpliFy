@@ -62,9 +62,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const homebtn = document.getElementById('homeBtn');
   const settingsBtn = document.getElementById('settingsBtn');
   const backButton = document.getElementById('backBtn');
+  const backButton2 = document.getElementById('backBtn2');
 
   if (backButton) {
     backButton.onclick = function () {
+      // Clear navigation storage before navigating back
+      localStorage.removeItem('accessibilityCondition');
+      window.location.href = '../onboard/index.html';
+    };
+  }
+  if (backButton2) {
+    backButton2.onclick = function () {
       // Clear navigation storage before navigating back
       localStorage.removeItem('accessibilityCondition');
       window.location.href = '../onboard/index.html';
@@ -81,20 +89,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
   }
 
-  // Remove old view switching logic
-  // Add tab logic like auditory.js
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', function (evt) {
-      openTab(evt, btn.getAttribute('data-tab'));
-    });
-  });
-  // Set initial active tab (default to Home)
-  document.querySelector('.tab-btn[data-tab="tab-home"]').classList.add('active');
-  document.getElementById('tab-home').classList.add('active');
-  document.getElementById('tab-home').style.display = '';
-  document.getElementById('tab-settings').classList.remove('active');
-  document.getElementById('tab-settings').style.display = 'none';
 
   // Subscriber
   chrome.runtime.onMessage.addListener(async function (request) {

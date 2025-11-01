@@ -31,7 +31,6 @@
 6. **User can save/bookmark content, upload audio, use writer, or read Gmail**
 
 ## UI/UX
-- Tailwind CSS for modern, accessible design
 - Sample HTML/CSS from `samples/` folder as reference for each page
 - Images and icons for each accessibility mode
 - Footer with accessibility options (read aloud, etc.)
@@ -42,7 +41,7 @@
 - Use browser storage for user settings and saved content
 
 ## Development Steps
-1. Scaffold Chrome extension (Manifest V3, Tailwind, basic side panel)
+1. Scaffold Chrome extension (Manifest V3, basic side panel)
 2. Implement config/home/settings pages for each mode using sample HTML/CSS
 3. Add accessibility features (text simplification, TTS, transcription, etc.)
 4. Implement local storage for settings and bookmarks

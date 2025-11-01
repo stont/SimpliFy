@@ -21,29 +21,52 @@ chrome.runtime.onMessage.addListener((message) => {
 // Handle AI permission requests from main-bridge
 window.addEventListener('message', async (event) => {
   if (event.data.type === 'request-ai-permission') {
+    console.log('[BRIDGE] AI permission requested from page, id:', event.data.id);
     const response = await chrome.runtime.sendMessage({ type: 'request-ai-permission' });
+    console.log('[BRIDGE] AI permission response from background:', response);
     window.postMessage({ type: 'ai-permission-response', granted: response.granted, id: event.data.id }, '*');
   } else if (event.data.type === 'release-ai-permission') {
     await chrome.runtime.sendMessage({ type: 'release-ai-permission' });
     window.postMessage({ type: 'ai-permission-released', id: event.data.id }, '*');
+  } else if (event.data.type === "from-main-bridge") {
+    console.log('[BRIDGE] Forwarding message to background:', event.data.message);
+    // Forward to background
+    chrome.runtime.sendMessage({ type: "from-main-bridge", data: event.data.message })
+  } else if (event.data.type === "SPACE_BAR_CLICKED") {
+    console.log('[BRIDGE] Forwarding message to background:', event.data.message);
+    // Forward to background
+    chrome.runtime.sendMessage({ type: "SPACE_BAR_CLICKED", data: event.data.message })
+
   }
 });
 
 // On load, send current settings to main-bridge
-chrome.storage.local.get(['autismSimplificationLevel', 'autismDisableAnimations', 'autismBlockBadWords', 'autismAutomaticSimplification'], (result) => {
-  window.postMessage({ type: 'autism-settings-init', data: result }, '*');
+chrome.storage.local.get(['autismSimplificationLevel', 'autismDisableAnimations', 'autismBlockBadWords', 'autismAutomaticSimplification', 'enableVoiceCommandReading', 'shouldAutoReadPage'], (result) => {
+  window.postMessage({ type: 'settings-init', data: result }, '*');
 });
 
 // Listen for storage changes and send updates to main-bridge
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'local') {
-    const updated = {};
-    if (changes.autismSimplificationLevel) updated.autismSimplificationLevel = changes.autismSimplificationLevel.newValue;
-    if (changes.autismDisableAnimations) updated.autismDisableAnimations = changes.autismDisableAnimations.newValue;
-    if (changes.autismBlockBadWords) updated.autismBlockBadWords = changes.autismBlockBadWords.newValue;
-    if (changes.autismAutomaticSimplification) updated.autismAutomaticSimplification = changes.autismAutomaticSimplification.newValue;
-    if (Object.keys(updated).length > 0) {
-      window.postMessage({ type: 'autism-settings-update', data: updated }, '*');
+    console.log('Changes:: ', changes)
+    const updatedSettings = {};
+    if (changes.autismSimplificationLevel) updatedSettings.autismSimplificationLevel = changes.autismSimplificationLevel.newValue;
+    if (changes.autismDisableAnimations) updatedSettings.autismDisableAnimations = changes.autismDisableAnimations.newValue;
+    if (changes.autismBlockBadWords) updatedSettings.autismBlockBadWords = changes.autismBlockBadWords.newValue;
+    if (changes.autismAutomaticSimplification) updatedSettings.autismAutomaticSimplification = changes.autismAutomaticSimplification.newValue;
+    if (changes.shouldAutoReadPage) updatedSettings.shouldAutoReadPage = changes.shouldAutoReadPage.newValue;
+    if (changes.enableVoiceCommandReading) updatedSettings.enableVoiceCommandReading = changes.enableVoiceCommandReading.newValue;
+    if (Object.keys(updatedSettings).length > 0) {
+      window.postMessage({ type: 'settings-update', data: updatedSettings }, '*');
     }
   }
+});
+
+// bridge.js
+window.addEventListener("message", (event) => {
+  // Only accept messages from our page context
+  if (event.source !== window || !event.data || event.data.direction !== "from-page") return;
+
+  // Forward to background
+  chrome.runtime.sendMessage(event.data.message);
 });

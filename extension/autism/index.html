@@ -66,7 +66,7 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Autism &amp; Cognitive Support</title>
-  <link href="../distcss/output.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../shared/shared.css" />
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet" />
@@ -90,51 +90,12 @@
 
 <body class="font-display bg-[#f6f7f8] text-black">
   <div class="flex flex-col h-screen justify-between">
-    <main id="homePage" class="flex-grow overflow-y-auto">
-      <header class="sticky top-0 bg-[#f6f7f8]/80 backdrop-blur-sm z-10">
-        <div class="flex items-center p-4">
-          <button class="p-2 -ml-2" id="backBtn">
-            <span class="material-symbols-outlined text-black">arrow_back</span>
-          </button>
-          <h1 class="text-lg font-bold flex-1 text-center pr-8">Autism &amp; Cognitive Support</h1>
-        </div>
-      </header>
-      <div class="p-4 space-y-4">
-        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5 dark:border-white/5">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black ">Text Simplification</h2>
-            <p class="text-sm text-black/60">Simplify complex text for easier understanding.</p>
-            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
-              Simplify
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black ">Upload Audio</h2>
-            <p class="text-sm text-black/60">Get a simple version of your audio file.</p>
-            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
-              Upload
-            </button>
-          </div>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-sm border border-black/5">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-base font-bold text-black">Toggle Animations</h2>
-            <p class="text-sm text-black/60 ">Reduce distractions by turning off animations.</p>
-            <button class="mt-2 w-fit bg-[#137fec] text-white text-sm font-medium py-2 px-6 rounded-full self-start">
-              Toggle
-            </button>
-          </div>
-        </div>
-      </div>
-    </main>
 
-    <!-- Settings -->
-    <main id="settingsPage" class="flex-grow" style="display: none;">
+
+    <main id="settingsPage" class="flex-grow">
       <header class="bg-[#f6f7f8] backdrop-blur-sm sticky top-0 z-10">
         <div class="flex items-center justify-between p-4">
-          <button class="text-slate-800">
+          <button class="text-slate-800" id="backBtn2">
             <svg fill="currentColor" height="24" viewBox="0 0 256 256" width="24" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z">
@@ -150,14 +111,26 @@
           <h2 class="text-xl font-bold text-slate-900 mb-4">Text Simplification</h2>
           <div class="bg-white rounded-lg shadow-sm p-4">
             <div class="flex justify-between items-center mb-2">
-              <label class="text-base font-medium text-slate-800"
-                for="simplification-level">Simplification Level</label>
-              <span class="text-sm font-medium text-primary">Medium</span>
+              <label class="text-base font-medium text-slate-800" for="simplification-level">Simplification
+                Level</label>
+              <span id="simplifyLevelValue" class="text-sm font-medium text-[#137fec]">Medium</span>
             </div>
             <div class="relative pt-1">
-              <input
-                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                id="simplification-level" max="5" min="1" type="range" value="3" />
+              <input id="simplifyLevel"
+                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#137fec]"
+                id="simplification-level" max="100" min="0" type="range" value="50" step="5" />
+            </div>
+            <div class="flex justify-between w-full pt-4">
+              <div>
+                <p class="text-sm text-slate-800">Make texts simple automatically</p>
+                <!-- <p class="text-sm text-slate-500">Make texts simple automatically</p> -->
+              </div>
+              <label for="automaticSimplification" class="relative inline-flex items-center cursor-pointer">
+                <input class="sr-only peer" id="automaticSimplification" type="checkbox" value="" />
+                <div
+                  class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300  after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#13a4ec]">
+                </div>
+              </label>
             </div>
           </div>
         </section>
@@ -168,76 +141,51 @@
               <p class="text-base font-medium text-slate-800">Toggle Animations</p>
               <p class="text-sm text-slate-500">Reduce motion and animations</p>
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input class="sr-only peer" type="checkbox" value="" />
+            <label for="disableAnimations" class="relative inline-flex items-center cursor-pointer">
+              <input class="sr-only peer" id="disableAnimations" type="checkbox" value="" />
               <div
-                class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-primary">
+                class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300  after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#13a4ec]">
               </div>
             </label>
           </div>
         </section>
         <section>
-          <h2 class="text-xl font-bold text-slate-900 mb-4 mt-4">Audio Adjustments</h2>
-          <div class="bg-white rounded-lg shadow-sm p-4 space-y-4">
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <label class="text-base font-medium text-slate-800"
-                  for="read-aloud-speed">Read-Aloud Speed</label>
-                <span class="text-sm font-medium text-primary">1.0x</span>
-              </div>
-              <div class="relative pt-1">
-                <input
-                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                  id="read-aloud-speed" max="2" min="0.5" step="0.1" type="range" value="1" />
-              </div>
-            </div>
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <label class="text-base font-medium text-slate-800" for="volume">Volume</label>
-                <span class="text-sm font-medium text-primary">100%</span>
-              </div>
-              <div class="relative pt-1">
-                <input
-                  class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                  id="volume" max="100" min="0" type="range" value="100" />
-              </div>
-            </div>
-          </div>
-        </section>
-        <section>
           <h2 class="text-xl font-bold text-slate-900 mb-4 mt-4">Content Filtering</h2>
-          <button
-            class="w-full bg-white rounded-lg shadow-sm p-4 flex justify-between items-center text-left">
+
+          <div class="bg-white rounded-lg shadow-sm p-4 flex justify-between items-center">
             <div>
               <p class="text-base font-medium text-slate-800">Filter Adult/Profane Words</p>
               <p class="text-sm text-slate-500">Filter out adult or profane words.</p>
             </div>
-            <div class="flex items-center space-x-2">
-              <span class="text-sm font-medium text-slate-600">On (Default)</span>
-              <svg class="text-slate-400" fill="currentColor" height="20" viewBox="0 0 256 256" width="20"
-                xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z">
-                </path>
-              </svg>
-            </div>
-          </button>
+            <label for="blockBadWords" class="relative inline-flex items-center cursor-pointer">
+              <input class="sr-only peer" id="blockBadWords" type="checkbox" value="" />
+              <div
+                class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300  after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#13a4ec]">
+              </div>
+            </label>
+          </div>
         </section>
+
+        <div style="margin-top:24px;">
+          <button class="main-btn" id="clearCacheBtn">Clear Saved Storage</button>
+          <div id="clearCacheMsg" style="display:none;"></div>
+        </div>
       </div>
     </main>
-    <footer class="bg-[#f6f7f8] border-t border-black/10 sticky bottom-0">
+    <!-- <footer class="bg-[#f6f7f8] border-t border-black/10 sticky bottom-0">
       <nav class="flex justify-around items-center px-2 py-2">
         <a id="homeBtn" class="flex flex-col items-center gap-1 p-2 rounded-lg text-[#137fec]" href="#">
           <span class="material-symbols-outlined">home</span>
           <span class="text-xs font-medium">Home</span>
         </a>
-        <a id="settingsBtn" class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
+        <a id="settingsBtn"
+          class="flex flex-col items-center gap-1 p-2 rounded-lg text-black/60 hover:bg-[#137fec]/10 hover:text-[#137fec]"
           href="#">
           <span class="material-symbols-outlined !font-normal">settings</span>
           <span class="text-xs font-medium">Settings</span>
         </a>
       </nav>
-    </footer>
+    </footer> -->
   </div>
   <script src="autism.js"></script>
   <script src="settings.js"></script>
