@@ -699,7 +699,7 @@ window.addEventListener('message', (event) => {
 document.addEventListener("keydown", (event) => {
     // Spacebar toggles reading
     if (event.code === "Space") {
-        event.preventDefault(); // stop page scroll
+       // event.preventDefault(); // stop page scroll
         console.log('[MAIN-BRIDGE] Space bar event to bridge');
         window.postMessage({
             type: "SPACE_BAR_CLICKED",
