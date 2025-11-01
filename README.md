@@ -1,35 +1,60 @@
 # SimpliFy
 
-## Your accessibility companion
+Your accessibility companion. Supercharging everyday accessibility.
 
-### Supercharging everyday accessibility.
+**Demo Site:** [https://sites.google.com/view/simplifydemo/home](https://sites.google.com/view/simplifydemo/home)
 
-## Overview
-This Chrome extension transforms any webpage into accessible content for users with disabilities, non-native speakers, and children. It runs entirely offline, ensuring privacy by processing everything locally. The extension provides:
-- Text simplification for cognitive disabilities and non-native speakers
-- Audio narration and visual formatting for blind and deaf users
-- Emotional tone guidance for social media posts
-- Configurable accessibility settings for blindness, deafness, and autism
+**Hackathon:** This project is a submission for the [Google AI Chrome Extension Hackathon](https://googlechromeai2025.devpost.com/).
 
 ## Features
-- **Accessibility Text Simplifier:** Converts complex text to plain language
-- **Social Media Content Optimizer:** Adjusts tone, length, and hashtags for posts
-- **Real-Time Emotional Tone Guidance:** Labels emotional context and suggests reactions
-- **Config Pages:** Configure health condition and general settings
-- **Home Pages:** Dedicated home for each accessibility option
-- **Settings Pages:** Custom settings for blindness, deafness, and autism
-- **Saved Content/Bookmarks**
-- **Upload Audio Files to Transcribe**
-- **Writer for Blind**
-- **Read Gmail**
 
-## Tech Stack
-- Chrome Extension (Manifest V3)
-- Pure HTML/CSS/JS (no backend)
-- All processing is local (offline)
+SimpliFy is a Chrome extension that provides a suite of tools to enhance web accessibility for users with diverse needs. The extension is built using modern web technologies and leverages the power of Google's Gemini Nano API to provide intelligent features.
 
-## Accessibility Commitment
-This project is universal design, not just assistive technology. It unlocks digital access for everyone, ensuring complete privacy and inclusion.
+### Core Technologies
 
-## Sample Screens
-See `samples/` for example homepages and settings for each accessibility mode.
+*   **Gemini Nano:** The extension utilizes the Gemini Nano API for a variety of tasks, including:
+    *   **Audio Transcription:** The `geminiTranscribeFile` function in `extension/shared/gemini.js` uses the `gemini-2.5-flash` model to transcribe audio files. This is used in the Auditory Accessibility feature to provide transcripts for audio and video files.
+    *   **Text Simplification:** The Autism & Cognitive Support feature uses a prompt-based approach with the Gemini API to simplify complex text, making it easier to understand.
+    *   **Content Summarization:** The Visual Accessibility feature uses the Gemini API to summarize long articles, terms of service, and privacy policies.
+*   **Chrome Extension APIs:** The extension makes use of various Chrome Extension APIs, including `sidePanel`, `contextMenus`, and `storage` to provide a seamless user experience.
+
+### Auditory Accessibility
+
+*   **Live Audio Transcribe:** Get real-time transcriptions of spoken content.
+*   **Transcribe Media Files:** Upload video and audio files to receive a text transcription, powered by the Gemini API.
+*   **Scribe:** A dedicated view for your transcriptions with the ability to download them.
+*   **Customizable Settings:**
+    *   Automatically download transcripts.
+    *   Toggle timestamps in your transcriptions.
+    *   Filter out adult or profane words.
+
+### Autism & Cognitive Support
+
+*   **Text Simplification:** Make complex text easier to understand using the Gemini API.
+*   **Audio Simplification:** Upload an audio file and receive a simplified version.
+*   **Animation Toggle:** Reduce distractions by turning off website animations.
+*   **Adjustable Settings:**
+    *   Control the level of text simplification.
+    *   Adjust read-aloud speed and volume.
+    *   Filter out adult or profane words from content.
+
+### Visual Accessibility
+
+*   **Text-to-Speech (TTS):** Have website text read aloud to you.
+*   **Content Summarization:**
+    *   Get summaries of long articles and text, powered by the Gemini API.
+    *   Summarize lengthy Terms & Conditions and Privacy Policies.
+*   **Personalized Voice Settings:**
+    *   Choose between different voice genders, speeds, and tones.
+*   **Accessibility Statistics:**
+    *   Track your usage patterns, such as weekly screen reader use.
+    *   Analyze your content consumption habits.
+    *   Monitor your navigation efficiency and most-used voice commands.
+
+## How to Use
+
+1.  Install the SimpliFy extension.
+2.  Click on the extension icon in your browser to open the side panel.
+3.  Explore the different accessibility features and customize them to your liking.
+
+For detailed setup and installation instructions, please see [readme-instructions.md](readme-instructions.md).
