@@ -1,0 +1,36 @@
+Index: extension/background.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Placeholder for background logic (if needed)\r\n// All processing is local/offline\r\n\r\n// Global AI permission to prevent concurrent AI operations across tabs\r\nlet isAIActive = false;\r\n\r\nchrome.runtime.onMessage.addListener((message, sender, sendResponse) => {\r\n  if (message.type === 'request-ai-permission') {\r\n    if (!isAIActive) {\r\n      isAIActive = true;\r\n      sendResponse({ granted: true });\r\n    } else {\r\n      sendResponse({ granted: false });\r\n    }\r\n  } else if (message.type === 'release-ai-permission') {\r\n    isAIActive = false;\r\n    sendResponse({ ok: true });\r\n  }\r\n  // Existing listeners...\r\n  if (message.action === 'summarize-text') {\r\n    // Handle summarize-text\r\n  }\r\n});\r\n\r\n// Release AI permission if the active tab is closed\r\nchrome.tabs.onRemoved.addListener(async (tabId) => {\r\n  // If AI was active and the tab closed, release the permission\r\n  if (isAIActive) {\r\n    isAIActive = false;\r\n    // Notify other tabs to retry their AI queues immediately\r\n    const tabs = await chrome.tabs.query({});\r\n    tabs.forEach(tab => {\r\n      if (tab.id !== tabId) { // Don't send to the closed tab\r\n        chrome.tabs.sendMessage(tab.id, { type: 'retry-ai-queue' }).catch(() => {}); // Ignore errors\r\n      }\r\n    });\r\n  }\r\n});\r\n\r\n// Enable auto-opening of the side panel when the extension icon is clicked\r\nchrome.sidePanel\r\n  .setPanelBehavior({ openPanelOnActionClick: true })\r\n  .catch((error) => console.error(error));\r\n\r\n\r\nchrome.runtime.onInstalled.addListener(() => {\r\n  chrome.contextMenus.create({\r\n    id: 'summarizeText',\r\n    title: 'Generate summary',\r\n    contexts: ['selection']\r\n  });\r\n});\r\n\r\nchrome.contextMenus.onClicked.addListener(async (info, _tab) => {\r\n  if (info.menuItemId === 'summarizeText' && info.selectionText) {\r\n    // Relay to content script in the active tab\r\n    chrome.runtime.sendMessage({\r\n      action: 'summarize-text',\r\n      text: info.selectionText\r\n    });\r\n  }\r\n});\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/extension/background.js b/extension/background.js
+--- a/extension/background.js	(revision f6c299650fe8759c365c6482caef9fb5f798c63f)
++++ b/extension/background.js	(date 1760749009940)
+@@ -49,6 +49,11 @@
+     title: 'Generate summary',
+     contexts: ['selection']
+   });
++  // chrome.contextMenus.create({
++  //   id: 'simplifyText',
++  //   title: 'Simplify text',
++  //   contexts: ['selection']
++  // });
+ });
+ 
+ chrome.contextMenus.onClicked.addListener(async (info, _tab) => {
+@@ -58,5 +63,12 @@
+       action: 'summarize-text',
+       text: info.selectionText
+     });
+-  }
++   } 
++  // else if (info.menuItemId === 'simplifyText' && info.selectionText) {
++  //   // Relay to content script in the active tab
++  //   chrome.runtime.sendMessage({
++  //     action: 'simplify-text',
++  //     text: info.selectionText
++  //   });
++  // }
+ });

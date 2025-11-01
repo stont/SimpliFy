@@ -1,0 +1,29 @@
+Index: extension/bridge.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Listen for messages from the extension and forward to page (MAIN world)\r\nchrome.runtime.onMessage.addListener((message) => {\r\n  if (message.type === 'retry-ai-queue') {\r\n    window.postMessage({ type: 'retry-ai-queue' }, '*');\r\n  }\r\n  window.postMessage({ type: 'autism-simplify-panel', ...message.data }, '*');\r\n});\r\n\r\n// Handle AI permission requests from main-bridge\r\nwindow.addEventListener('message', async (event) => {\r\n  if (event.data.type === 'request-ai-permission') {\r\n    const response = await chrome.runtime.sendMessage({ type: 'request-ai-permission' });\r\n    window.postMessage({ type: 'ai-permission-response', granted: response.granted, id: event.data.id }, '*');\r\n  } else if (event.data.type === 'release-ai-permission') {\r\n    await chrome.runtime.sendMessage({ type: 'release-ai-permission' });\r\n    window.postMessage({ type: 'ai-permission-released', id: event.data.id }, '*');\r\n  }\r\n});\r\n\r\n// On load, send current settings to main-bridge\r\nchrome.storage.local.get(['autismSimplificationLevel', 'autismDisableAnimations', 'autismBlockBadWords', 'autismAutomaticSimplification'], (result) => {\r\n  window.postMessage({ type: 'autism-settings-init', data: result }, '*');\r\n});\r\n\r\n// Listen for storage changes and send updates to main-bridge\r\nchrome.storage.onChanged.addListener((changes, namespace) => {\r\n  if (namespace === 'local') {\r\n    const updated = {};\r\n    if (changes.autismSimplificationLevel) updated.autismSimplificationLevel = changes.autismSimplificationLevel.newValue;\r\n    if (changes.autismDisableAnimations) updated.autismDisableAnimations = changes.autismDisableAnimations.newValue;\r\n    if (changes.autismBlockBadWords) updated.autismBlockBadWords = changes.autismBlockBadWords.newValue;\r\n    if (changes.autismAutomaticSimplification) updated.autismAutomaticSimplification = changes.autismAutomaticSimplification.newValue;\r\n    if (Object.keys(updated).length > 0) {\r\n      window.postMessage({ type: 'autism-settings-update', data: updated }, '*');\r\n    }\r\n  }\r\n});
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/extension/bridge.js b/extension/bridge.js
+--- a/extension/bridge.js	(revision f6c299650fe8759c365c6482caef9fb5f798c63f)
++++ b/extension/bridge.js	(date 1760748878519)
+@@ -3,7 +3,18 @@
+   if (message.type === 'retry-ai-queue') {
+     window.postMessage({ type: 'retry-ai-queue' }, '*');
+   }
++
++  // if (message.action === 'summarize-text') {
++  //   window.postMessage({ type: 'summary-panel', message: message.text }, '*');
++  // }
++  // if (message.action === 'simplify-text') {
++  //   window.postMessage({ type: 'simplify-text', text: message.text }, '*');
++  // }
++  // if (message.data && message.data.type === 'simplify-text') {
++  //   window.postMessage({ type: 'simplify-text', text: message.data.text }, '*');
++  // }
+   window.postMessage({ type: 'autism-simplify-panel', ...message.data }, '*');
++
+ });
+ 
+ // Handle AI permission requests from main-bridge

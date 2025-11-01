@@ -26,12 +26,10 @@ export default [
               'visual',
               'auditory',
               'autism',
-              'distcss',
               'request-mic.html',
               'request-mic.js',
               'bridge.js',
-              'main-bridge.js',
-              'tailwind.config.js'
+              'main-bridge.js'
             ],
             dest: 'dist'
           }

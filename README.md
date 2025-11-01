@@ -25,7 +25,6 @@ This Chrome extension transforms any webpage into accessible content for users w
 
 ## Tech Stack
 - Chrome Extension (Manifest V3)
-- Tailwind CSS for UI
 - Pure HTML/CSS/JS (no backend)
 - All processing is local (offline)
 

@@ -1,0 +1,74 @@
+Index: extension/autism/autism.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>let summarizer;\r\n\r\n// Tab navigation logic (W3Schools pattern, CSP-compliant)\r\nfunction openTab(evt, tabId) {\r\n  const tabcontent = document.getElementsByClassName('tab-content');\r\n  for (let i = 0; i < tabcontent.length; i++) {\r\n    tabcontent[i].classList.remove('active');\r\n    tabcontent[i].style.display = 'none';\r\n  }\r\n  const tablinks = document.getElementsByClassName('tab-btn');\r\n  for (let i = 0; i < tablinks.length; i++) {\r\n    tablinks[i].classList.remove('active');\r\n  }\r\n  document.getElementById(tabId).classList.add('active');\r\n  document.getElementById(tabId).style.display = '';\r\n  evt.currentTarget.classList.add('active');\r\n}\r\n\r\nasync function generateSummary(text, options) {\r\n    try {\r\n        const availability = await Summarizer.availability();\r\n        if (availability === 'unavailable') {\r\n            console.log('Summarizer API is not available')\r\n        }\r\n        if (availability === 'available') {\r\n            summarizer = await Summarizer.create(options);\r\n        }\r\n        else {\r\n            summarizer = await Summarizer.create(options);\r\n            if (typeof summarizer.addEventListener === 'function') {\r\n                summarizer.addEventListener('downloadprogress', (e) => {\r\n                    console.log(`Downloaded ${e.loaded * 100}%`);\r\n                });\r\n            }\r\n            if (summarizer.ready) {\r\n                await summarizer.ready;\r\n            }\r\n        }\r\n        const summary = await summarizer.summarize(text);\r\n        summarizer.destroy();\r\n        return summary;\r\n    } catch (e) {\r\n        console.log('Summary generation failed');\r\n        console.error(e);\r\n        return 'Error: ' + e.message;\r\n    }\r\n}\r\n\r\n\r\ndocument.addEventListener('DOMContentLoaded', function () {\r\n    const homebtn = document.getElementById('homeBtn');\r\n    const settingsBtn = document.getElementById('settingsBtn');\r\n    const backButton = document.getElementById('backBtn');\r\n\r\n    if (backButton) {\r\n        backButton.onclick = function () {\r\n            // Clear navigation storage before navigating back\r\n            localStorage.removeItem('accessibilityCondition');\r\n            window.location.href = '../onboard/index.html';\r\n        };\r\n    }\r\n    if (homebtn) {\r\n        homebtn.onclick = function () {\r\n            handleSwitchView(0);\r\n        };\r\n    }\r\n    if (settingsBtn) {\r\n        settingsBtn.onclick = function () {\r\n            handleSwitchView(1);\r\n        };\r\n    }\r\n\r\n    // Remove old view switching logic\r\n    // Add tab logic like auditory.js\r\n    const tabBtns = document.querySelectorAll('.tab-btn');\r\n    tabBtns.forEach(btn => {\r\n      btn.addEventListener('click', function(evt) {\r\n        openTab(evt, btn.getAttribute('data-tab'));\r\n      });\r\n    });\r\n    // Set initial active tab (default to Home)\r\n    document.querySelector('.tab-btn[data-tab=\"tab-home\"]').classList.add('active');\r\n    document.getElementById('tab-home').classList.add('active');\r\n    document.getElementById('tab-home').style.display = '';\r\n    document.getElementById('tab-settings').classList.remove('active');\r\n    document.getElementById('tab-settings').style.display = 'none';\r\n\r\n    // Subscriber\r\n    chrome.runtime.onMessage.addListener(async function (request) {\r\n        if (request.action === 'summarize-text') {\r\n            const text = request.text;\r\n            console.log('Received text for summarization:', text);\r\n\r\n            const options = {\r\n                sharedContext: 'this is a website',\r\n                type: 'tldr',\r\n                length: 'medium'\r\n            };\r\n\r\n            const summary = await generateSummary(text, options)\r\n            console.log('Generated summary:', summary);\r\n\r\n            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {\r\n                console.log('The tab: ', tabs);\r\n                if (tabs && tabs[0]) {\r\n                    chrome.tabs.sendMessage(tabs[0].id, { data: { type: 'summary-panel', message: summary } });\r\n                }\r\n            });\r\n        }\r\n    });\r\n});
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/extension/autism/autism.js b/extension/autism/autism.js
+--- a/extension/autism/autism.js	(revision f6c299650fe8759c365c6482caef9fb5f798c63f)
++++ b/extension/autism/autism.js	(date 1760748577923)
+@@ -46,6 +46,23 @@
+     }
+ }
+ 
++async function generateSimplifiedText(text, options) {
++    try {
++        const availability = await Rewriter.availability();
++        if (availability === 'unavailable') {
++            console.log('Rewriter API is not available');
++            return text;
++        }
++        const rewriter = await Rewriter.create(options);
++        const simplified = await rewriter.rewrite(text, { context: 'Simplify the text for accessibility.' });
++        rewriter.destroy();
++        return simplified;
++    } catch (e) {
++        console.log('Text simplification failed');
++        console.error(e);
++        return text;
++    }
++}
+ 
+ document.addEventListener('DOMContentLoaded', function () {
+     const homebtn = document.getElementById('homeBtn');
+@@ -87,10 +104,11 @@
+ 
+     // Subscriber
+     chrome.runtime.onMessage.addListener(async function (request) {
++        alert('Message received in background:', request);
+         if (request.action === 'summarize-text') {
+             const text = request.text;
+             console.log('Received text for summarization:', text);
+-
++            alert('Generating summary, please wait...');
+             const options = {
+                 sharedContext: 'this is a website',
+                 type: 'tldr',
+@@ -107,5 +125,25 @@
+                 }
+             });
+         }
++        if (request.action === 'simplify-text') {
++            const text = request.text;
++            console.log('Received text for simplification:', text);
++            alert('Generating simplified text, please wait...');
++            const options = {
++                sharedContext: 'Simplify text for accessibility.',
++                tone: 'as-is',
++                length: 'as-is',
++                format: 'plain-text'
++            };
++
++            const simplified = await generateSimplifiedText(text, options);
++            console.log('Generated simplified text:', simplified);
++
++            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
++                if (tabs && tabs[0]) {
++                    chrome.tabs.sendMessage(tabs[0].id, { data: { type: 'simplify-text', text: simplified } });
++                }
++            });
++        }
+     });
+ });
+\ No newline at end of file
