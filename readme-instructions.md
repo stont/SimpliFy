@@ -33,22 +33,17 @@ First, you need to build the extension from the source code. This process requir
 
 ## 2. Configure Chrome for Gemini Nano
 
-To use the on-device AI features, you need to enable some experimental flags in Chrome using the UI.
+To use the on-device AI features, you need to enable the following experimental flags in Chrome:
 
 1.  Open a new tab in Chrome and navigate to `chrome://flags`.
-2.  In the search bar, type `prompt-api-for-gemini-nano`. Find the flag titled **Prompt API for Gemini Nano** and select "Enabled" from the dropdown.
-3.  In the search bar, type `optimization-guide-on-device-model`. Find the flag titled **Optimization Guide On Device Model** and select "Enabled" from the dropdown.
+2.  In the search bar, enable each of the following flags:
+    - **Summarization API for Gemini Nano** (`chrome://flags/#summarization-api-for-gemini-nano`)
+    - **Rewriter API for Gemini Nano** (`chrome://flags/#rewriter-api-for-gemini-nano`)
+    - **Writer API for Gemini Nano** (`chrome://flags/#writer-api-for-gemini-nano`)
+3.  For each flag, select "Enabled" from the dropdown.
 4.  A "Relaunch" button will appear at the bottom of the screen. Click it to restart Chrome for the changes to take effect.
 
-## 3. Download the On-Device Model
-
-After Chrome restarts, you need to get the Gemini Nano model.
-
-1.  Open a new tab in Chrome and navigate to `chrome://components`.
-2.  Scroll down the list to find **On-Device Model**.
-3.  Click the "Check for update" button. The status will change to "Component downloading" and then "Component updated" once the download is complete. This can take a few minutes.
-
-## 4. Load the Unpacked Extension
+## 3. Load the Unpacked Extension
 
 Now, with Chrome configured, you can load the extension.
 
