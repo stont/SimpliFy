@@ -99,7 +99,6 @@ function updateApiStatusTable(models, results) {
             btn.setAttribute('data-action', 'download');
             btn.setAttribute('data-api', name);
             btn.setAttribute('data-flag', flag);
-            // Add a data attribute to help identify the button for disabling
             btn.setAttribute('data-download-btn', 'true');
             tdAction.appendChild(btn);
         } else {
@@ -164,8 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const ModelCtor = self[api];
                 const tdStatus = btn.parentElement.nextElementSibling;
-                // Disable all Download Model buttons while downloading
-                document.querySelectorAll('button[data-action="download"]').forEach(b => b.disabled = true);
+                // Hide all Download Model buttons while downloading
+                document.querySelectorAll('button[data-action="download"]').forEach(b => b.style.display = 'none');
                 if (typeof ModelCtor.create === 'function') {
                     try {
                         await ModelCtor.create({
@@ -180,18 +179,19 @@ document.addEventListener('DOMContentLoaded', () => {
                                 });
                             }
                         });
+                        // After download, update only the current model's state
                         await checkAllModelStates(api);
                     } catch (err) {
                         if (tdStatus) {
                             tdStatus.textContent = 'Download failed';
                             tdStatus.style.color = 'red';
                         }
-                        btn.disabled = false;
+                        // Unhide all Download Model buttons if download fails
+                        document.querySelectorAll('button[data-action="download"]').forEach(b => b.style.display = '');
                         console.error(`Model download failed for ${api}:`, err);
                     }
                 }
-                // Re-enable all Download Model buttons after download attempt
-                document.querySelectorAll('button[data-action="download"]').forEach(b => b.disabled = false);
+                // After checkAllModelStates, only the required download buttons will be shown
             }
         });
     }
