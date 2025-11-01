@@ -6,6 +6,10 @@ chrome.runtime.onMessage.addListener((message) => {
     console.log('[BRIDGE] Forwarding retry-ai-queue to page');
     window.postMessage({ type: 'retry-ai-queue' }, '*');
   }
+  if (message.type === 'start-ai-task') {
+    // Forward start-ai-task to page
+    window.postMessage({ type: 'start-ai-task', requestId: message.requestId }, '*');
+  }
   if (message.action === 'summarize-text') {
     console.log('[BRIDGE] Forwarding summarize-text to page, text length:', message.text?.length);
     console.log('[BRIDGE] Forwarding summarize-text to page, text length:', message.text?.length);
@@ -18,16 +22,15 @@ chrome.runtime.onMessage.addListener((message) => {
   window.postMessage({ type: 'autism-simplify-panel', ...message.data }, '*');
 });
 
-// Handle AI permission requests from main-bridge
+// Handle AI queue protocol from main-bridge
 window.addEventListener('message', async (event) => {
-  if (event.data.type === 'request-ai-permission') {
-    console.log('[BRIDGE] AI permission requested from page, id:', event.data.id);
-    const response = await chrome.runtime.sendMessage({ type: 'request-ai-permission' });
-    console.log('[BRIDGE] AI permission response from background:', response);
-    window.postMessage({ type: 'ai-permission-response', granted: response.granted, id: event.data.id }, '*');
-  } else if (event.data.type === 'release-ai-permission') {
-    await chrome.runtime.sendMessage({ type: 'release-ai-permission' });
-    window.postMessage({ type: 'ai-permission-released', id: event.data.id }, '*');
+  if (event.data.type === 'request-ai-task') {
+    // Forward to background
+    const response = await chrome.runtime.sendMessage({ type: 'request-ai-task', requestId: event.data.requestId });
+    window.postMessage({ type: 'ai-task-queued', requestId: event.data.requestId, queued: response?.queued }, '*');
+  } else if (event.data.type === 'ai-task-complete') {
+    await chrome.runtime.sendMessage({ type: 'ai-task-complete', requestId: event.data.requestId });
+    window.postMessage({ type: 'ai-task-finished', requestId: event.data.requestId }, '*');
   } else if (event.data.type === "from-main-bridge") {
     console.log('[BRIDGE] Forwarding message to background:', event.data.message);
     // Forward to background
