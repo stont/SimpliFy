@@ -34,31 +34,7 @@ function handleSwitchView(index) {
     }
 }
 
-async function CheckAiAvailability(params) {
-
-  if (!'Summarizer' in self && !'Rewriter' in self) {
-    //Navigate to extension\autism\setup\setup.html
-    window.location.href = 'setup/setup.html';
-  }
-
-  //If both exists, check for availability.
-  if ('Summarizer' in self && 'Rewriter' in self) {
-    // The Summarizer and Rewriter APIs are supported.
-
-    const summerizerAvailability = await Summarizer.availability();
-    const rewriterAvailability = await Summarizer.availability();
-    //downloading,available,unavailable
-    if (summerizerAvailability === 'downloadable' || rewriterAvailability === 'downloadable') {
-      window.location.href = 'setup/setup.html';
-    }
-    
-  }
-}
-
 document.addEventListener('DOMContentLoaded', function () {
-
-  CheckAiAvailability()
-
   const homebtn = document.getElementById('homeBtn');
   const settingsBtn = document.getElementById('settingsBtn');
   const backButton = document.getElementById('backBtn');
