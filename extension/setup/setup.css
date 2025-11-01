@@ -1,4 +1,4 @@
-        :root {
+:root {
             --blue-primary: #1a73e8;
             /* Google/Material-like blue */
             --blue-light: #e8f0fe;
@@ -153,6 +153,24 @@
             background-color: #1669d6;
         }
 
+        .button-primary {
+  font-size: 1em;
+  padding: 0.3em 0.9em;
+  min-width: unset;
+  min-height: unset;
+  height: auto;
+  width: auto;
+  border-radius: 5px;
+  border: none;
+  background: #1976d2;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.button-primary:hover {
+  background: #125ea2;
+}
+
         .button-secondary {
             background-color: transparent;
             color: var(--blue-primary);
@@ -197,3 +215,29 @@
             width: 100%;
             margin-bottom: 40px;
         }
+
+        /* Table: spacing between header and body */
+.styled-table thead tr {
+  border-bottom: 2px solid #e0e0e0;
+}
+.styled-table thead th {
+  padding-bottom: 0.7em;
+}
+.styled-table tbody td {
+  padding: 0.6em 1em;
+}
+
+/* Left-align first column */
+.styled-table td:first-child, .styled-table th:first-child {
+  text-align: left;
+}
+
+/* Optional: make table look more modern */
+.styled-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
