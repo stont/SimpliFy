@@ -21,7 +21,9 @@ chrome.runtime.onMessage.addListener((message) => {
 // Handle AI permission requests from main-bridge
 window.addEventListener('message', async (event) => {
   if (event.data.type === 'request-ai-permission') {
+    console.log('[BRIDGE] AI permission requested from page, id:', event.data.id);
     const response = await chrome.runtime.sendMessage({ type: 'request-ai-permission' });
+    console.log('[BRIDGE] AI permission response from background:', response);
     window.postMessage({ type: 'ai-permission-response', granted: response.granted, id: event.data.id }, '*');
   } else if (event.data.type === 'release-ai-permission') {
     await chrome.runtime.sendMessage({ type: 'release-ai-permission' });

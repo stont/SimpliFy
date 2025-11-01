@@ -70,18 +70,21 @@ function speakChunks(chunks, options) {
         console.warn('TTS error:', chrome.runtime.lastError.message);
       }
       if (event.type === 'end') {
+        console.log('Finished speaking chunk:', i + 1, 'of', chunks.length);
         isSpeaking = false;
       }
       if (event.type === 'start') {
         console.log('The started speech');
-        isSpeaking = true;
-        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          if (tabs.length > 0) {
-            const currentTab = tabs[0];
-            console.log('Current active tab ID for TTS:', currentTab.id);
-            currentTabId = currentTab.id
-          }
-        });
+
+      }
+    });
+
+    isSpeaking = true;
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length > 0) {
+        const currentTab = tabs[0];
+        console.log('Current active tab ID for TTS:', currentTab.id);
+        currentTabId = currentTab.id
       }
     });
   });
@@ -100,6 +103,7 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
       }
     });
   }
+  console.log('Tab closed:', tabId, 'Current speaking tab:', currentTabId, 'Is speaking:', isSpeaking);
   if (isSpeaking && tabId === currentTabId) {
     isSpeaking = false;
     chrome.tts.stop();

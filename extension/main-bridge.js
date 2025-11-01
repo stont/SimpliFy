@@ -9,6 +9,7 @@ let isAutomaticSimplificationActive = false;
 let enableVoiceCommandReadingCurrent = false;
 let shouldAutoReadPageCurrent = false;
 
+// Autism text simplification logic
 // Helper to generate AI prompt based on slider value
 function getSimplificationPrompt(level) {
     level = Number(level);
@@ -62,14 +63,17 @@ function releaseAIPermission() {
 function enqueueAIRewrite(task) {
     return new Promise((resolve, reject) => {
         aiRewriteQueue.push({ task, resolve, reject });
+        console.log('[MAIN-BRIDGE] Task enqueued. Queue length:', aiRewriteQueue.length);
         processAIRewriteQueue();
     });
 }
 
 async function processAIRewriteQueue() {
+    console.log('[MAIN-BRIDGE] processAIRewriteQueue called. Active:', aiRewriteActive, 'Queue length:', aiRewriteQueue.length);
     if (aiRewriteActive || aiRewriteQueue.length === 0) return;
     // Request permission from background to ensure only one AI operation globally
     const granted = await requestAIPermission();
+    console.log('[MAIN-BRIDGE] AI permission granted:', granted);
     if (!granted) {
         // Permission denied, retry after a short delay
         setTimeout(processAIRewriteQueue, 1000);
@@ -87,6 +91,7 @@ async function processAIRewriteQueue() {
         // Release permission
         releaseAIPermission();
         processAIRewriteQueue();
+        console.log('[MAIN-BRIDGE] AI rewrite task completed. Queue length:', aiRewriteQueue.length);
     }
 }
 
@@ -175,6 +180,8 @@ async function generateSummary(text, options) {
 
 async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
     return enqueueAIRewrite(async () => {
+
+        console.log('[MAIN-BRIDGE] rewriteTextViaAI called with text length:', original?.length, 'level:', simplifyLevel, 'filterBadWords:', filterBadWords);
         if (!isAutomaticSimplificationActive) {
             throw new Error('Cancelled');
         }
@@ -208,10 +215,15 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
             sharedAbortController = new AbortController();
             sharedRewriter = await Rewriter.create({ ...options, signal: sharedAbortController.signal });
             sharedRewriterOptions = options;
+            console.log('[MAIN-BRIDGE] Created new shared Rewriter instance with options:', options);
         }
         try {
             const rewrittenText = await sharedRewriter.rewrite(original, { context: prompt });
             //console.log('[AI Transform]\nOriginal:', original, '\nRewritten:', rewrittenText);
+            if (rewrittenText.includes('[AI ERROR]')) {
+                console.error('AI returned an error message:: ', rewrittenText);
+                return original;
+            }
             return rewrittenText;
         } catch (error) {
             console.error('[CLIENT] Rewrite error:', error);
@@ -222,6 +234,15 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
 
 
 async function replaceAllTextNodesWithAI(simplifyLevel, filterBadWords) {
+    console.log('[MAIN-BRIDGE] replaceAllTextNodesWithAI called with level:', simplifyLevel, 'filterBadWords:', filterBadWords);
+    if (!document.body) {
+        console.warn("Body not yet available. Retrying...");
+        setTimeout(() => {
+            replaceAllTextNodesWithAI(simplifyLevel, filterBadWords);
+        }, 300);
+        return;
+    }
+
     if (simplifyLevel === 0) {
         return;
     }
@@ -305,14 +326,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
 });
 
+// Visual content summarization
+let sharedVisualAbortController = null;
+let sharedPromptSession = null;
 async function promptText(pageContent) {
     console.log('abount to prompt text:: ', pageContent)
-    const session = await LanguageModel.create({
-        initialPrompts: [
-            {
-                role: 'system',
-                content:
-                    `You are a skilled analyst who correlates patterns across multiple images.
+    if (!sharedPromptSession) {
+        sharedVisualAbortController = new AbortController();
+        sharedPromptSession = await LanguageModel.create({
+            initialPrompts: [
+                {
+                    role: 'system',
+                    content:
+                        `You are a skilled analyst who correlates patterns across multiple images.
                     Your task:
                         1. Identify the main purpose of the page (e.g., article, news story, product page, blog post, documentation, etc.).
                         2. Summarize the most important information in a clear and conversational tone.
@@ -329,26 +355,42 @@ async function promptText(pageContent) {
                         
 
                     `,
-            },
-        ],
-        expectedInputs: [
-            { type: "text", languages: ["en"] }
-        ],
-        expectedOutputs: [
-            { type: "text", languages: ["en"] }
-        ]
-    });
+                },
+            ],
+            expectedInputs: [
+                { type: "text", languages: ["en"] }
+            ],
+            expectedOutputs: [
+                { type: "text", languages: ["en"] }
+            ]
+        });
+        console.log('Prompt session created')
+    }
+    let result = ''
+    const usage = await sharedPromptSession.measureInputUsage(promptText);
+    console.log('Input usage:: ', usage)
+    // Check session token qouta 
+    const pageTextChunks = chunkTextByQuota(pageContent, sharedPromptSession, usage)
+    try {
+        for (const chunk of pageTextChunks) {
+            result += await sharedPromptSession.prompt(`Here is the extracted text content of the page:
+                            ---
+                            ${chunk}
+                            ---
+                            Now, generate your response.`, {
+                signal: sharedVisualAbortController.signal
+            });
+        }
 
-    const result = await session.prompt(`Here is the extracted text content of the page:
-                        ---
-                        ${pageContent}
-                        ---
-                        Now, generate your response.`);
+        console.log('============ Prompt result======= ', result)
+        const chunks = chunkText(result);
+        sendToExtension(chunks)
+    } catch (error) {
+        console.error('[CLIENT] Prompt error:', error);
+        return
+    }
     // for await (const chunk of stream) {
     // console.log(chunk);
-    console.log('============ Prompt result======= ', result)
-    const chunks = chunkText(result);
-    sendToExtension(chunks)
 
     // }
 
@@ -420,6 +462,46 @@ function safeGetVisibleText() {
         console.error("❌ Error using TreeWalker:", err);
         return "";
     }
+}
+
+function getEstimatedTokens(text) {
+    // Approximation based on average English tokenization
+    if (!text) return 0;
+
+    // Trim whitespace and normalize
+    const cleanText = text.trim();
+
+    // 1 token ≈ 4 characters (as per OpenAI tiktoken average)
+    const charCount = cleanText.length;
+    console.log('Character count for token estimation:', charCount);
+
+    // Calculate estimated tokens
+    const estimatedTokens = Math.ceil(charCount / 4);
+
+    return estimatedTokens;
+}
+
+function chunkTextByQuota(text, session, usage) {
+
+    // const estimatedTokens = getEstimatedTokens(text);
+    console.log('Estimated tokens for text:', estimatedTokens);
+    console.log('Session quota:', session.inputQuota, 'currnet usage:', session.inputUsage, 'measured usage:', usage);
+    const maxTokens = session.inputQuota - (session.inputUsage + usage + 500); // leave room for response
+    console.log('Max tokens available for input:', maxTokens);
+
+    if (estimatedTokens <= maxTokens) {
+        return [text];
+    }
+    console.log('Text exceeds quota, chunking required.');
+    const words = text.split(/\s+/);
+    const wordsPerChunk = Math.floor(maxTokens / 1.3);
+    const chunks = [];
+    console.log('Chunking text into pieces of approx', wordsPerChunk, 'words each.');
+    for (let i = 0; i < words.length; i += wordsPerChunk) {
+        chunks.push(words.slice(i, i + wordsPerChunk).join(" "));
+    }
+    console.log('Text chunked into', chunks.length, 'chunks due to quota limits.');
+    return chunks;
 }
 
 // // Run safely after DOM is ready
@@ -528,6 +610,14 @@ window.addEventListener('message', (event) => {
                     const pageContent = safeGetVisibleText();
                     console.log('[MAIN] Extracted page content length for auto-read:', pageContent.length);
                     promptText(pageContent);
+                } else {
+                    if (sharedVisualAbortController) {
+                        sharedVisualAbortController.abort();
+                    }
+                    if (sharedPromptSession) {
+                        sharedPromptSession.destroy();
+                        sharedPromptSession = null;
+                    }
                 }
             }
         }
@@ -605,14 +695,15 @@ window.addEventListener('message', (event) => {
     }
 });
 
+//Key logger
 document.addEventListener("keydown", (event) => {
-  // Spacebar toggles reading
-  if (event.code === "Space") {
-    event.preventDefault(); // stop page scroll
-    console.log('[MAIN-BRIDGE] Space bar event to bridge');
-    window.postMessage({
-        type: "SPACE_BAR_CLICKED",
-    }, "*");
-  }
+    // Spacebar toggles reading
+    if (event.code === "Space") {
+        event.preventDefault(); // stop page scroll
+        console.log('[MAIN-BRIDGE] Space bar event to bridge');
+        window.postMessage({
+            type: "SPACE_BAR_CLICKED",
+        }, "*");
+    }
 });
 
