@@ -1,4 +1,4 @@
-// main-bridge.js - Runs in MAIN world, can access DOM
+// main-bridge.js - Use new global AI queue protocol only
 
 // Global settings variables, initialized with defaults
 let currentSimplificationLevel = 50;
@@ -39,61 +39,46 @@ function collectTextNodes(root) {
 // FIFO queue for AI rewrite requests (client-side)
 const aiRewriteQueue = [];
 let aiRewriteActive = false;
-let permissionRequestId = 0;
-
-function requestAIPermission() {
-    return new Promise((resolve) => {
-        const id = ++permissionRequestId;
-        window.postMessage({ type: 'request-ai-permission', id }, '*');
-        const listener = (event) => {
-            if (event.data.type === 'ai-permission-response' && event.data.id === id) {
-                window.removeEventListener('message', listener);
-                resolve(event.data.granted);
-            }
-        };
-        window.addEventListener('message', listener);
-    });
-}
-
-function releaseAIPermission() {
-    const id = ++permissionRequestId;
-    window.postMessage({ type: 'release-ai-permission', id }, '*');
-}
+let aiRequestIdCounter = 0;
 
 function enqueueAIRewrite(task) {
     return new Promise((resolve, reject) => {
-        aiRewriteQueue.push({ task, resolve, reject });
-        console.log('[MAIN-BRIDGE] Task enqueued. Queue length:', aiRewriteQueue.length);
+        const requestId = ++aiRequestIdCounter;
+        aiRewriteQueue.push({ task, resolve, reject, requestId });
         processAIRewriteQueue();
     });
 }
 
-async function processAIRewriteQueue() {
-    console.log('[MAIN-BRIDGE] processAIRewriteQueue called. Active:', aiRewriteActive, 'Queue length:', aiRewriteQueue.length);
+function processAIRewriteQueue() {
     if (aiRewriteActive || aiRewriteQueue.length === 0) return;
-    // Request permission from background to ensure only one AI operation globally
-    const granted = await requestAIPermission();
-    console.log('[MAIN-BRIDGE] AI permission granted:', granted);
-    if (!granted) {
-        // Permission denied, retry after a short delay
-        setTimeout(processAIRewriteQueue, 1000);
-        return;
-    }
-    aiRewriteActive = true;
-    const { task, resolve, reject } = aiRewriteQueue.shift();
-    try {
-        const result = await task();
-        resolve(result);
-    } catch (e) {
-        reject(e);
-    } finally {
-        aiRewriteActive = false;
-        // Release permission
-        releaseAIPermission();
-        processAIRewriteQueue();
-        console.log('[MAIN-BRIDGE] AI rewrite task completed. Queue length:', aiRewriteQueue.length);
-    }
+    const { requestId } = aiRewriteQueue[0];
+    // Request to join the global AI queue
+    window.postMessage({ type: 'request-ai-task', requestId, direction: 'from-page' }, '*');
 }
+
+// Listen for start-ai-task from background (via bridge)
+window.addEventListener('message', async (event) => {
+    if (event.data && event.data.type === 'start-ai-task') {
+        const { requestId } = event.data;
+        // Find the matching task
+        const idx = aiRewriteQueue.findIndex(t => t.requestId === requestId);
+        if (idx === -1) return;
+        aiRewriteActive = true;
+        const { task, resolve, reject } = aiRewriteQueue.splice(idx, 1)[0];
+        try {
+            const result = await task();
+            resolve(result);
+        } catch (e) {
+            reject(e);
+        } finally {
+            aiRewriteActive = false;
+            // Notify background that task is complete
+            window.postMessage({ type: 'ai-task-complete', requestId, direction: 'from-page' }, '*');
+            // Process next in local queue
+            processAIRewriteQueue();
+        }
+    }
+});
 
 // AI/caching logic: request rewrite using Gemini Nano Rewriter API directly in client, now queued
 let sharedRewriter = null;
@@ -111,7 +96,10 @@ async function simplifySelectedText(original, simplifyLevel, filterBadWords) {
         console.error('[CLIENT] Gemini Nano Rewriter API not available.');
         return original;
     }
-    const available = await Rewriter.availability();
+    const available = await Rewriter.availability({
+        expectedInputLanguages: ["en-US"],
+        outputLanguage: "en-US",
+    });
     console.log('[MAIN-BRIDGE] Rewriter availability:', available);
     if (available === 'unavailable') {
         console.error('[CLIENT] Rewriter API is not usable.');
@@ -124,7 +112,9 @@ async function simplifySelectedText(original, simplifyLevel, filterBadWords) {
         tone: 'as-is',
         length: 'as-is',
         format: 'plain-text',
-        sharedContext: aiRules
+        sharedContext: aiRules,
+        expectedInputLanguages: ["en-US"],
+        outputLanguage: "en-US",
     };
 
     if (filterBadWords) {
@@ -148,7 +138,10 @@ async function generateSummary(text, options) {
     console.log('[MAIN-BRIDGE] generateSummary called with text length: ' + (text?.length || 0) + ', options: ' + JSON.stringify(options));
     console.log('[MAIN-BRIDGE] generateSummary called with text length:', text?.length, 'options:', options);
     try {
-        const availability = await Summarizer.availability();
+        const availability = await Summarizer.availability({
+            expectedInputLanguages: ["en-US"],
+            outputLanguage: "en-US",
+        });
         console.log('[MAIN-BRIDGE] Summarizer availability:', availability);
         if (availability === 'unavailable') {
             console.log('Summarizer API is not available');
@@ -189,7 +182,10 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
             console.error('[CLIENT] Gemini Nano Rewriter API not available.');
             return original;
         }
-        const available = await Rewriter.availability();
+        const available = await Rewriter.availability({
+            expectedInputLanguages: ["en-US"],
+            outputLanguage: "en-US",
+        });
         if (available === 'unavailable') {
             console.error('[CLIENT] Rewriter API is not usable.');
             return original;
@@ -200,7 +196,9 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
             tone: 'as-is',
             length: 'as-is',
             format: 'plain-text',
-            sharedContext: aiRules
+            sharedContext: aiRules,
+            expectedInputLanguages: ["en-US"],
+            outputLanguage: "en-US",
         };
 
         if (filterBadWords) {
@@ -688,6 +686,7 @@ window.addEventListener('message', (event) => {
         processAIRewriteQueue();
     }
     if (event.data && event.data.type === 'ai-permission-response') {
+        // console.log('[MAIN-BRIDGE] AI permission response received in main-bridge.js:', event.data);
         // handled in requestAIPermission
     }
     if (event.data && event.data.type === 'ai-permission-released') {
@@ -699,7 +698,7 @@ window.addEventListener('message', (event) => {
 document.addEventListener("keydown", (event) => {
     // Spacebar toggles reading
     if (event.code === "Space") {
-       // event.preventDefault(); // stop page scroll
+        // event.preventDefault(); // stop page scroll
         console.log('[MAIN-BRIDGE] Space bar event to bridge');
         window.postMessage({
             type: "SPACE_BAR_CLICKED",

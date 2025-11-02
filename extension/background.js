@@ -1,23 +1,57 @@
 // Placeholder for background logic (if needed)
 // All processing is local/offline
 
-// Global AI permission to prevent concurrent AI operations across tabs
-let isAIActive = false;
+// Global AI task queue
+let aiTaskQueue = [];
+let isProcessing = false;
 let isSpeaking = false;
-let currentTabId = ''
+let currentTabId = '';
 
+// Helper: Remove all tasks for a given tabId
+function removeTasksForTab(tabId) {
+  aiTaskQueue = aiTaskQueue.filter(task => task.tabId !== tabId);
+}
+
+// Helper: Find the next eligible task (optionally prioritize active tab)
+async function getNextTask() {
+  // Optionally, prioritize active tab
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tabs.length > 0) {
+    const activeTabId = tabs[0].id;
+    const activeTask = aiTaskQueue.find(task => task.tabId === activeTabId);
+    if (activeTask) return activeTask;
+  }
+  // Otherwise, FIFO
+  return aiTaskQueue[0];
+}
+
+// Main message handler
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Message listener', message)
-  if (message.type === 'request-ai-permission') {
-    if (!isAIActive) {
-      isAIActive = true;
-      sendResponse({ granted: true });
-    } else {
-      sendResponse({ granted: false });
+  console.log('Background received message: ' + JSON.stringify(message));
+  console.log('Message listener', message);
+  if (message.type === 'request-ai-task') {
+    // Enqueue the task
+    const tabId = sender.tab?.id || message.tabId;
+    if (!tabId) {
+      sendResponse({ error: 'No tabId' });
+      return true;
     }
-  } else if (message.type === 'release-ai-permission') {
-    isAIActive = false;
+    // Prevent duplicate tasks for same tab
+    if (!aiTaskQueue.some(task => task.tabId === tabId)) {
+      aiTaskQueue.push({ tabId, requestId: message.requestId });
+    }
+    processQueue();
+    sendResponse({ queued: true });
+    return true;
+  }
+  if (message.type === 'ai-task-complete') {
+    // Remove the completed task
+    const tabId = sender.tab?.id || message.tabId;
+    aiTaskQueue = aiTaskQueue.filter(task => task.tabId !== tabId);
+    isProcessing = false;
+    processQueue();
     sendResponse({ ok: true });
+    return true;
   }
   // Existing listeners...
   if (message.action === 'summarize-text') {
@@ -90,19 +124,28 @@ function speakChunks(chunks, options) {
   });
 }
 
+async function processQueue() {
+  if (isProcessing || aiTaskQueue.length === 0) return;
+  const nextTask = await getNextTask();
+  if (!nextTask) return;
+  isProcessing = true;
+  // Send start-ai-task to the tab
+  try {
+    await chrome.tabs.sendMessage(nextTask.tabId, { type: 'start-ai-task', requestId: nextTask.requestId });
+  } catch (e) {
+    // Tab may be closed, remove task and try next
+    removeTasksForTab(nextTask.tabId);
+    isProcessing = false;
+    processQueue();
+  }
+}
+
 // Release AI permission if the active tab is closed
 chrome.tabs.onRemoved.addListener(async (tabId) => {
-  // If AI was active and the tab closed, release the permission
-  if (isAIActive) {
-    isAIActive = false;
-    // Notify other tabs to retry their AI queues immediately
-    const tabs = await chrome.tabs.query({});
-    tabs.forEach(tab => {
-      if (tab.id !== tabId) { // Don't send to the closed tab
-        chrome.tabs.sendMessage(tab.id, { type: 'retry-ai-queue' }).catch(() => { }); // Ignore errors
-      }
-    });
-  }
+  // Remove tasks for closed tabs
+  removeTasksForTab(tabId);
+  isProcessing = false;
+  processQueue();
   console.log('Tab closed:', tabId, 'Current speaking tab:', currentTabId, 'Is speaking:', isSpeaking);
   if (isSpeaking && tabId === currentTabId) {
     isSpeaking = false;
