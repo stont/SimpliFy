@@ -38,6 +38,7 @@ To use the on-device AI features, you need to enable the following experimental 
 1.  Open a new tab in Chrome and navigate to `chrome://flags`.
 2.  In the search bar, enable each of the following flags:
     - **Summarization API for Gemini Nano** (`chrome://flags/#summarization-api-for-gemini-nano`)
+    - **LanguageModel API for Gemini Nano** (`chrome://flags/#prompt-api-for-gemini-nano`)
     - **Rewriter API for Gemini Nano** (`chrome://flags/#rewriter-api-for-gemini-nano`)
     - **Writer API for Gemini Nano** (`chrome://flags/#writer-api-for-gemini-nano`)
 3.  For each flag, select "Enabled" from the dropdown.
