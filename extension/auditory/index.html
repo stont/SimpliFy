@@ -31,8 +31,9 @@
           </div>
           <div class="mic-icon-wrapper">
             <svg class="mic-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-              <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+              <path
+                d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
             </svg>
           </div>
         </div>
@@ -41,8 +42,8 @@
           <p class="card-description">Real-time transcription of spoken content into text.</p>
           <button class="main-btn" id="startTranscribeBtn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" fill="white" opacity="0.3"/>
-              <circle cx="12" cy="12" r="4" fill="white"/>
+              <circle cx="12" cy="12" r="10" fill="white" opacity="0.3" />
+              <circle cx="12" cy="12" r="4" fill="white" />
             </svg>
             Start Transcribing
           </button>
@@ -55,20 +56,22 @@
         <div class="row">
           <div class="film-icon-wrapper">
             <svg class="film-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
-              <circle cx="9" cy="13" r="1.5"/>
-              <circle cx="15" cy="13" r="1.5"/>
+              <path
+                d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" />
+              <circle cx="9" cy="13" r="1.5" />
+              <circle cx="15" cy="13" r="1.5" />
             </svg>
           </div>
           <div class="col">
             <h3 class="card-title" style="margin-bottom: 8px;">Transcribe Media Files</h3>
-            <p class="card-description" style="margin-bottom: 0;">Get text transcriptions for your video and audio files.</p>
+            <p class="card-description" style="margin-bottom: 0;">Get text transcriptions for your video and audio
+              files.</p>
           </div>
         </div>
         <div style="padding: 0 20px 24px 20px;">
           <button class="main-btn" id="selectFileBtn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="white"/>
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="white" />
             </svg>
             Select File
           </button>
@@ -83,16 +86,14 @@
         <div class="scribe-title-row">
           <h3>Scribe</h3>
           <div class="scribe-actions">
-            <!-- <button id="copyTranscriptBtn" class="icon-btn" title="Copy to Clipboard">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/>
-              </svg>
-            </button> -->
-            <button id="downloadTranscriptBtn" class="main-btn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="white"/>
-              </svg>
+            <button id="copyTranscriptBtn" class="icon-btn" title="Copy transcript to clipboard">
+              Copy
+            </button>
+            <button id="downloadTranscriptBtn" class="icon-btn" title="Download transcript as a text file">
               Download
+            </button>
+            <button id="clearTranscriptBtn" class="icon-btn" title="Clear the transcript">
+              Clear
             </button>
           </div>
         </div>
@@ -111,7 +112,7 @@
       </div>
 
       <!-- Audio player when visible -->
-      <div class="audio-player-wrap material-card" >
+      <div class="audio-player-wrap material-card">
         <audio id="scribeAudioPlayer" style="width:100%;display:none;" controls></audio>
       </div>
 
@@ -148,9 +149,10 @@
             </button>
           </div>
         </div> -->
-        
+
         <div class="scribe-container" id="transcriptContainer">
-          <div id="scribeText">This is where your transcribed text will appear. The area is scrollable and styled for readability.</div>
+          <div id="scribeText">This is where your transcribed text will appear. The area is scrollable and styled for
+            readability.</div>
         </div>
       </div>
     </div>
@@ -158,7 +160,7 @@
     <!-- SETTINGS TAB -->
     <div id="tab-settings" class="tab-content">
       <h3 class="page-title">Auditory Settings</h3>
-      
+
       <!-- Transcription Settings Group -->
       <div class="settings-group material-card">
         <h3 class="settings-group-title">Transcription Settings</h3>
@@ -173,7 +175,7 @@
               <span class="slider"></span>
             </label>
           </div>
-          
+
           <div class="setting-item">
             <div class="setting-info">
               <span class="setting-label">Show Timestamps</span>
@@ -208,7 +210,9 @@
       <div style="margin-top:24px;display:flex;justify-content:center;">
         <button id="resetSettingsBtn" class="main-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="white"/>
+            <path
+              d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+              fill="white" />
           </svg>
           Reset All Settings
         </button>
@@ -222,7 +226,7 @@
       <button class="tab-btn active" data-tab="tab-home">
         <span class="icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/>
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor" />
           </svg>
         </span>
         Home
@@ -230,7 +234,9 @@
       <button class="tab-btn" data-tab="tab-scribe">
         <span class="icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/>
+            <path
+              d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"
+              fill="currentColor" />
           </svg>
         </span>
         Scribe
@@ -246,7 +252,9 @@
       <button class="tab-btn" data-tab="tab-settings">
         <span class="icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/>
+            <path
+              d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+              fill="currentColor" />
           </svg>
         </span>
         Settings
@@ -259,7 +267,7 @@
   <script src="scribe.js"></script>
   <script src="auditory.js"></script>
   <script src="../shared/shared.js"></script>
-  
+
 </body>
 
 </html>

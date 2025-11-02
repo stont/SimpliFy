@@ -160,8 +160,11 @@ async function checkMicrophonePermission() {
 
 
 // home.js - logic for auditory home page (index.html)
-document.addEventListener('DOMContentLoaded', () => {
-  const micStatus = checkMicrophonePermission();
+document.addEventListener('DOMContentLoaded', async() => {
+  //const micStatus: Promise<"denied" | "granted" | "prompt" | "unknown" | undefined>
+  const micStatus = await checkMicrophonePermission();
+  console.log('Microphone status:', micStatus);
+
   // Option 1: open request-mic.html in a new tab to prompt for permission
   if (micStatus === 'denied' || micStatus === 'prompt') {
     if (window.chrome && chrome.tabs) {

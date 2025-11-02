@@ -13,7 +13,7 @@ function formatTimestamp(date) {
 
 function filterProfanity(text) {
   // Simple placeholder, replace with a real filter as needed
-  const profane = ["fuck","shit","bitch","asshole","bastard","dick","pussy","cunt","damn","crap","slut","fag","cock","douche","bollocks","bugger","arse","wank","prick","twat","tit","piss","cum","suck","whore","nigger","nigga","spic","chink","gook","kike","wop","dyke","tranny","faggot","retard","homo","queer","spastic","tard","bimbo","skank","slag","tart","tosser","wanker","jerk","jackass","motherfucker","son of a bitch","arsehole","bollocks","shag","git","twit","pillock","minger","munter","numpty","plonker","scrubber","git","berk","div","nonce","ponce","slag","tart","twat","wazzock","yob","yobbo"]; // etc.
+  const profane = ["fuck", "shit", "bitch", "asshole", "bastard", "dick", "pussy", "cunt", "damn", "crap", "slut", "fag", "cock", "douche", "bollocks", "bugger", "arse", "wank", "prick", "twat", "tit", "piss", "cum", "suck", "whore", "nigger", "nigga", "spic", "chink", "gook", "kike", "wop", "dyke", "tranny", "faggot", "retard", "homo", "queer", "spastic", "tard", "bimbo", "skank", "slag", "tart", "tosser", "wanker", "jerk", "jackass", "motherfucker", "son of a bitch", "arsehole", "bollocks", "shag", "git", "twit", "pillock", "minger", "munter", "numpty", "plonker", "scrubber", "git", "berk", "div", "nonce", "ponce", "slag", "tart", "twat", "wazzock", "yob", "yobbo"]; // etc.
   let filtered = text;
   profane.forEach(word => {
     const re = new RegExp(`\\b${word}\\b`, 'gi');
@@ -182,12 +182,19 @@ function setupScribeTab() {
           downloadTranscript();
         }
       };
-    }
-    // Start live transcription from mic (Web Speech API cannot transcribe file directly, but can transcribe if played aloud)
-    if (!wsIsRecording) {
-      startWebSpeechTranscription(scribeText, null, null);
-    }
-  });
+      //stop live transcription when player is stopped or paused
+      audioPlayer.onpause = () => {
+        console.log('Audio playback paused. Stopping transcription.');
+        stopWebSpeechTranscription(null, null);
+      };
+      audioPlayer.onplay = () => {
+        console.log('Audio playback started. Starting transcription.');
+        if (!wsIsRecording) {
+          startWebSpeechTranscription(scribeText, null, null);
+        }
+    };
+  }
+});
 
   // Live recording logic for 'Start Transcribing' button
   const startTranscribeBtn = document.getElementById('startTranscribeBtn');
@@ -229,6 +236,41 @@ function setupScribeTab() {
     downloadBtn.addEventListener('click', manualDownloadTranscript);
   }
 
+  // Copy Transcript button
+  const copyBtn = document.getElementById('copyTranscriptBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const settings = getScribeSettings();
+      if (!transcriptSegments.length) return;
+      const allText = transcriptSegments.map(seg =>
+        settings.showTimestamps ? `[${seg.timestamp}] ${settings.filterWords ? filterProfanity(seg.text) : seg.text}` : (settings.filterWords ? filterProfanity(seg.text) : seg.text)
+      ).join('\n');
+      navigator.clipboard.writeText(allText).then(() => {
+        // Optional: Show a confirmation message
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 2000);
+      });
+    });
+  }
+
+  // Clear Transcript button
+  const clearBtn = document.getElementById('clearTranscriptBtn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      const scribeText = document.getElementById('scribeText');
+      if (scribeText) {
+        scribeText.innerHTML = 'This is where your transcribed text will appear. The area is scrollable and styled for readability.';
+      }
+      transcriptSegments = [];
+      wsTranscript = '';
+      wsLastTranscript = '';
+      updateTranscriptUI(scribeText, '');
+    });
+  }
+
   // Ensure scribeText is scrollable and multi-line
   const scribeText = document.getElementById('scribeText');
   if (scribeText) {
@@ -239,7 +281,7 @@ function setupScribeTab() {
 function getTranscriptFilename() {
   const now = new Date();
   const pad = n => n.toString().padStart(2, '0');
-  const ts = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+  const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
   return `transcript_${ts}.txt`;
 }
 
