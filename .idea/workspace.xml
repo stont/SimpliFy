@@ -4,38 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bfb51f27-1253-4416-a59c-bdb39cf78267" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/extension/icons/icon128.png" beforeDir="false" afterPath="$PROJECT_DIR$/extension/icons/icon128.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/extension/icons/icon16.png" beforeDir="false" afterPath="$PROJECT_DIR$/extension/icons/icon16.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/extension/icons/icon32.png" beforeDir="false" afterPath="$PROJECT_DIR$/extension/icons/icon32.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/extension/icons/icon48.png" beforeDir="false" afterPath="$PROJECT_DIR$/extension/icons/icon48.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/auditory_accessibility_homepage/code.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/auditory_accessibility_homepage/screen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/auditory_accessibility_settings/code.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/auditory_accessibility_settings/screen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/autism_&amp;_cognitive_support_homepage/code.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/autism_&amp;_cognitive_support_homepage/screen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/autism_&amp;_cognitive_support_settings/code.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/autism_&amp;_cognitive_support_settings/screen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/chrome-extensions-samples" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/geminiNanoDemo" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/homepage/code.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/homepage/screen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/background.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/content.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/manifest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/popup.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/request-mic.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/sidepanel/popup.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/sidepanel/request-mic.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/sidepanel/request-mic.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/livecaptionsample/sidepanel/sidepanel.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/visual_accessibility_homepage/code.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/visual_accessibility_homepage/screen.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/visual_accessibility_settings/code.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/samples/visual_accessibility_settings/screen.png" beforeDir="false" />
-    </list>
+    <list default="true" id="bfb51f27-1253-4416-a59c-bdb39cf78267" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -69,22 +38,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;add-autism-functionalities&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\JetBrains Rider 2023.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature-autism-improvements",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\JetBrains Rider 2023.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="bfb51f27-1253-4416-a59c-bdb39cf78267" name="Changes" comment="" />
@@ -97,6 +66,7 @@
       <workItem from="1760984382071" duration="51000" />
       <workItem from="1761162354863" duration="350000" />
       <workItem from="1761995235629" duration="101000" />
+      <workItem from="1762032626221" duration="3020000" />
     </task>
     <task id="LOCAL-00001" summary="Code changes">
       <option name="closed" value="true" />

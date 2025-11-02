@@ -96,7 +96,10 @@ async function simplifySelectedText(original, simplifyLevel, filterBadWords) {
         console.error('[CLIENT] Gemini Nano Rewriter API not available.');
         return original;
     }
-    const available = await Rewriter.availability();
+    const available = await Rewriter.availability({
+        expectedInputLanguages: ["en-US"],
+        outputLanguage: "en-US",
+    });
     console.log('[MAIN-BRIDGE] Rewriter availability:', available);
     if (available === 'unavailable') {
         console.error('[CLIENT] Rewriter API is not usable.');
@@ -109,7 +112,9 @@ async function simplifySelectedText(original, simplifyLevel, filterBadWords) {
         tone: 'as-is',
         length: 'as-is',
         format: 'plain-text',
-        sharedContext: aiRules
+        sharedContext: aiRules,
+        expectedInputLanguages: ["en-US"],
+        outputLanguage: "en-US",
     };
 
     if (filterBadWords) {
@@ -133,7 +138,10 @@ async function generateSummary(text, options) {
     console.log('[MAIN-BRIDGE] generateSummary called with text length: ' + (text?.length || 0) + ', options: ' + JSON.stringify(options));
     console.log('[MAIN-BRIDGE] generateSummary called with text length:', text?.length, 'options:', options);
     try {
-        const availability = await Summarizer.availability();
+        const availability = await Summarizer.availability({
+            expectedInputLanguages: ["en-US"],
+            outputLanguage: "en-US",
+        });
         console.log('[MAIN-BRIDGE] Summarizer availability:', availability);
         if (availability === 'unavailable') {
             console.log('Summarizer API is not available');
@@ -174,7 +182,10 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
             console.error('[CLIENT] Gemini Nano Rewriter API not available.');
             return original;
         }
-        const available = await Rewriter.availability();
+        const available = await Rewriter.availability({
+            expectedInputLanguages: ["en-US"],
+            outputLanguage: "en-US",
+        });
         if (available === 'unavailable') {
             console.error('[CLIENT] Rewriter API is not usable.');
             return original;
@@ -185,7 +196,9 @@ async function rewriteTextViaAI(original, simplifyLevel, filterBadWords) {
             tone: 'as-is',
             length: 'as-is',
             format: 'plain-text',
-            sharedContext: aiRules
+            sharedContext: aiRules,
+            expectedInputLanguages: ["en-US"],
+            outputLanguage: "en-US",
         };
 
         if (filterBadWords) {
@@ -673,7 +686,7 @@ window.addEventListener('message', (event) => {
         processAIRewriteQueue();
     }
     if (event.data && event.data.type === 'ai-permission-response') {
-       // console.log('[MAIN-BRIDGE] AI permission response received in main-bridge.js:', event.data);
+        // console.log('[MAIN-BRIDGE] AI permission response received in main-bridge.js:', event.data);
         // handled in requestAIPermission
     }
     if (event.data && event.data.type === 'ai-permission-released') {
@@ -685,7 +698,7 @@ window.addEventListener('message', (event) => {
 document.addEventListener("keydown", (event) => {
     // Spacebar toggles reading
     if (event.code === "Space") {
-       // event.preventDefault(); // stop page scroll
+        // event.preventDefault(); // stop page scroll
         console.log('[MAIN-BRIDGE] Space bar event to bridge');
         window.postMessage({
             type: "SPACE_BAR_CLICKED",
