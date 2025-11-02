@@ -236,6 +236,41 @@ function setupScribeTab() {
     downloadBtn.addEventListener('click', manualDownloadTranscript);
   }
 
+  // Copy Transcript button
+  const copyBtn = document.getElementById('copyTranscriptBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const settings = getScribeSettings();
+      if (!transcriptSegments.length) return;
+      const allText = transcriptSegments.map(seg =>
+        settings.showTimestamps ? `[${seg.timestamp}] ${settings.filterWords ? filterProfanity(seg.text) : seg.text}` : (settings.filterWords ? filterProfanity(seg.text) : seg.text)
+      ).join('\n');
+      navigator.clipboard.writeText(allText).then(() => {
+        // Optional: Show a confirmation message
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 2000);
+      });
+    });
+  }
+
+  // Clear Transcript button
+  const clearBtn = document.getElementById('clearTranscriptBtn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      const scribeText = document.getElementById('scribeText');
+      if (scribeText) {
+        scribeText.innerHTML = 'This is where your transcribed text will appear. The area is scrollable and styled for readability.';
+      }
+      transcriptSegments = [];
+      wsTranscript = '';
+      wsLastTranscript = '';
+      updateTranscriptUI(scribeText, '');
+    });
+  }
+
   // Ensure scribeText is scrollable and multi-line
   const scribeText = document.getElementById('scribeText');
   if (scribeText) {
