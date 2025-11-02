@@ -5,6 +5,10 @@ const allModelResults = {}
 async function checkAllModelStates(onlyModel) {
     const models = [
         {
+            name: 'LanguageModel',
+            flag: 'chrome://flags/#prompt-api-for-gemini-nano'
+        },
+        {
             name: 'Summarizer',
             flag: 'chrome://flags/#summarization-api-for-gemini-nano'
         },
