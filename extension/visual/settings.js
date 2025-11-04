@@ -18,10 +18,10 @@ async function initializeSettingsAsync() {
   const result = await chrome.storage.local.get(['shouldAutoReadPage', 'enableVoiceCommandReading']);
   console.log('The result:: ', result)
   if (result.shouldAutoReadPage !== undefined) {
-    shouldAutoReadPageCheckBox.checked = result.shouldAutoReadPage
+    shouldAutoReadPageCheckBox.checked = result.shouldAutoReadPage;
   }
   if (result.enableVoiceCommandReading !== undefined) {
-    enableVoiceCommandReadingCheckBox.checked = result.enableVoiceCommandReading
+    enableVoiceCommandReadingCheckBox.checked = result.enableVoiceCommandReading;
   }
 
 }
@@ -32,6 +32,11 @@ document.addEventListener('DOMContentLoaded', async function () {
   if (shouldAutoReadPageCheckBox) {
     shouldAutoReadPageCheckBox.addEventListener('change', function () {
       chrome.storage.local.set({ 'shouldAutoReadPage': this.checked });
+      //disable automatic simplification if auto read is enabled
+      if (this.checked) {
+        chrome.storage.local.set({ 'autismAutomaticSimplification': false });
+      }
+      
     });
   }
   if (enableVoiceCommandReadingCheckBox) {
