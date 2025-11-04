@@ -59,6 +59,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'from-main-bridge') {
+    chrome.tts.stop();
     const chunks = Array.isArray(message.data) ? message.data : [message.data];
     speakChunks(chunks, { rate: 1.0 });
   }
