@@ -88,8 +88,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   if (message.type === 'get-voices') {
     chrome.tts.getVoices(function(voices) {
+<<<<<<< HEAD
       const englishVoices = voices.filter(voice => voice.lang && voice.lang.startsWith('en'));
       sendResponse(englishVoices);
+=======
+      sendResponse(voices);
+>>>>>>> 990c9a89923e60fef793fafc617a778beddc6280
     });
     return true; // Required for async sendResponse
   }
