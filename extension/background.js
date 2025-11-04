@@ -62,7 +62,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'from-main-bridge') {
     chrome.tts.stop();
     const chunks = Array.isArray(message.data) ? message.data : [message.data];
-    speakChunks(chunks, { rate: 1.0 });
+    speakChunks(chunks, {});
   }
   if (message.type === 'SPACE_BAR_CLICKED') {
     if (ttsState === 'playing') {
@@ -86,16 +86,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     chrome.tts.pause();
     ttsState = 'paused';
   }
+  if (message.type === 'get-voices') {
+    chrome.tts.getVoices(function(voices) {
+      const englishVoices = voices.filter(voice => voice.lang && voice.lang.startsWith('en'));
+      sendResponse(englishVoices);
+    });
+    return true; // Required for async sendResponse
+  }
 });
 
 ///Can speak chunks via TTS. Can only work in the background script
-function speakChunks(chunks, options) {
+async function speakChunks(chunks, options) {
+  const result = await chrome.storage.local.get(['voiceSettings']);
+  const voiceSettings = result.voiceSettings || {};
+
   // default options
-  const voiceName = 'Nate'//options.voiceName || '';
-  const rate = options.rate || 1.0;
-  const pitch = options.pitch || 1.0;
-  const volume = typeof options.volume === 'number' ? options.volume : 1.0;
-  console.log("speakChunks called with chunks: ", Array.isArray(chunks), "options:", options);
+  const voiceName = voiceSettings.voiceName;
+  const rate = voiceSettings.rate || 1.0;
+  const pitch = voiceSettings.pitch || 1.0;
+  const volume = voiceSettings.volume || 1.0;
+
+  console.log("speakChunks called with chunks: ", Array.isArray(chunks), "options:", {voiceName, rate, pitch, volume});
   if (!Array.isArray(chunks) || chunks.length === 0) return;
 
   ttsState = 'playing';
@@ -105,7 +116,7 @@ function speakChunks(chunks, options) {
     const utterance = (chunk || '').slice(0, 32768);
 
     chrome.tts.speak(utterance, {
-      voiceName: voiceName || undefined,
+      voiceName: voiceName,
       rate,
       pitch,
       volume,

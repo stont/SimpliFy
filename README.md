@@ -17,6 +17,7 @@ SimpliFy is a Chrome extension that provides a suite of tools to enhance web acc
     *   **Text Simplification:** The Autism & Cognitive Support feature uses a prompt-based approach with the Gemini API to simplify complex text, making it easier to understand.
     *   **Content Summarization:** The Visual Accessibility feature uses the Gemini API to summarize long articles, terms of service, and privacy policies.
 *   **Chrome Extension APIs:** The extension makes use of various Chrome Extension APIs, including `sidePanel`, `contextMenus`, and `storage` to provide a seamless user experience.
+*   **Chrome TTS API:** The extension uses the Chrome TTS API to provide text-to-speech functionality. This allows for a more natural and customizable reading experience.
 
 ### Auditory Accessibility
 

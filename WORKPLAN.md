@@ -45,8 +45,9 @@
 2. Implement config/home/settings pages for each mode using sample HTML/CSS
 3. Add accessibility features (text simplification, TTS, transcription, etc.)
 4. Implement local storage for settings and bookmarks
-5. Polish UI/UX, test offline functionality
-6. Document usage and accessibility features
+5. **Implemented Voice Settings and updated TTS functionality.**
+6. Polish UI/UX, test offline functionality
+7. Document usage and accessibility features
 
 ## References
 - See `samples/` for page layouts and design inspiration

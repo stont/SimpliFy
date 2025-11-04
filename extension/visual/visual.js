@@ -49,6 +49,12 @@ function restartRecognition() {
 }
 
 document.addEventListener('DOMContentLoaded', function () { 
+    chrome.storage.local.get(['enableVoiceCommandReading'], function(result) {
+        if (result.enableVoiceCommandReading) {
+            initSpeechRecognition();
+        }
+    });
+
     const backButton = document.getElementById('backButton');
     if (backButton) {
         backButton.onclick = function () {
@@ -56,5 +62,17 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.removeItem('accessibilityCondition');
             window.location.href = '../onboard/index.html';
         };
+    }
+});
+
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+    if (namespace === 'local' && changes.enableVoiceCommandReading) {
+        if (changes.enableVoiceCommandReading.newValue) {
+            initSpeechRecognition();
+        } else {
+            if (recognition) {
+                recognition.stop();
+            }
+        }
     }
 });
