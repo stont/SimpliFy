@@ -40,6 +40,10 @@ window.addEventListener('message', async (event) => {
     // Forward to background
     chrome.runtime.sendMessage({ type: "SPACE_BAR_CLICKED" })
 
+  } else if (event.data.type === "STOP_TTS") {
+    console.log('[BRIDGE] Forwarding STOP_TTS to background');
+    // Forward to background
+    chrome.runtime.sendMessage({ type: "STOP_TTS" })
   }
 });
 

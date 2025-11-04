@@ -6,6 +6,7 @@ let aiTaskQueue = [];
 let isProcessing = false;
 let isSpeaking = false;
 let currentTabId = '';
+let ttsState = 'stopped'; // 'playing', 'paused', 'stopped'
 
 // Helper: Remove all tasks for a given tabId
 function removeTasksForTab(tabId) {
@@ -59,23 +60,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'from-main-bridge') {
+    chrome.tts.stop();
     const chunks = Array.isArray(message.data) ? message.data : [message.data];
     speakChunks(chunks, { rate: 1.0 });
   }
   if (message.type === 'SPACE_BAR_CLICKED') {
-    if (isSpeaking) {
-      isSpeaking = false;
+    if (ttsState === 'playing') {
       chrome.tts.pause();
-    } else {
-      isSpeaking = true;
+      ttsState = 'paused';
+    } else if (ttsState === 'paused') {
       chrome.tts.resume();
+      ttsState = 'playing';
     }
+  }
+  if (message.type === 'STOP_TTS') {
+    chrome.tts.stop();
+    ttsState = 'stopped';
+    isSpeaking = false;
   }
   if (message.type === 'VOICE_RESUME') {
     chrome.tts.resume();
+    ttsState = 'playing';
   }
   if (message.type === 'VOICE_PAUSE') {
     chrome.tts.pause();
+    ttsState = 'paused';
   }
 });
 
@@ -88,6 +97,8 @@ function speakChunks(chunks, options) {
   const volume = typeof options.volume === 'number' ? options.volume : 1.0;
   console.log("speakChunks called with chunks: ", Array.isArray(chunks), "options:", options);
   if (!Array.isArray(chunks) || chunks.length === 0) return;
+
+  ttsState = 'playing';
   // speak each chunk sequentially using enqueue
   chunks.forEach((chunk, i) => {
     // Ensure chunk is not empty and under API per-utterance limit (32,768)
@@ -102,14 +113,25 @@ function speakChunks(chunks, options) {
     }, function (event) {
       if (chrome.runtime.lastError) {
         console.warn('TTS error:', chrome.runtime.lastError.message);
-      }
-      if (event.type === 'end') {
-        console.log('Finished speaking chunk:', i + 1, 'of', chunks.length);
+        ttsState = 'stopped';
         isSpeaking = false;
       }
       if (event.type === 'start') {
         console.log('The started speech');
-
+        isSpeaking = true;
+        ttsState = 'playing';
+      }
+      if (event.type === 'end') {
+        console.log('Finished speaking chunk:', i + 1, 'of', chunks.length);
+        if (i === chunks.length - 1) {
+            isSpeaking = false;
+            ttsState = 'stopped';
+        }
+      }
+      if (event.type === 'interrupted' || event.type === 'cancelled') {
+        console.log('Speech interrupted or cancelled');
+        ttsState = 'stopped';
+        isSpeaking = false;
       }
     });
 
@@ -150,6 +172,7 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
   if (isSpeaking && tabId === currentTabId) {
     isSpeaking = false;
     chrome.tts.stop();
+    ttsState = 'stopped';
   }
 });
 
