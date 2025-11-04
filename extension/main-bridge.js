@@ -88,7 +88,7 @@ let sharedAbortController = null;
 // AI rules for rewriting
 const aiRules = "Do not change proper names, dates, numbers, or technical terms. Preserve the original meaning and structure as much as possible. If the text is already simple, leave it unchanged. Do not define terms, explain concepts, or summarize content. Only simplify words and phrases within the existing sentences. Ignore code snippets, programming code, or technical code.";
 
-let summarizer;
+
 
 async function simplifySelectedText(original, simplifyLevel, filterBadWords) {
     console.log('[MAIN-BRIDGE] simplifySelectedText called with text length:', original?.length, 'level:', simplifyLevel, 'filterBadWords:', filterBadWords);
@@ -147,6 +147,7 @@ async function generateSummary(text, options) {
             console.log('Summarizer API is not available');
             return 'Summarizer API is not available';
         }
+        let summarizer;
         if (availability === 'available') {
             summarizer = await Summarizer.create(options);
         } else {
@@ -328,7 +329,7 @@ window.addEventListener('DOMContentLoaded', () => {
 let sharedVisualAbortController = null;
 let sharedPromptSession = null;
 async function promptText(pageContent) {
-    console.log('abount to prompt text:: ', pageContent)
+    console.log('about to prompt text:: ', pageContent)
     if (!sharedPromptSession) {
         sharedVisualAbortController = new AbortController();
         sharedPromptSession = await LanguageModel.create({
@@ -457,10 +458,12 @@ function safeGetVisibleText() {
 
         return textContent;
     } catch (err) {
-        console.error("❌ Error using TreeWalker:", err);
+        console.error("Error using TreeWalker:", err);
         return "";
     }
 }
+
+
 
 function getEstimatedTokens(text) {
     // Approximation based on average English tokenization
@@ -502,13 +505,59 @@ function chunkTextByQuota(text, session, usage) {
     return chunks;
 }
 
-// // Run safely after DOM is ready
-// if (document.readyState === "loading") {
-//     document.addEventListener("DOMContentLoaded", safeGetVisibleText);
-// } else {
-//     safeGetVisibleText();
-// }
 
+
+
+
+async function ProcessWebpageForVisual() {
+    const pageContent = safeGetVisibleText();
+    if (!pageContent) {
+        console.log('[MAIN-BRIDGE] No page content found for visual processing.');
+        return;
+    }
+
+    const summary = await summarizeRecursively(pageContent);
+    const chunks = chunkText(summary);
+    window.postMessage({ type: 'from-main-bridge', message: chunks }, '*');
+}
+
+async function summarizeRecursively(text, level = 0) {
+    const MAX_RECURSION_LEVEL = 5;
+    if (level >= MAX_RECURSION_LEVEL) {
+        console.log('[MAIN-BRIDGE] Max recursion level reached for summarization.');
+        return text;
+    }
+
+    // This is a placeholder for a good chunking strategy.
+    // The ideal chunk size depends on the model's context window.
+    // For now, let's assume a simple split.
+    const chunks = chunkText(text, 3000); // Chunking into 3000 char chunks
+
+    if (chunks.length <= 1 && level > 0) {
+        return text;
+    }
+
+    const summaries = await Promise.all(chunks.map(async (chunk) => {
+        try {
+            return await generateSummary(chunk, {
+                type: 'tldr',
+                length: 'medium',
+                outputLanguage: 'en-US'
+            });
+        } catch (e) {
+            console.error("Error summarizing chunk:", e);
+            return ""; // Return empty string on error
+        }
+    }));
+
+    const combinedSummary = summaries.filter(s => s).join('\n\n');
+
+    if (chunks.length > 1) {
+        return summarizeRecursively(combinedSummary, level + 1);
+    } else {
+        return combinedSummary;
+    }
+}
 
 // main-bridge.js
 function sendToExtension(data) {
@@ -550,10 +599,11 @@ window.addEventListener('message', (event) => {
             replaceAllTextNodesWithAI(currentSimplificationLevel, currentBlockBadWords);
         }
         if (shouldAutoReadPageCurrent) {
-            const pageContent = safeGetVisibleText();
-            console.log('Page content:: ', pageContent)
-            console.log('[MAIN] Extracted page content length for auto-read:', pageContent.length);
-            promptText(pageContent);
+            if (document.readyState === 'loading') {
+                window.addEventListener('DOMContentLoaded', ProcessWebpageForVisual);
+            } else {
+                ProcessWebpageForVisual();
+            }
         }
         return;
     }
@@ -601,13 +651,16 @@ window.addEventListener('message', (event) => {
         if (event.data.data.shouldAutoReadPage !== undefined) {
             const newValue = event.data.data.shouldAutoReadPage;
             console.log('shouldAutoReadPage changed:', shouldAutoReadPageCurrent, '->', newValue);
+
             if (shouldAutoReadPageCurrent !== newValue) {
                 shouldAutoReadPageCurrent = newValue
                 console.log('Updated shouldAutoReadPageCurrent to:', shouldAutoReadPageCurrent);
                 if (shouldAutoReadPageCurrent) {
-                    const pageContent = safeGetVisibleText();
-                    console.log('[MAIN] Extracted page content length for auto-read:', pageContent.length);
-                    promptText(pageContent);
+                    if (document.readyState === 'loading') {
+                        window.addEventListener('DOMContentLoaded', ProcessWebpageForVisual);
+                    } else {
+                        ProcessWebpageForVisual();
+                    }
                 } else {
                     if (sharedVisualAbortController) {
                         sharedVisualAbortController.abort();
@@ -697,12 +750,8 @@ window.addEventListener('message', (event) => {
 //Key logger
 document.addEventListener("keydown", (event) => {
     // Spacebar toggles reading
-    if (event.code === "Space") {
-        // event.preventDefault(); // stop page scroll
-        console.log('[MAIN-BRIDGE] Space bar event to bridge');
-        window.postMessage({
-            type: "SPACE_BAR_CLICKED",
-        }, "*");
+    if (event.code === "Space" && shouldAutoReadPageCurrent) {
+        window.postMessage({ type: "SPACE_BAR_CLICKED" }, "*");
     }
 });
 

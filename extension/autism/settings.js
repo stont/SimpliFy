@@ -4,14 +4,14 @@
 const clearBtn = document.getElementById('clearCacheBtn');
 const msg = document.getElementById('clearCacheMsg');
 if (clearBtn) {
-  clearBtn.addEventListener('click', async function() {
+  clearBtn.addEventListener('click', async function () {
     if (msg) {
       msg.textContent = 'Local cache cleared.';
       msg.style.display = 'block';
       setTimeout(() => { msg.style.display = 'none'; }, 2000);
     }
     // Notify content script to clear cache in main world
-   sendClearStorage();
+    sendClearStorage();
   });
 }
 
@@ -57,24 +57,24 @@ async function initializeSettingsAsync() {
 if (simplificationSlider && simplificationValue) {
   initializeSettingsAsync();
   // Only send on slider change, not on load
-  simplificationSlider.addEventListener('input', function() {
+  simplificationSlider.addEventListener('input', function () {
     console.log('Simplification level changed to', this.value);
     simplificationValue.textContent = getSimplificationLabel(Number(this.value));
     chrome.storage.local.set({ 'autismSimplificationLevel': this.value });
   });
 }
 if (disableAnimationsCheckbox) {
-  disableAnimationsCheckbox.addEventListener('change', function() {
+  disableAnimationsCheckbox.addEventListener('change', function () {
     chrome.storage.local.set({ 'autismDisableAnimations': this.checked });
   });
 }
 if (blockBadWordsCheckbox) {
-  blockBadWordsCheckbox.addEventListener('change', function() {
+  blockBadWordsCheckbox.addEventListener('change', function () {
     chrome.storage.local.set({ 'autismBlockBadWords': this.checked });
   });
 }
 if (automaticSimplificationCheckbox) {
-  automaticSimplificationCheckbox.addEventListener('change', function() {
+  automaticSimplificationCheckbox.addEventListener('change', function () {
     chrome.storage.local.set({ 'autismAutomaticSimplification': this.checked });
     //disable auto read if automatic simplification is enabled
     if (this.checked) {
@@ -87,7 +87,7 @@ if (automaticSimplificationCheckbox) {
 const settingsBtn = document.getElementById('settingsBtn');
 const settingsPage = document.getElementById('settingsPage');
 if (settingsBtn && settingsPage) {
-  settingsBtn.addEventListener('click', function() {
+  settingsBtn.addEventListener('click', function () {
     initializeSettingsAsync();
   });
 }

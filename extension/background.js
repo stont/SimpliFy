@@ -57,9 +57,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'summarize-text') {
     // Handle summarize-text
   }
+
   if (message.type === 'from-main-bridge') {
-    console.log('[BACKGROUND] Received from main-bridge:', message.data);
-    // chrome.tts.speak(message.data, { rate: 1.0 });
     const chunks = Array.isArray(message.data) ? message.data : [message.data];
     speakChunks(chunks, { rate: 1.0 });
   }
@@ -80,6 +79,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+///Can speak chunks via TTS. Can only work in the background script
 function speakChunks(chunks, options) {
   // default options
   const voiceName = 'Nate'//options.voiceName || '';
