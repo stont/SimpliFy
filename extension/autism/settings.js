@@ -76,6 +76,10 @@ if (blockBadWordsCheckbox) {
 if (automaticSimplificationCheckbox) {
   automaticSimplificationCheckbox.addEventListener('change', function() {
     chrome.storage.local.set({ 'autismAutomaticSimplification': this.checked });
+    //disable auto read if automatic simplification is enabled
+    if (this.checked) {
+      chrome.storage.local.set({ 'shouldAutoReadPage': false });
+    }
   });
 }
 
