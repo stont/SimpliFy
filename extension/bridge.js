@@ -36,9 +36,9 @@ window.addEventListener('message', async (event) => {
     // Forward to background
     chrome.runtime.sendMessage({ type: "from-main-bridge", data: event.data.message })
   } else if (event.data.type === "SPACE_BAR_CLICKED") {
-    console.log('[BRIDGE] Forwarding message to background:', event.data.message);
+    console.log('[BRIDGE] Forwarding SPACE_BAR_CLICKED to background');
     // Forward to background
-    chrome.runtime.sendMessage({ type: "SPACE_BAR_CLICKED", data: event.data.message })
+    chrome.runtime.sendMessage({ type: "SPACE_BAR_CLICKED" })
 
   }
 });
@@ -63,13 +63,4 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
       window.postMessage({ type: 'settings-update', data: updatedSettings }, '*');
     }
   }
-});
-
-// bridge.js
-window.addEventListener("message", (event) => {
-  // Only accept messages from our page context
-  if (event.source !== window || !event.data || event.data.direction !== "from-page") return;
-
-  // Forward to background
-  chrome.runtime.sendMessage(event.data.message);
 });
