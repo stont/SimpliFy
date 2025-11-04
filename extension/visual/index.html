@@ -33,15 +33,6 @@
             <span class="material-symbols-outlined">arrow_back_ios_new</span>
           </button>
           <h1 class="flex-1 text-center text-xl font-bold text-black">Visual Accessibility</h1>
-          <div class="flex w-12 items-center justify-end">
-            <button
-              class="relative flex h-10 w-10 items-center justify-center rounded-full text-black hover:bg-[#13a4ec]/10">
-              <span
-                class="absolute top-1.5 right-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-                <span class="h-2 w-2 rounded-full bg-red-500"></span>
-              </span>
-            </button>
-          </div>
         </div>
       </header>
 
@@ -61,6 +52,50 @@
                   class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300  after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#13a4ec]">
                 </div>
               </label>
+            </div>
+          </div>
+        </section>
+         <section>
+          <h2 class="text-base font-bold text-slate-900  mb-3">Voice Settings</h2>
+          <div class="bg-white rounded-lg shadow-sm">
+            <div class="flex items-center justify-between p-4 border-b border-slate-200">
+              <div>
+                <p class="text-base font-medium text-slate-800 ">Voice</p>
+                <p class="text-sm text-slate-500">Select a voice</p>
+              </div>
+              <select name="voice" id="voiceSelector"></select>
+            </div>
+            <div class="flex items-center justify-between p-4 border-b border-slate-200">
+              <div>
+                <p class="text-base font-medium text-slate-800 ">Voice Speed</p>
+                <p class="text-sm text-slate-500 ">Adjust voice speed</p>
+              </div>
+              <select name="speed" id="voiceSpeed">
+                <option value="0.8">Slow</option>
+                <option value="1.0" selected>Normal</option>
+                <option value="1.2">Fast</option>
+                <option value="1.5">Very Fast</option>
+              </select>
+            </div>
+            <div class="p-4 border-b border-slate-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-base font-medium text-slate-800 ">Pitch</p>
+                  <p class="text-sm text-slate-500 ">Adjust voice pitch</p>
+                </div>
+                <span id="pitchValue">1.0</span>
+              </div>
+              <input type="range" id="pitch" min="0.5" max="2.0" value="1.0" step="0.1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#137fec]">
+            </div>
+            <div class="p-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-base font-medium text-slate-800 ">Volume</p>
+                  <p class="text-sm text-slate-500 ">Adjust voice volume</p>
+                </div>
+                <span id="volumeValue">1.0</span>
+              </div>
+              <input type="range" id="volume" min="0.0" max="1.0" value="1.0" step="0.1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#137fec]">
             </div>
           </div>
         </section>
