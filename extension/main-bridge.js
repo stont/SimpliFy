@@ -510,6 +510,8 @@ function chunkTextByQuota(text, session, usage) {
 
 
 async function ProcessWebpageForVisual() {
+    window.postMessage({ type: 'from-main-bridge', message: ['This site is processing now'] }, '*');
+
     const pageContent = safeGetVisibleText();
     if (!pageContent) {
         console.log('[MAIN-BRIDGE] No page content found for visual processing.');
@@ -662,6 +664,7 @@ window.addEventListener('message', (event) => {
                         ProcessWebpageForVisual();
                     }
                 } else {
+                    window.postMessage({ type: 'STOP_TTS' }, '*');
                     if (sharedVisualAbortController) {
                         sharedVisualAbortController.abort();
                     }
