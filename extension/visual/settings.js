@@ -6,10 +6,10 @@ async function initializeSettingsAsync() {
   const result = await chrome.storage.local.get(['shouldAutoReadPage', 'enableVoiceCommandReading']);
   console.log('The result:: ', result)
   if (result.shouldAutoReadPage !== undefined) {
-    shouldAutoReadPageCheckBox.checked = result.shouldAutoReadPage
+    shouldAutoReadPageCheckBox.checked = result.shouldAutoReadPage;
   }
   if (result.enableVoiceCommandReading !== undefined) {
-    enableVoiceCommandReadingCheckBox.checked = result.enableVoiceCommandReading
+    enableVoiceCommandReadingCheckBox.checked = result.enableVoiceCommandReading;
   }
 }
 
