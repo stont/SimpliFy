@@ -59,3 +59,32 @@ Customize the auditory features in the "Settings" tab:
 *   **Auto download Transcribe Text:** Automatically save the transcript when you stop recording.
 *   **Show timestamps in Transcribe:** Toggle timestamps on and off in the Scribe view.
 *   **Filter out Adult/profane words:** Enable or disable the profanity filter.
+
+## Visual Accessibility
+
+This module is designed to assist users with visual impairments.
+
+**Test URL:** [https://sites.google.com/view/simplifydemo/long-article?authuser=0](https://sites.google.com/view/simplifydemo/long-article?authuser=0)
+
+### Features to Demo
+
+1.  **Text-to-Speech (TTS):**
+    *   Navigate to the provided test URL.
+    *   Open the SimpliFy extension and go to the "Visual Accessibility" module.
+    *   The extension will automatically start reading the page content aloud.
+    *   Press the **space bar** to pause or resume the speech.
+
+2.  **Content Summarization:**
+    *   While on the test URL, the extension will automatically generate a summary of the article.
+    *   The summary will be spoken aloud after the main content.
+
+### Settings
+
+Explore the "Settings" tab within the module to customize the experience:
+
+*   **Auto Read Page:** Toggle whether the extension should automatically start reading when a page loads.
+*   **Voice Settings:**
+    *   **Voice:** Choose from a list of available voices.
+    *   **Rate:** Adjust the speaking rate.
+    *   **Pitch:** Adjust the speaking pitch.
+    *   **Volume:** Adjust the speaking volume.

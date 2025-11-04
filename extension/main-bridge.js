@@ -510,7 +510,7 @@ function chunkTextByQuota(text, session, usage) {
 
 
 async function ProcessWebpageForVisual() {
-    window.postMessage({ type: 'from-main-bridge', message: ['This site is processing now'] }, '*');
+    window.postMessage({ type: 'from-main-bridge', message: ['This site is processing now. Use Space Bar to Pause or Resume Audio'] }, '*');
 
     const pageContent = safeGetVisibleText();
     if (!pageContent) {
